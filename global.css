@@ -1,3 +1,79 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    /* Base */
+    --background: 150 20% 97%;
+    --foreground: 150 17% 15%;
+
+    /* Surfaces */
+    --card: 0 0% 100%;
+    --card-foreground: 150 17% 15%;
+
+    /* Primary */
+    --primary: 138 28% 73%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary (tu primaryLight adaptado) */
+    --secondary: 140 35% 90%;
+    --secondary-foreground: 150 17% 15%;
+
+    /* Muted (text secondary / backgrounds suaves) */
+    --muted: 150 20% 95%;
+    --muted-foreground: 150 9% 40%;
+
+    /* Accent */
+    --accent: 45 89% 61%;
+
+    /* States */
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 146 70% 45%;
+
+    /* UI */
+    --border: 150 15% 85%;
+    --input: 150 15% 85%;
+    --ring: 138 28% 73%;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      /* Base */
+      --background: 150 20% 8%;
+      --foreground: 150 30% 93%;
+
+      /* Surfaces */
+      --card: 150 15% 12%;
+      --card-foreground: 150 30% 93%;
+
+      /* Primary */
+      --primary: 142 35% 62%;
+      --primary-foreground: 150 20% 10%;
+
+      /* Secondary */
+      --secondary: 150 20% 20%;
+      --secondary-foreground: 150 30% 93%;
+
+      /* Muted */
+      --muted: 150 15% 16%;
+      --muted-foreground: 140 17% 68%;
+
+      /* Accent */
+      --accent: 45 89% 61%;
+
+      /* States */
+      --destructive: 0 50% 25%;
+      --destructive-foreground: 0 80% 75%;
+
+      --success: 146 70% 52%;
+
+      /* UI */
+      --border: 150 15% 25%;
+      --input: 150 15% 25%;
+      --ring: 142 35% 62%;
+    }
+  }
+}
