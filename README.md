@@ -1,4 +1,4 @@
-# Welcome to Kelly 👋
+# Welcome to Keli 👋
 
 This is an AI Financial Coach using Expo, Clerk, Neon (Drizzle ORM).
 
