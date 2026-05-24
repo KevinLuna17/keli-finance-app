@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useSignIn } from "@clerk/expo";
-import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome6 } from '@expo/vector-icons';
 import { type Href, Link, useRouter } from "expo-router";
 
 export default function SignInScreen() {
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
     height: 56,
     borderRadius: 16,
     alignItems: "center",
-    justifyContent: "center", // 🔥 centra vertical
+    justifyContent: "center", 
     marginTop: 12,
     width: "100%",
   },
