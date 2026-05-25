@@ -1,10 +1,25 @@
-import { Show, useClerk, useUser } from "@clerk/expo";
+import { Show, useAuth, useClerk, useUser } from "@clerk/expo";
 import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 export default function Page() {
+  const { isLoaded } = useAuth();
   const { user } = useUser();
   const { signOut } = useClerk();
+
+  if (!isLoaded) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -18,7 +33,7 @@ export default function Page() {
         </Link>
       </Show>
       <Show when="signed-in">
-        <Text>Hello {user?.emailAddresses[0].emailAddress}</Text>
+        <Text>Hello {user?.emailAddresses[0]?.emailAddress}</Text>
         <Pressable style={styles.button} onPress={() => signOut()}>
           <Text style={styles.buttonText}>Sign out</Text>
         </Pressable>
@@ -33,6 +48,9 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 60,
     gap: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
   },
   title: {
     fontSize: 24,
@@ -46,7 +64,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: {
-    color: "#fff",
+    color: "black",
     fontWeight: "600",
   },
 });
