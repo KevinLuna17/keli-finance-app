@@ -1,3 +1,4 @@
+import { CodeVerification } from "@/components/auth/CodeVerification";
 import { useAuth, useSignUp } from "@clerk/expo";
 import { type Href, Link, useRouter } from "expo-router";
 import React from "react";
@@ -10,7 +11,6 @@ export default function Page() {
 
   const [emailAddress, setEmailAddress] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [code, setCode] = React.useState("");
 
   const handleSubmit = async () => {
     const { error } = await signUp.password({
@@ -25,10 +25,12 @@ export default function Page() {
     if (!error) await signUp.verifications.sendEmailCode();
   };
 
-  const handleVerify = async () => {
-    await signUp.verifications.verifyEmailCode({
-      code,
-    });
+  const handleVerify = async (code: string) => {
+    const { error } = await signUp.verifications.verifyEmailCode({ code });
+    if (error) {
+      throw error;
+    }
+
     if (signUp.status === "complete") {
       await signUp.finalize({
         // Redirect the user to the home page after signing up
@@ -54,6 +56,10 @@ export default function Page() {
     }
   };
 
+  const handleStartOver = () => {
+    signUp.reset();
+  };
+
   if (signUp.status === "complete" || isSignedIn) {
     return null;
   }
@@ -64,44 +70,17 @@ export default function Page() {
     signUp.missingFields.length === 0
   ) {
     return (
-      <View className="flex-1 items-center justify-center">
-        <Text className="text-2xl font-bold">Verify your account</Text>
-        <TextInput
-          style={styles.input}
-          value={code}
-          placeholder="Enter your verification code"
-          placeholderTextColor="#666666"
-          onChangeText={(code) => setCode(code)}
-          keyboardType="numeric"
-        />
-        {errors.fields.code && (
-          <Text className="text-red-500">{errors.fields.code.message}</Text>
-        )}
-        <Pressable
-          style={({ pressed }) => [
-            styles.button,
-            fetchStatus === "fetching" && styles.buttonDisabled,
-            pressed && styles.buttonPressed,
-          ]}
-          onPress={handleVerify}
-          disabled={fetchStatus === "fetching"}
-        >
-          <Text className="text-lg font-semibold text-card-foreground">
-            Verify
-          </Text>
-        </Pressable>
-        <Pressable
-          style={({ pressed }) => [
-            styles.secondaryButton,
-            pressed && styles.buttonPressed,
-          ]}
-          onPress={() => signUp.verifications.sendEmailCode()}
-        >
-          <Text className="text-lg font-semibold text-card-foreground">
-            I need a new code
-          </Text>
-        </Pressable>
-      </View>
+      <CodeVerification
+        title="Verify your account"
+        subtitle={`We sent a verification code to ${emailAddress}.`}
+        codeError={errors.fields.code?.message}
+        isLoading={fetchStatus === "fetching"}
+        onVerify={handleVerify}
+        onResendCode={async () => {
+          await signUp.verifications.sendEmailCode();
+        }}
+        onStartOver={handleStartOver}
+      />
     );
   }
 
@@ -179,26 +158,6 @@ export default function Page() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    gap: 12,
-  },
-  title: {
-    marginBottom: 8,
-  },
-  label: {
-    fontWeight: "600",
-    fontSize: 14,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    backgroundColor: "#fff",
-  },
   button: {
     backgroundColor: "#0a7ea4",
     paddingVertical: 12,
@@ -213,35 +172,10 @@ const styles = StyleSheet.create({
   buttonDisabled: {
     opacity: 0.5,
   },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  secondaryButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 8,
-  },
-  secondaryButtonText: {
-    color: "#0a7ea4",
-    fontWeight: "600",
-  },
   linkContainer: {
     flexDirection: "row",
     gap: 4,
     marginTop: 12,
     alignItems: "center",
-  },
-  error: {
-    color: "#d32f2f",
-    fontSize: 12,
-    marginTop: -8,
-  },
-  debug: {
-    fontSize: 10,
-    opacity: 0.5,
-    marginTop: 8,
   },
 });

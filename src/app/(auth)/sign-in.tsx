@@ -1,9 +1,9 @@
+import { CodeVerification } from "@/components/auth/CodeVerification";
 import useSocialAuth from "@/hooks/useSocialAuth";
 import { Image } from "expo-image";
 import * as React from "react";
 import {
   Pressable,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useSignIn } from "@clerk/expo";
-import { FontAwesome, FontAwesome6 } from '@expo/vector-icons';
+import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { type Href, Link, useRouter } from "expo-router";
 
 export default function SignInScreen() {
@@ -24,7 +24,7 @@ export default function SignInScreen() {
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
   const [passwordFocused, setPasswordFocused] = React.useState(false);
-  const [code, setCode] = React.useState("");
+  const [secondFactor, setSecondFactor] = React.useState(false);
 
   const [error, setError] = React.useState("");
 
@@ -49,8 +49,6 @@ export default function SignInScreen() {
       await signIn.finalize({
         navigate: ({ session, decorateUrl }) => {
           if (session?.currentTask) {
-            // Handle pending session tasks
-            // See https://clerk.com/docs/guides/development/custom-flows/authentication/session-tasks
             console.log(session?.currentTask);
             return;
           }
@@ -64,16 +62,14 @@ export default function SignInScreen() {
         },
       });
     } else if (signIn.status === "needs_second_factor") {
-      // See https://clerk.com/docs/guides/development/custom-flows/authentication/multi-factor-authentication
     } else if (signIn.status === "needs_client_trust") {
-      // For other second factor strategies,
-      // see https://clerk.com/docs/guides/development/custom-flows/authentication/client-trust
       const emailCodeFactor = signIn.supportedSecondFactors.find(
         (factor) => factor.strategy === "email_code",
       );
 
       if (emailCodeFactor) {
         await signIn.mfa.sendEmailCode();
+        setSecondFactor(true);
       }
     } else {
       // Check why the sign-in is not complete
@@ -82,15 +78,16 @@ export default function SignInScreen() {
     }
   };
 
-  const handleVerify = async () => {
-    await signIn.mfa.verifyEmailCode({ code });
+  const handleVerify = async (code: string) => {
+    const { error } = await signIn.mfa.verifyEmailCode({ code });
+    if (error) {
+      throw error;
+    }
 
     if (signIn.status === "complete") {
       await signIn.finalize({
         navigate: ({ session, decorateUrl }) => {
           if (session?.currentTask) {
-            // Handle pending session tasks
-            // See https://clerk.com/docs/guides/development/custom-flows/authentication/session-tasks
             console.log(session?.currentTask);
             return;
           }
@@ -108,57 +105,24 @@ export default function SignInScreen() {
       console.error("Sign-in attempt not complete:", signIn);
     }
   };
-  if (signIn.status === "needs_client_trust") {
+  const handleStartOver = () => {
+    signIn.reset();
+    setSecondFactor(false);
+  };
+
+  if (secondFactor) {
     return (
-      <View className="flex-1 items-center justify-center">
-        <Text className="text-2xl font-bold">Verify your account</Text>
-        <TextInput
-          className="border border-border rounded-2xl p-4 mb-3"
-          value={code}
-          placeholder="Enter your verification code"
-          placeholderTextColor="#666666"
-          onChangeText={(code) => setCode(code)}
-          keyboardType="numeric"
-        />
-        {errors.fields.code && (
-          <Text className="text-red-500">{errors.fields.code.message}</Text>
-        )}
-        <Pressable
-          style={({ pressed }) => [
-            styles.button,
-            fetchStatus === "fetching" && styles.buttonDisabled,
-            pressed && styles.buttonPressed,
-          ]}
-          onPress={handleVerify}
-          disabled={fetchStatus === "fetching"}
-        >
-          <Text className="text-lg font-semibold text-card-foreground">
-            Verify
-          </Text>
-        </Pressable>
-        <Pressable
-          style={({ pressed }) => [
-            styles.secondaryButton,
-            pressed && styles.buttonPressed,
-          ]}
-          onPress={() => signIn.mfa.sendEmailCode()}
-        >
-          <Text className="text-lg font-semibold text-card-foreground">
-            I need a new code
-          </Text>
-        </Pressable>
-        <Pressable
-          style={({ pressed }) => [
-            styles.secondaryButton,
-            pressed && styles.buttonPressed,
-          ]}
-          onPress={() => signIn.reset()}
-        >
-          <Text className="text-lg font-semibold text-card-foreground">
-            Start over
-          </Text>
-        </Pressable>
-      </View>
+      <CodeVerification
+        title="Verify your account"
+        subtitle={`We sent a verification code to ${emailAddress}.`}
+        codeError={errors.fields.code?.message}
+        isLoading={fetchStatus === "fetching"}
+        onVerify={handleVerify}
+        onResendCode={async () => {
+          await signIn.mfa.sendEmailCode();
+        }}
+        onStartOver={handleStartOver}
+      />
     );
   }
 
@@ -176,7 +140,7 @@ export default function SignInScreen() {
           Keli
         </Text>
 
-        <Text className="mt-1 text-center text-[14px] text-primary-foreground/80 dark:text-foreground/75">
+        <Text className="mt-1 text-center text-[16px] text-primary-foreground/80 dark:text-foreground/75">
           Plan smarter. Spend happier.
         </Text>
 
@@ -382,27 +346,3 @@ export default function SignInScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: "#0a7ea4",
-    height: 56,
-    borderRadius: 16,
-    alignItems: "center",
-    justifyContent: "center", 
-    marginTop: 12,
-    width: "100%",
-  },
-  buttonPressed: {
-    opacity: 0.7,
-  },
-  buttonDisabled: {
-    opacity: 0.5,
-  },
-  secondaryButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 8,
-  },
-});
