@@ -15,6 +15,12 @@ module.exports = {
         card: "hsl(var(--card) / <alpha-value>)",
         "card-foreground": "hsl(var(--card-foreground) / <alpha-value>)",
 
+        // Brand
+        brand: {
+          DEFAULT: "hsl(var(--brand) / <alpha-value>)",
+          foreground: "hsl(var(--brand-foreground) / <alpha-value>)",
+        },
+
         // Primary
         primary: {
           DEFAULT: "hsl(var(--primary) / <alpha-value>)",
