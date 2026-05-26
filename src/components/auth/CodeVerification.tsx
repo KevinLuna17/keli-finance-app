@@ -73,12 +73,6 @@ export function CodeVerification({
           entering={FadeInDown.delay(100).duration(500)}
           className="mt-8"
         >
-          <View className="self-center rounded-full bg-secondary px-3 py-1">
-            <Text className="text-xs font-semibold uppercase tracking-[1px] text-secondary-foreground">
-              Security check
-            </Text>
-          </View>
-
           <Text className="mt-4 text-center text-3xl font-extrabold text-primary-foreground dark:text-foreground">
             {title}
           </Text>
@@ -90,10 +84,15 @@ export function CodeVerification({
 
         <Animated.View
           entering={FadeInDown.delay(200).duration(500)}
-          className="mt-8 flex-1 rounded-t-[36px] bg-card px-6 pb-8 pt-6"
+          className="mt-8 rounded-[20px] bg-card p-8"
         >
+          <View className="self-center rounded-full bg-secondary px-3 py-1">
+            <Text className="text-xs font-semibold uppercase tracking-[1px] text-secondary-foreground">
+              Security check
+            </Text>
+          </View>
           <View
-            className={`mb-3 flex-row items-center h-14 rounded-2xl border px-4 ${
+            className={`mt-6 mb-3 flex-row items-center h-14 rounded-2xl border px-4 ${
               focused ? "border-2 border-primary" : "border-border"
             }`}
           >
