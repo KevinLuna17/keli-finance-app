@@ -144,10 +144,10 @@ export default function SignInScreen() {
           Plan smarter. Spend happier.
         </Text>
 
-        <View className="mt-6 rounded-[30px] border border-white/20 bg-white/10 p-3">
+        <View className="mt-6 w-80 mx-auto self-center rounded-[20px] border border-white/20 bg-white/10">
           <Image
             source={require("../../../assets/images/keli-logo.png")}
-            style={{ width: "100%", height: 180 }}
+            style={{ width: "100%", height: 150 }}
             contentFit="contain"
           />
         </View>
@@ -345,4 +345,3 @@ export default function SignInScreen() {
     </SafeAreaView>
   );
 }
-
