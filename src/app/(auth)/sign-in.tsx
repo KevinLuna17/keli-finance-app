@@ -128,41 +128,49 @@ export default function SignInScreen() {
 
   return (
     <SafeAreaView
-      className="flex-1 bg-primary dark:bg-secondary"
+      className="flex-1 bg-background dark:bg-secondary"
       edges={["top"]}
     >
       {/* decorative elements */}
-      <View className="absolute -left-16 top-12 h-56 w-56 rounded-full bg-secondary/20 dark:bg-background/40" />
-      <View className="absolute right-[-74px] top-40 h-72 w-72 rounded-full bg-secondary/20 dark:bg-background/35" />
+      <View className="absolute -top-8 -left-4 size-40 rounded-full bg-card/20 blur-3xl dark:bg-background/40" />
+      <View className="absolute right-[-74px] top-40 h-72 w-72 rounded-full bg-card/20 blur-3xl dark:bg-background/35" />
 
-      <View className="px-6 pt-4">
-        <Text className="text-center text-5xl font-extrabold tracking-tight text-primary-foreground uppercase font-mono dark:text-foreground">
-          Keli
-        </Text>
+      <View className="flex-row items-center justify-center">
+        <View className="flex-col px-4 w-1/2 items-center justify-center">
+          <Text className="text-6xl font-bold tracking-[1px] text-brand uppercase font-mono dark:text-foreground">
+            Keli
+          </Text>
 
-        <Text className="mt-1 text-center text-[16px] text-primary-foreground/80 dark:text-foreground/75">
-          Plan smarter. Spend happier.
-        </Text>
-
-        <View className="mt-6 w-80 mx-auto self-center rounded-[20px] border border-white/20 bg-white/10">
+          <Text className="px-6 mt-1 text-[16px] text-secondary-foreground dark:text-foreground/75">
+            Plan smarter. Spend happier🌿
+          </Text>
+        </View>
+        <View className="w-1/2 self-center">
           <Image
-            source={require("../../../assets/images/keli-logo.png")}
-            style={{ width: "100%", height: 150 }}
+            source={require("../../../assets/images/keli-iconv2.png")}
+            style={{
+              width: "100%",
+              height: 300,
+              transform: [{ rotate: "10deg" }],
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 5 },
+              shadowOpacity: 0.5,
+              shadowRadius: 3.84,
+            }}
             contentFit="contain"
           />
         </View>
       </View>
 
-      <View className="mt-8 flex-1 rounded-t-[36px] bg-card px-6 pb-8 pt-6">
+      <View className="-mt-8 flex-1 rounded-t-[36px] bg-card px-6 pb-8 pt-8 shadow-md">
         <View className="self-center rounded-full bg-secondary px-3 py-1">
           <Text className="text-xs font-semibold uppercase tracking-[1px] text-secondary-foreground">
-            Welcome Back
+            Welcome back
           </Text>
         </View>
 
         <Text className="mt-2 text-center text-sm leading-6 text-muted-foreground">
-          Choose a social provider and jump right into your personalized
-          financial experience.
+          Login to continue to your account.
         </Text>
 
         <View className="mt-6">
@@ -172,7 +180,7 @@ export default function SignInScreen() {
               emailFocused ? "border-2 border-primary" : "border-border"
             }`}
           >
-            <View className="w-12 h-full justify-center items-center">
+            <View className="w-12 justify-center items-center">
               <FontAwesome6
                 name="envelope"
                 size={18}
@@ -180,7 +188,7 @@ export default function SignInScreen() {
               />
             </View>
             <TextInput
-              className="flex-1 text-base text-card-foreground"
+              className="flex-1 text-card-foreground"
               placeholder="Email address"
               value={emailAddress}
               onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
@@ -203,7 +211,7 @@ export default function SignInScreen() {
               passwordFocused ? "border-2 border-primary" : "border-border"
             }`}
           >
-            <View className="w-12 h-full justify-center items-center">
+            <View className="w-12 justify-center items-center">
               <FontAwesome6
                 name="lock"
                 size={18}
@@ -211,7 +219,7 @@ export default function SignInScreen() {
               />
             </View>
             <TextInput
-              className="flex-1 text-base text-card-foreground"
+              className="flex-1 text-card-foreground"
               value={password}
               placeholder="Enter password"
               placeholderTextColor="#5f6e66"
@@ -240,9 +248,7 @@ export default function SignInScreen() {
           {/* Forgot Password */}
           <Link href="/(auth)/forgot-password" asChild>
             <TouchableOpacity className="self-end">
-              <Text className="text-base text-muted-foreground font-bold">
-                Forgot password?
-              </Text>
+              <Text className="text-brand font-semibold">Forgot password?</Text>
             </TouchableOpacity>
           </Link>
 
@@ -262,7 +268,7 @@ export default function SignInScreen() {
 
           {/* Sign in Button*/}
           <Pressable
-            className={`mt-3 h-14 flex-row items-center rounded-2xl bg-foreground px-4 ${
+            className={`mt-3 h-14 flex-row items-center rounded-2xl bg-brand px-4 ${
               !emailAddress || !password || fetchStatus === "fetching"
                 ? "opacity-70"
                 : "active:opacity-90"
@@ -270,7 +276,7 @@ export default function SignInScreen() {
             onPress={handleSubmit}
             disabled={!emailAddress || !password || fetchStatus === "fetching"}
           >
-            <Text className="ml-3 flex-1 text-lg text-center font-extrabold text-background">
+            <Text className="ml-3 flex-1 text-lg text-center font-extrabold text-white">
               {fetchStatus === "fetching" ? "Signing in..." : "Continue"}
             </Text>
 
@@ -281,9 +287,7 @@ export default function SignInScreen() {
         <Text className="mt-3 text-center text-base leading-6 text-muted-foreground">
           Don't have an account?{" "}
           <Link href="/(auth)/sign-up" asChild>
-            <Text className="text-muted-foreground text-base font-bold">
-              Sign up
-            </Text>
+            <Text className="text-brand font-semibold">Sign up</Text>
           </Link>
         </Text>
 
