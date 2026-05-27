@@ -9,8 +9,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
+import Bubbles from "@/components/Bubbles";
 import { useSignIn } from "@clerk/expo";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { type Href, Link, useRouter } from "expo-router";
@@ -18,6 +22,7 @@ import { type Href, Link, useRouter } from "expo-router";
 export default function SignInScreen() {
   const { signIn, errors, fetchStatus } = useSignIn();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const [emailAddress, setEmailAddress] = React.useState("");
   const [emailFocused, setEmailFocused] = React.useState(false);
@@ -31,9 +36,8 @@ export default function SignInScreen() {
   const { handleSocialAuth, loadingStrategy } = useSocialAuth();
   const isGoogleClicked = loadingStrategy === "oauth_google";
   const isAppleClicked = loadingStrategy === "oauth_apple";
-  const isGitHubClicked = loadingStrategy === "oauth_github";
 
-  const isLoading = isAppleClicked || isGitHubClicked || isGoogleClicked;
+  const isLoading = isAppleClicked || isGoogleClicked;
 
   const handleSubmit = async () => {
     const { error } = await signIn.password({
@@ -132,8 +136,7 @@ export default function SignInScreen() {
       edges={["top"]}
     >
       {/* decorative elements */}
-      <View className="absolute -top-8 -left-4 size-40 rounded-full bg-card/20 blur-3xl dark:bg-background/40" />
-      <View className="absolute right-[-74px] top-40 h-72 w-72 rounded-full bg-card/20 blur-3xl dark:bg-background/35" />
+      <Bubbles />
 
       <View className="flex-row items-center justify-center">
         <View className="flex-col px-4 w-1/2 items-center justify-center">
@@ -147,7 +150,7 @@ export default function SignInScreen() {
         </View>
         <View className="w-1/2 self-center">
           <Image
-            source={require("../../../assets/images/keli-iconv2.png")}
+            source={require("../../../assets/images/keli-icon.png")}
             style={{
               width: "100%",
               height: 300,
@@ -162,7 +165,10 @@ export default function SignInScreen() {
         </View>
       </View>
 
-      <View className="-mt-8 flex-1 rounded-t-[36px] bg-card px-6 pb-8 pt-8 shadow-md">
+      <View
+        className="-mt-8 flex-1 rounded-t-[36px] bg-card px-6 pt-8 shadow-md"
+        style={{ paddingBottom: insets.bottom }}
+      >
         <View className="self-center rounded-full bg-secondary px-3 py-1">
           <Text className="text-xs font-semibold uppercase tracking-[1px] text-secondary-foreground">
             Welcome back
@@ -248,7 +254,9 @@ export default function SignInScreen() {
           {/* Forgot Password */}
           <Link href="/(auth)/forgot-password" asChild>
             <TouchableOpacity className="self-end">
-              <Text className="text-brand font-semibold">Forgot password?</Text>
+              <Text className="mt-2 mb-2 text-brand font-semibold">
+                Forgot password?
+              </Text>
             </TouchableOpacity>
           </Link>
 
@@ -284,7 +292,7 @@ export default function SignInScreen() {
           </Pressable>
         </View>
 
-        <Text className="mt-3 text-center text-base leading-6 text-muted-foreground">
+        <Text className="mt-6 text-center text-base leading-6 text-muted-foreground">
           Don't have an account?{" "}
           <Link href="/(auth)/sign-up" asChild>
             <Text className="text-brand font-semibold">Sign up</Text>
