@@ -9,12 +9,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import AuthHeader from "@/components/auth/AuthHeader";
 import Bubbles from "@/components/Bubbles";
+import ScreenLayout from "@/components/ui/ScreenLayout";
 import { useSignIn } from "@clerk/expo";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { type Href, Link, useRouter } from "expo-router";
@@ -131,44 +130,13 @@ export default function SignInScreen() {
   }
 
   return (
-    <SafeAreaView
-      className="flex-1 bg-background dark:bg-secondary"
-      edges={["top"]}
-    >
+    <ScreenLayout edges={["top"]}>
       {/* decorative elements */}
       <Bubbles />
 
-      <View className="flex-row items-center justify-center">
-        <View className="flex-col px-4 w-1/2 items-center justify-center">
-          <Text className="text-6xl font-bold tracking-[1px] text-brand uppercase font-mono dark:text-foreground">
-            Keli
-          </Text>
+      <AuthHeader />
 
-          <Text className="px-6 mt-1 text-[16px] text-secondary-foreground dark:text-foreground/75">
-            Plan smarter. Spend happier🌿
-          </Text>
-        </View>
-        <View className="w-1/2 self-center">
-          <Image
-            source={require("../../../assets/images/keli-icon.png")}
-            style={{
-              width: "100%",
-              height: 300,
-              transform: [{ rotate: "10deg" }],
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 5 },
-              shadowOpacity: 0.5,
-              shadowRadius: 3.84,
-            }}
-            contentFit="contain"
-          />
-        </View>
-      </View>
-
-      <View
-        className="-mt-8 flex-1 rounded-t-[36px] bg-card px-6 pt-8 shadow-md"
-        style={{ paddingBottom: insets.bottom }}
-      >
+      <View className="-mt-16 flex-1 rounded-t-[36px] bg-card px-6 pt-8 shadow-md">
         <View className="self-center rounded-full bg-secondary px-3 py-1">
           <Text className="text-xs font-semibold uppercase tracking-[1px] text-secondary-foreground">
             Welcome back
@@ -354,6 +322,6 @@ export default function SignInScreen() {
           By continuing, you agree to our Terms and Privacy Policy.
         </Text>
       </View>
-    </SafeAreaView>
+    </ScreenLayout>
   );
 }
