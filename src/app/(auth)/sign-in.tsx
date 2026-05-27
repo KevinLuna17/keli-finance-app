@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import AuthHeader from "@/components/auth/AuthHeader";
 import Bubbles from "@/components/Bubbles";
@@ -21,7 +20,6 @@ import { type Href, Link, useRouter } from "expo-router";
 export default function SignInScreen() {
   const { signIn, errors, fetchStatus } = useSignIn();
   const router = useRouter();
-  const insets = useSafeAreaInsets();
 
   const [emailAddress, setEmailAddress] = React.useState("");
   const [emailFocused, setEmailFocused] = React.useState(false);
