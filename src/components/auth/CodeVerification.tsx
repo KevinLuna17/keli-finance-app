@@ -3,6 +3,7 @@ import React from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import Bubbles from "../Bubbles";
+import { GlassBackButton } from "../glass";
 import ScreenLayout from "../ui/ScreenLayout";
 
 interface CodeVerificationProps {
@@ -64,6 +65,10 @@ export function CodeVerification({
   return (
     <ScreenLayout edges={["top", "bottom"]}>
       <Bubbles />
+
+      <View className="z-10 self-start pl-4 pt-4">
+        <GlassBackButton onPress={handleStartOver} />
+      </View>
 
       <View className="flex-1 px-6 pt-4">
         <Animated.View

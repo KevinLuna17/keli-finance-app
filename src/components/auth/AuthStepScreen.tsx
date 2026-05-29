@@ -2,12 +2,14 @@ import React from "react";
 import { Text, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import Bubbles from "../Bubbles";
+import { GlassBackButton } from "../glass";
 import ScreenLayout from "../ui/ScreenLayout";
 
 interface AuthStepScreenProps {
   title: string;
   subtitle?: string;
   badge: string;
+  onBack?: () => void;
   children: React.ReactNode;
 }
 
@@ -15,11 +17,18 @@ export function AuthStepScreen({
   title,
   subtitle,
   badge,
+  onBack,
   children,
 }: AuthStepScreenProps) {
   return (
     <ScreenLayout edges={["top", "bottom"]}>
       <Bubbles />
+
+      {onBack ? (
+        <View className="z-10 self-start pl-4 pt-4">
+          <GlassBackButton onPress={onBack} />
+        </View>
+      ) : null}
 
       <View className="flex-1 px-6 pt-4">
         <Animated.View

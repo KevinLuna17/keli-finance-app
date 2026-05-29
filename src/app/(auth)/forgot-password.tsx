@@ -90,12 +90,18 @@ export default function ForgotPassword() {
     setEmailAddress("");
   };
 
+  const handleBackToSignIn = () => {
+    signIn.reset();
+    router.back();
+  };
+
   if (signIn.status === "needs_second_factor") {
     return (
       <AuthStepScreen
         title="Two-factor required"
         subtitle="Your account has 2FA enabled. Sign in from the login screen to continue."
         badge="Security"
+        onBack={handleBackToSignIn}
       >
         <Animated.View entering={FadeInUp.delay(300).duration(500)}>
           <Link href="/(auth)/sign-in" asChild>
@@ -116,6 +122,7 @@ export default function ForgotPassword() {
         title="Set new password"
         subtitle="Choose a strong password for your account."
         badge="Almost done"
+        onBack={handleStartOver}
       >
         <View
           className={`mt-6 mb-3 flex-row items-center h-14 rounded-2xl border px-4 ${
@@ -204,6 +211,7 @@ export default function ForgotPassword() {
       title="Forgot password?"
       subtitle="Enter your email and we'll send you a reset code."
       badge="Reset password"
+      onBack={handleBackToSignIn}
     >
       <View
         className={`mt-6 mb-3 flex-row items-center h-14 rounded-2xl border px-4 ${
@@ -247,14 +255,6 @@ export default function ForgotPassword() {
             {isLoading ? "Sending..." : "Send reset code"}
           </Text>
         </Pressable>
-
-        <Link href="/(auth)/sign-in" asChild>
-          <Pressable className="mt-3 h-14 items-center justify-center rounded-2xl border border-border bg-card active:opacity-90">
-            <Text className="text-base font-semibold text-card-foreground">
-              Back to sign in
-            </Text>
-          </Pressable>
-        </Link>
       </Animated.View>
     </AuthStepScreen>
   );
