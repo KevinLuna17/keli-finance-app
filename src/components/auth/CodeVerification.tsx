@@ -2,7 +2,8 @@ import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
+import Bubbles from "../Bubbles";
+import ScreenLayout from "../ui/ScreenLayout";
 
 interface CodeVerificationProps {
   title: string;
@@ -61,23 +62,19 @@ export function CodeVerification({
   };
 
   return (
-    <SafeAreaView
-      className="flex-1 bg-primary dark:bg-secondary"
-      edges={["top", "bottom"]}
-    >
-      <View className="absolute -left-16 top-12 h-56 w-56 rounded-full bg-secondary/20 dark:bg-background/40" />
-      <View className="absolute right-[-74px] top-40 h-72 w-72 rounded-full bg-secondary/20 dark:bg-background/35" />
+    <ScreenLayout edges={["top", "bottom"]}>
+      <Bubbles />
 
       <View className="flex-1 px-6 pt-4">
         <Animated.View
           entering={FadeInDown.delay(100).duration(500)}
           className="mt-8"
         >
-          <Text className="mt-4 text-center text-3xl font-extrabold text-primary-foreground dark:text-foreground">
+          <Text className="mt-4 text-center text-3xl font-extrabold text-brand dark:text-foreground">
             {title}
           </Text>
 
-          <Text className="mt-2 text-center text-base leading-6 text-primary-foreground/80 dark:text-foreground/75">
+          <Text className="mt-2 text-center text-base leading-6 text-secondary-foreground dark:text-foreground/75">
             {subtitle}
           </Text>
         </Animated.View>
@@ -166,6 +163,6 @@ export function CodeVerification({
           </Animated.View>
         </Animated.View>
       </View>
-    </SafeAreaView>
+    </ScreenLayout>
   );
 }

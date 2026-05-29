@@ -1,16 +1,25 @@
+import { AuthFieldError } from "@/components/auth/AuthFieldError";
+import { AuthStepScreen } from "@/components/auth/AuthStepScreen";
+import { CodeVerification } from "@/components/auth/CodeVerification";
 import { useSignIn } from "@clerk/expo";
+import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { type Href, Link, useRouter } from "expo-router";
 import React from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, Text, TextInput, View } from "react-native";
+import Animated, { FadeInUp } from "react-native-reanimated";
 
 export default function ForgotPassword() {
   const { signIn, errors, fetchStatus } = useSignIn();
   const router = useRouter();
 
   const [emailAddress, setEmailAddress] = React.useState("");
-  const [code, setCode] = React.useState("");
+  const [emailFocused, setEmailFocused] = React.useState(false);
   const [password, setPassword] = React.useState("");
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [passwordFocused, setPasswordFocused] = React.useState(false);
   const [codeSent, setCodeSent] = React.useState(false);
+
+  const isLoading = fetchStatus === "fetching";
 
   async function sendCode() {
     const { error: createError } = await signIn.create({
@@ -31,13 +40,10 @@ export default function ForgotPassword() {
     setCodeSent(true);
   }
 
-  async function verifyCode() {
-    const { error } = await signIn.resetPasswordEmailCode.verifyCode({
-      code,
-    });
+  async function handleVerifyCode(code: string) {
+    const { error } = await signIn.resetPasswordEmailCode.verifyCode({ code });
     if (error) {
-      console.error(JSON.stringify(error, null, 2));
-      return;
+      throw error;
     }
   }
 
@@ -51,16 +57,13 @@ export default function ForgotPassword() {
     }
 
     if (signIn.status === "complete") {
-      const { error } = await signIn.finalize({
+      const { error: finalizeError } = await signIn.finalize({
         navigate: async ({ session, decorateUrl }) => {
-          // Handle session tasks
-          // See https://clerk.com/docs/guides/development/custom-flows/authentication/session-tasks
           if (session?.currentTask) {
             console.log(session.currentTask);
             return;
           }
 
-          // If no session tasks, navigate the signed-in user to the home page
           const url = decorateUrl("/");
           if (url.startsWith("http")) {
             window.location.href = url;
@@ -70,193 +73,189 @@ export default function ForgotPassword() {
         },
       });
 
-      if (error) {
-        console.error(JSON.stringify(error, null, 2));
-        return;
+      if (finalizeError) {
+        console.error(JSON.stringify(finalizeError, null, 2));
       }
     } else if (signIn.status === "needs_second_factor") {
       // See https://clerk.com/docs/guides/development/custom-flows/authentication/multi-factor-authentication
     } else {
-      // Check why the sign-in is not complete
       console.error("Sign-in attempt not complete:", signIn);
     }
   }
 
+  const handleStartOver = () => {
+    signIn.reset();
+    setCodeSent(false);
+    setPassword("");
+    setEmailAddress("");
+  };
+
   if (signIn.status === "needs_second_factor") {
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Two-Factor Authentication Required</Text>
-        <Text style={styles.message}>
-          2FA is required, but this UI does not handle that yet.
-        </Text>
-      </View>
+      <AuthStepScreen
+        title="Two-factor required"
+        subtitle="Your account has 2FA enabled. Sign in from the login screen to continue."
+        badge="Security"
+      >
+        <Animated.View entering={FadeInUp.delay(300).duration(500)}>
+          <Link href="/(auth)/sign-in" asChild>
+            <Pressable className="mt-6 h-14 items-center justify-center rounded-2xl bg-foreground active:opacity-90">
+              <Text className="text-lg font-extrabold text-background">
+                Back to sign in
+              </Text>
+            </Pressable>
+          </Link>
+        </Animated.View>
+      </AuthStepScreen>
     );
   }
 
   if (signIn.status === "needs_new_password") {
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Set New Password</Text>
-        <Text style={styles.label}>Enter your new password</Text>
-        <TextInput
-          style={styles.input}
-          value={password}
-          placeholder="Enter new password"
-          placeholderTextColor="#666666"
-          secureTextEntry={true}
-          onChangeText={(password) => setPassword(password)}
-        />
-        {errors.fields.password && (
-          <Text style={styles.error}>{errors.fields.password.message}</Text>
-        )}
-        <Pressable
-          style={({ pressed }) => [
-            styles.button,
-            fetchStatus === "fetching" && styles.buttonDisabled,
-            pressed && styles.buttonPressed,
-          ]}
-          onPress={submitNewPassword}
-          disabled={fetchStatus === "fetching"}
+      <AuthStepScreen
+        title="Set new password"
+        subtitle="Choose a strong password for your account."
+        badge="Almost done"
+      >
+        <View
+          className={`mt-6 mb-3 flex-row items-center h-14 rounded-2xl border px-4 ${
+            passwordFocused ? "border-2 border-primary" : "border-border"
+          }`}
         >
-          <Text style={styles.buttonText}>Set new password</Text>
-        </Pressable>
-      </View>
+          <View className="w-12 items-center justify-center">
+            <FontAwesome6
+              name="lock"
+              size={18}
+              color={passwordFocused ? "#508A67" : "#5f6e66"}
+            />
+          </View>
+          <TextInput
+            className="flex-1 text-card-foreground"
+            value={password}
+            placeholder="Enter new password"
+            placeholderTextColor="#5f6e66"
+            secureTextEntry={!showPassword}
+            onChangeText={setPassword}
+            onFocus={() => setPasswordFocused(true)}
+            onBlur={() => setPasswordFocused(false)}
+          />
+          <Pressable
+            onPress={() => setShowPassword(!showPassword)}
+            className="h-full w-14 items-center justify-center"
+          >
+            <FontAwesome
+              name={showPassword ? "eye-slash" : "eye"}
+              size={18}
+              color={passwordFocused ? "#508A67" : "#5f6e66"}
+            />
+          </Pressable>
+        </View>
+
+        {errors.fields.password?.message ? (
+          <AuthFieldError message={errors.fields.password.message} />
+        ) : null}
+
+        <Animated.View entering={FadeInUp.delay(300).duration(500)}>
+          <Pressable
+            className={`mt-3 h-14 items-center justify-center rounded-2xl bg-foreground px-4 ${
+              !password || isLoading ? "opacity-70" : "active:opacity-90"
+            }`}
+            onPress={submitNewPassword}
+            disabled={!password || isLoading}
+          >
+            <Text className="text-lg font-extrabold text-background">
+              {isLoading ? "Saving..." : "Set new password"}
+            </Text>
+          </Pressable>
+
+          <Pressable
+            className="mt-3 h-14 items-center justify-center active:opacity-90"
+            onPress={handleStartOver}
+            disabled={isLoading}
+          >
+            <Text className="text-base font-bold text-muted-foreground">
+              Start over
+            </Text>
+          </Pressable>
+        </Animated.View>
+      </AuthStepScreen>
     );
   }
 
   if (codeSent) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Verify Code</Text>
-        <Text style={styles.label}>
-          Enter the password reset code sent to your email
-        </Text>
-        <TextInput
-          style={styles.input}
-          value={code}
-          placeholder="Enter verification code"
-          placeholderTextColor="#666666"
-          onChangeText={(code) => setCode(code)}
-          keyboardType="numeric"
-        />
-        {errors.fields.code && (
-          <Text style={styles.error}>{errors.fields.code.message}</Text>
-        )}
-        <Pressable
-          style={({ pressed }) => [
-            styles.button,
-            fetchStatus === "fetching" && styles.buttonDisabled,
-            pressed && styles.buttonPressed,
-          ]}
-          onPress={verifyCode}
-          disabled={fetchStatus === "fetching"}
-        >
-          <Text style={styles.buttonText}>Verify code</Text>
-        </Pressable>
-      </View>
+      <CodeVerification
+        title="Verify your code"
+        subtitle={`We sent a password reset code to ${emailAddress}.`}
+        codeError={errors.fields.code?.message}
+        isLoading={isLoading}
+        onVerify={handleVerifyCode}
+        onResendCode={async () => {
+          await signIn.resetPasswordEmailCode.sendCode();
+        }}
+        onStartOver={handleStartOver}
+        verifyButtonText="Verify code"
+      />
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Forgot Password?</Text>
-      <Text style={styles.label}>Email address</Text>
-      <TextInput
-        style={styles.input}
-        autoCapitalize="none"
-        value={emailAddress}
-        placeholder="Enter email"
-        placeholderTextColor="#666666"
-        onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
-        keyboardType="email-address"
-      />
-      {errors.fields.identifier && (
-        <Text style={styles.error}>{errors.fields.identifier.message}</Text>
-      )}
-      <Pressable
-        style={({ pressed }) => [
-          styles.button,
-          (!emailAddress || fetchStatus === "fetching") &&
-            styles.buttonDisabled,
-          pressed && styles.buttonPressed,
-        ]}
-        onPress={sendCode}
-        disabled={!emailAddress || fetchStatus === "fetching"}
+    <AuthStepScreen
+      title="Forgot password?"
+      subtitle="Enter your email and we'll send you a reset code."
+      badge="Reset password"
+    >
+      <View
+        className={`mt-6 mb-3 flex-row items-center h-14 rounded-2xl border px-4 ${
+          emailFocused ? "border-2 border-primary" : "border-border"
+        }`}
       >
-        <Text style={styles.buttonText}>Send password reset code</Text>
-      </Pressable>
-      {/* For your debugging purposes. You can just console.log errors, but we put them in the UI for convenience */}
-      {errors && (
-        <Text style={styles.debug}>{JSON.stringify(errors, null, 2)}</Text>
-      )}
-
-      <View style={styles.linkContainer}>
-        <Text>Remember your password? </Text>
-        <Link href="/(auth)/sign-in">
-          <Text>Sign in</Text>
-        </Link>
+        <View className="w-12 items-center justify-center">
+          <FontAwesome6
+            name="envelope"
+            size={18}
+            color={emailFocused ? "#508A67" : "#5f6e66"}
+          />
+        </View>
+        <TextInput
+          className="flex-1 text-card-foreground"
+          autoCapitalize="none"
+          value={emailAddress}
+          placeholder="Email address"
+          placeholderTextColor="#5f6e66"
+          onChangeText={setEmailAddress}
+          onFocus={() => setEmailFocused(true)}
+          onBlur={() => setEmailFocused(false)}
+          keyboardType="email-address"
+          autoComplete="email"
+        />
       </View>
-    </View>
+
+      {errors.fields.identifier?.message ? (
+        <AuthFieldError message={errors.fields.identifier.message} />
+      ) : null}
+
+      <Animated.View entering={FadeInUp.delay(300).duration(500)}>
+        <Pressable
+          className={`mt-3 h-14 items-center justify-center rounded-2xl bg-brand px-4 ${
+            !emailAddress || isLoading ? "opacity-70" : "active:opacity-90"
+          }`}
+          onPress={sendCode}
+          disabled={!emailAddress || isLoading}
+        >
+          <Text className="text-lg font-extrabold text-white">
+            {isLoading ? "Sending..." : "Send reset code"}
+          </Text>
+        </Pressable>
+
+        <Link href="/(auth)/sign-in" asChild>
+          <Pressable className="mt-3 h-14 items-center justify-center rounded-2xl border border-border bg-card active:opacity-90">
+            <Text className="text-base font-semibold text-card-foreground">
+              Back to sign in
+            </Text>
+          </Pressable>
+        </Link>
+      </Animated.View>
+    </AuthStepScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    gap: 12,
-  },
-  title: {
-    marginBottom: 8,
-  },
-  label: {
-    fontWeight: "600",
-    fontSize: 14,
-  },
-  message: {
-    fontSize: 14,
-    marginTop: 8,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    backgroundColor: "#fff",
-  },
-  button: {
-    backgroundColor: "#0a7ea4",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 8,
-  },
-  buttonPressed: {
-    opacity: 0.7,
-  },
-  buttonDisabled: {
-    opacity: 0.5,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  linkContainer: {
-    flexDirection: "row",
-    gap: 4,
-    marginTop: 12,
-    alignItems: "center",
-  },
-  error: {
-    color: "#d32f2f",
-    fontSize: 12,
-    marginTop: -8,
-  },
-  debug: {
-    fontSize: 10,
-    opacity: 0.5,
-    marginTop: 8,
-  },
-});
