@@ -1,14 +1,13 @@
 import AuthHeader from "@/components/auth/AuthHeader";
 import { CodeVerification } from "@/components/auth/CodeVerification";
+import { SocialLoginSection } from "@/components/auth/SocialLoginSection";
 import Bubbles from "@/components/Bubbles";
 import ScreenLayout from "@/components/ui/ScreenLayout";
-import useSocialAuth from "@/hooks/useSocialAuth";
 import { useAuth, useSignUp } from "@clerk/expo";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
-import { Image } from "expo-image";
 import { type Href, Link, useRouter } from "expo-router";
 import React from "react";
-import { Platform, Pressable, Text, TextInput, View } from "react-native";
+import { Pressable, Text, TextInput, View } from "react-native";
 
 export default function Page() {
   const { signUp, errors, fetchStatus } = useSignUp();
@@ -20,12 +19,6 @@ export default function Page() {
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
   const [passwordFocused, setPasswordFocused] = React.useState(false);
-
-  const { handleSocialAuth, loadingStrategy } = useSocialAuth();
-  const isGoogleClicked = loadingStrategy === "oauth_google";
-  const isAppleClicked = loadingStrategy === "oauth_apple";
-
-  const isLoading = isAppleClicked || isGoogleClicked;
 
   const handleSubmit = async () => {
     const { error } = await signUp.password({
@@ -215,58 +208,7 @@ export default function Page() {
           </Link>
         </Text>
 
-        <View className="mt-6">
-          <View className="flex-row items-center">
-            <View className="h-px flex-1 bg-border" />
-            <Text className="px-4 text-sm leading-5 text-muted-foreground">
-              Or sign up with
-            </Text>
-            <View className="h-px flex-1 bg-border" />
-          </View>
-
-          {/* Social login buttons */}
-          <View className="flex-row justify-center items-center gap-4 mt-6">
-            {/* Google button */}
-            <Pressable
-              className={`mb-3 h-14 flex-row items-center rounded-2xl border border-border bg-card px-4 active:opacity-90 ${
-                Platform.OS === "ios" ? "w-52" : "w-full"
-              } ${isLoading ? "opacity-70" : ""}`}
-              disabled={isLoading}
-              onPress={() => handleSocialAuth("oauth_google")}
-            >
-              <View className="h-8 w-8 items-center justify-center rounded-full bg-white">
-                <Image
-                  source={require("../../../assets/images/google.png")}
-                  style={{ width: 20, height: 20 }}
-                />
-              </View>
-
-              <Text className="ml-3 flex-1 text-lg font-semibold text-card-foreground">
-                {isGoogleClicked ? "Connecting..." : "Google"}
-              </Text>
-              <FontAwesome name="angle-right" size={18} color="#5f6e66" />
-            </Pressable>
-
-            {/* Apple button — iOS only */}
-            {Platform.OS === "ios" && (
-              <Pressable
-                className={`mb-3 w-52 h-14 flex-row items-center rounded-2xl border border-border bg-card px-4 active:opacity-90 ${
-                  isLoading ? "opacity-70" : ""
-                }`}
-                disabled={isLoading}
-                onPress={() => handleSocialAuth("oauth_apple")}
-              >
-                <View className="h-8 w-8 items-center justify-center rounded-full bg-white">
-                  <FontAwesome6 name="apple" size={22} color="#111" />
-                </View>
-                <Text className="ml-3 flex-1 text-lg font-semibold text-card-foreground">
-                  {isAppleClicked ? "Connecting..." : "Apple"}
-                </Text>
-                <FontAwesome name="angle-right" size={18} color="#5f6e66" />
-              </Pressable>
-            )}
-          </View>
-        </View>
+        <SocialLoginSection dividerLabel="Or sign up with" />
 
         {/* Terms and Privacy Policy */}
         <Text className="mt-3 text-center text-sm leading-5 text-muted-foreground">
