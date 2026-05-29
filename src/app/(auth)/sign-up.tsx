@@ -8,7 +8,7 @@ import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { type Href, Link, useRouter } from "expo-router";
 import React from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { Platform, Pressable, Text, TextInput, View } from "react-native";
 
 export default function Page() {
   const { signUp, errors, fetchStatus } = useSignUp();
@@ -228,9 +228,9 @@ export default function Page() {
           <View className="flex-row justify-center items-center gap-4 mt-6">
             {/* Google button */}
             <Pressable
-              className={`mb-3 w-52 h-14 flex-row items-center rounded-2xl border border-border bg-card px-4 active:opacity-90 ${
-                isLoading ? "opacity-70" : ""
-              }`}
+              className={`mb-3 h-14 flex-row items-center rounded-2xl border border-border bg-card px-4 active:opacity-90 ${
+                Platform.OS === "ios" ? "w-52" : "w-full"
+              } ${isLoading ? "opacity-70" : ""}`}
               disabled={isLoading}
               onPress={() => handleSocialAuth("oauth_google")}
             >
@@ -247,22 +247,24 @@ export default function Page() {
               <FontAwesome name="angle-right" size={18} color="#5f6e66" />
             </Pressable>
 
-            {/* Apple button */}
-            <Pressable
-              className={`mb-3 w-52 h-14 flex-row items-center rounded-2xl border border-border bg-card px-4 active:opacity-90 ${
-                isLoading ? "opacity-70" : ""
-              }`}
-              disabled={isLoading}
-              onPress={() => handleSocialAuth("oauth_apple")}
-            >
-              <View className="h-8 w-8 items-center justify-center rounded-full bg-white">
-                <FontAwesome6 name="apple" size={22} color="#111" />
-              </View>
-              <Text className="ml-3 flex-1 text-lg font-semibold text-card-foreground">
-                {isAppleClicked ? "Connecting..." : "Apple"}
-              </Text>
-              <FontAwesome name="angle-right" size={18} color="#5f6e66" />
-            </Pressable>
+            {/* Apple button — iOS only */}
+            {Platform.OS === "ios" && (
+              <Pressable
+                className={`mb-3 w-52 h-14 flex-row items-center rounded-2xl border border-border bg-card px-4 active:opacity-90 ${
+                  isLoading ? "opacity-70" : ""
+                }`}
+                disabled={isLoading}
+                onPress={() => handleSocialAuth("oauth_apple")}
+              >
+                <View className="h-8 w-8 items-center justify-center rounded-full bg-white">
+                  <FontAwesome6 name="apple" size={22} color="#111" />
+                </View>
+                <Text className="ml-3 flex-1 text-lg font-semibold text-card-foreground">
+                  {isAppleClicked ? "Connecting..." : "Apple"}
+                </Text>
+                <FontAwesome name="angle-right" size={18} color="#5f6e66" />
+              </Pressable>
+            )}
           </View>
         </View>
 
