@@ -130,13 +130,13 @@ export function CodeVerification({
 
           <Animated.View entering={FadeInUp.delay(300).duration(500)}>
             <Pressable
-              className={`mt-3 h-14 flex-row items-center justify-center rounded-2xl bg-foreground px-4 ${
+              className={`mt-3 h-14 flex-row items-center justify-center rounded-2xl bg-brand px-4 ${
                 isVerifyDisabled ? "opacity-70" : "active:opacity-90"
               }`}
               onPress={handleVerify}
               disabled={isVerifyDisabled}
             >
-              <Text className="text-lg font-extrabold text-background">
+              <Text className="text-lg font-extrabold text-white">
                 {isLoading ? "Verifying..." : verifyButtonText}
               </Text>
             </Pressable>
