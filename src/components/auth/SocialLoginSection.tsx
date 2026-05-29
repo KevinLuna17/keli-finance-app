@@ -1,7 +1,7 @@
 import useSocialAuth from "@/hooks/useSocialAuth";
 import React from "react";
 import { Platform, Text, View } from "react-native";
-import { SocialLoginButton } from "./SocialLoginButton";
+import { SocialLoginButton } from "../ui/SocialLoginButton";
 
 interface SocialLoginSectionProps {
   dividerLabel: string;
