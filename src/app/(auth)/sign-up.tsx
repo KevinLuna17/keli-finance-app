@@ -1,17 +1,23 @@
 import AuthHeader from "@/components/auth/AuthHeader";
+import { AuthFieldError } from "@/components/auth/AuthFieldError";
+import { AuthFormCard } from "@/components/auth/AuthFormCard";
 import { CodeVerification } from "@/components/auth/CodeVerification";
 import { SocialLoginSection } from "@/components/auth/SocialLoginSection";
 import Bubbles from "@/components/Bubbles";
 import ScreenLayout from "@/components/ui/ScreenLayout";
+import {
+  getClerkErrorMessage,
+  isFieldLevelClerkError,
+} from "@/lib/clerk-errors";
 import { useAuth, useSignUp } from "@clerk/expo";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { type Href, Link, useRouter } from "expo-router";
 import React from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, TextInput, View } from "react-native";
 
 export default function Page() {
   const { signUp, errors, fetchStatus } = useSignUp();
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
   const router = useRouter();
 
   const [emailAddress, setEmailAddress] = React.useState("");
@@ -19,18 +25,27 @@ export default function Page() {
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
   const [passwordFocused, setPasswordFocused] = React.useState(false);
+  const [formError, setFormError] = React.useState("");
 
   const handleSubmit = async () => {
+    setFormError("");
+
     const { error } = await signUp.password({
       emailAddress,
       password,
     });
     if (error) {
       console.error(JSON.stringify(error, null, 2));
+      if (!isFieldLevelClerkError(error)) {
+        setFormError(getClerkErrorMessage(error));
+      }
       return;
     }
 
-    if (!error) await signUp.verifications.sendEmailCode();
+    const { error: sendError } = await signUp.verifications.sendEmailCode();
+    if (sendError) {
+      setFormError(getClerkErrorMessage(sendError));
+    }
   };
 
   const handleVerify = async (code: string) => {
@@ -41,11 +56,8 @@ export default function Page() {
 
     if (signUp.status === "complete") {
       await signUp.finalize({
-        // Redirect the user to the home page after signing up
         navigate: ({ session, decorateUrl }) => {
           if (session?.currentTask) {
-            // Handle pending session tasks
-            // See https://clerk.com/docs/guides/development/custom-flows/authentication/session-tasks
             console.log(session?.currentTask);
             return;
           }
@@ -59,17 +71,29 @@ export default function Page() {
         },
       });
     } else {
-      // Check why the sign-up is not complete
       console.error("Sign-up attempt not complete:", signUp);
     }
   };
 
   const handleStartOver = () => {
     signUp.reset();
+    setFormError("");
   };
 
+  if (!isLoaded) {
+    return (
+      <View className="flex-1 items-center justify-center bg-background">
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   if (signUp.status === "complete" || isSignedIn) {
-    return null;
+    return (
+      <View className="flex-1 items-center justify-center bg-background">
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
 
   if (
@@ -97,7 +121,7 @@ export default function Page() {
       <Bubbles />
       <AuthHeader />
 
-      <View className="-mt-16 flex-1 rounded-t-[36px] bg-card px-6 pt-8 shadow-md">
+      <AuthFormCard>
         <View className="self-center rounded-full bg-secondary px-3 py-1">
           <Text className="text-xs font-semibold uppercase tracking-[1px] text-secondary-foreground">
             Create your account
@@ -113,7 +137,6 @@ export default function Page() {
         </Text>
 
         <View className="mt-6">
-          {/* Email Input */}
           <View
             className={`mb-3 flex-row items-center h-14 rounded-2xl border px-4 ${
               emailFocused ? "border-2 border-primary" : "border-border"
@@ -139,13 +162,10 @@ export default function Page() {
               placeholderTextColor="#5f6e66"
             />
           </View>
-          {errors.fields.emailAddress && (
-            <Text className="text-red-500">
-              {errors.fields.emailAddress.message}
-            </Text>
-          )}
+          {errors.fields.emailAddress?.message ? (
+            <AuthFieldError message={errors.fields.emailAddress.message} />
+          ) : null}
 
-          {/* Password Input */}
           <View
             className={`mb-3 flex-row items-center h-14 rounded-2xl border px-4 ${
               passwordFocused ? "border-2 border-primary" : "border-border"
@@ -179,13 +199,16 @@ export default function Page() {
               />
             </Pressable>
           </View>
-          {errors.fields.password && (
-            <Text className="text-red-500">
-              {errors.fields.password.message}
-            </Text>
-          )}
+          {errors.fields.password?.message ? (
+            <AuthFieldError message={errors.fields.password.message} />
+          ) : null}
 
-          {/* Sign up Button */}
+          {formError &&
+          !errors.fields.password?.message &&
+          !errors.fields.emailAddress?.message ? (
+            <AuthFieldError message={formError} />
+          ) : null}
+
           <Pressable
             className={`mt-3 h-14 flex-row items-center rounded-2xl bg-brand px-4 ${
               !emailAddress || !password || fetchStatus === "fetching"
@@ -210,14 +233,12 @@ export default function Page() {
 
         <SocialLoginSection dividerLabel="Or sign up with" />
 
-        {/* Terms and Privacy Policy */}
         <Text className="mt-3 text-center text-sm leading-5 text-muted-foreground">
           By signing up, you agree to our Terms and Privacy Policy.
         </Text>
 
-        {/* Required for sign-up flows. Clerk's bot sign-up protection is enabled by default */}
         <View nativeID="clerk-captcha" />
-      </View>
+      </AuthFormCard>
     </ScreenLayout>
   );
 }

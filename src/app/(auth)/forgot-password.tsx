@@ -1,6 +1,10 @@
 import { AuthFieldError } from "@/components/auth/AuthFieldError";
 import { AuthStepScreen } from "@/components/auth/AuthStepScreen";
 import { CodeVerification } from "@/components/auth/CodeVerification";
+import {
+  getClerkErrorMessage,
+  isFieldLevelClerkError,
+} from "@/lib/clerk-errors";
 import { useSignIn } from "@clerk/expo";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { type Href, Link, useRouter } from "expo-router";
@@ -18,15 +22,21 @@ export default function ForgotPassword() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [passwordFocused, setPasswordFocused] = React.useState(false);
   const [codeSent, setCodeSent] = React.useState(false);
+  const [formError, setFormError] = React.useState("");
 
   const isLoading = fetchStatus === "fetching";
 
   async function sendCode() {
+    setFormError("");
+
     const { error: createError } = await signIn.create({
       identifier: emailAddress,
     });
     if (createError) {
       console.error(JSON.stringify(createError, null, 2));
+      if (!isFieldLevelClerkError(createError)) {
+        setFormError(getClerkErrorMessage(createError));
+      }
       return;
     }
 
@@ -34,6 +44,9 @@ export default function ForgotPassword() {
       await signIn.resetPasswordEmailCode.sendCode();
     if (sendCodeError) {
       console.error(JSON.stringify(sendCodeError, null, 2));
+      if (!isFieldLevelClerkError(sendCodeError)) {
+        setFormError(getClerkErrorMessage(sendCodeError));
+      }
       return;
     }
 
@@ -48,11 +61,16 @@ export default function ForgotPassword() {
   }
 
   async function submitNewPassword() {
+    setFormError("");
+
     const { error } = await signIn.resetPasswordEmailCode.submitPassword({
       password,
     });
     if (error) {
       console.error(JSON.stringify(error, null, 2));
+      if (!isFieldLevelClerkError(error)) {
+        setFormError(getClerkErrorMessage(error));
+      }
       return;
     }
 
@@ -88,6 +106,7 @@ export default function ForgotPassword() {
     setCodeSent(false);
     setPassword("");
     setEmailAddress("");
+    setFormError("");
   };
 
   const handleBackToSignIn = () => {
@@ -160,6 +179,10 @@ export default function ForgotPassword() {
 
         {errors.fields.password?.message ? (
           <AuthFieldError message={errors.fields.password.message} />
+        ) : null}
+
+        {formError && !errors.fields.password?.message ? (
+          <AuthFieldError message={formError} />
         ) : null}
 
         <Animated.View entering={FadeInUp.delay(300).duration(500)}>
@@ -241,6 +264,10 @@ export default function ForgotPassword() {
 
       {errors.fields.identifier?.message ? (
         <AuthFieldError message={errors.fields.identifier.message} />
+      ) : null}
+
+      {formError && !errors.fields.identifier?.message ? (
+        <AuthFieldError message={formError} />
       ) : null}
 
       <Animated.View entering={FadeInUp.delay(300).duration(500)}>

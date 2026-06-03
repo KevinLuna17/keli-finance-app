@@ -1,5 +1,11 @@
+import { AuthFieldError } from "@/components/auth/AuthFieldError";
+import { AuthFormCard } from "@/components/auth/AuthFormCard";
 import { CodeVerification } from "@/components/auth/CodeVerification";
 import { SocialLoginSection } from "@/components/auth/SocialLoginSection";
+import {
+  getClerkErrorMessage,
+  isFieldLevelClerkError,
+} from "@/lib/clerk-errors";
 import * as React from "react";
 import {
   Pressable,
@@ -26,16 +32,20 @@ export default function SignInScreen() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [passwordFocused, setPasswordFocused] = React.useState(false);
   const [secondFactor, setSecondFactor] = React.useState(false);
-
-  const [error, setError] = React.useState("");
+  const [formError, setFormError] = React.useState("");
 
   const handleSubmit = async () => {
+    setFormError("");
+
     const { error } = await signIn.password({
       emailAddress,
       password,
     });
     if (error) {
       console.error(JSON.stringify(error, null, 2));
+      if (!isFieldLevelClerkError(error)) {
+        setFormError(getClerkErrorMessage(error));
+      }
       return;
     }
 
@@ -56,19 +66,25 @@ export default function SignInScreen() {
         },
       });
     } else if (signIn.status === "needs_second_factor") {
+      setFormError(
+        "Additional verification is required. Try another sign-in method.",
+      );
     } else if (signIn.status === "needs_client_trust") {
       const emailCodeFactor = signIn.supportedSecondFactors.find(
         (factor) => factor.strategy === "email_code",
       );
 
       if (emailCodeFactor) {
-        await signIn.mfa.sendEmailCode();
+        const { error: sendError } = await signIn.mfa.sendEmailCode();
+        if (sendError) {
+          setFormError(getClerkErrorMessage(sendError));
+          return;
+        }
         setSecondFactor(true);
       }
     } else {
-      // Check why the sign-in is not complete
       console.error("Sign-in attempt not complete:", signIn);
-      setError(`Sign in incomplete: ${signIn.status}`);
+      setFormError(`Sign in incomplete: ${signIn.status}`);
     }
   };
 
@@ -95,13 +111,14 @@ export default function SignInScreen() {
         },
       });
     } else {
-      // Check why the sign-in is not complete
       console.error("Sign-in attempt not complete:", signIn);
     }
   };
+
   const handleStartOver = () => {
     signIn.reset();
     setSecondFactor(false);
+    setFormError("");
   };
 
   if (secondFactor) {
@@ -122,12 +139,10 @@ export default function SignInScreen() {
 
   return (
     <ScreenLayout edges={["top"]}>
-      {/* decorative elements */}
       <Bubbles />
-
       <AuthHeader />
 
-      <View className="-mt-16 flex-1 rounded-t-[36px] bg-card px-6 pt-8 shadow-md">
+      <AuthFormCard>
         <View className="self-center rounded-full bg-secondary px-3 py-1">
           <Text className="text-xs font-semibold uppercase tracking-[1px] text-secondary-foreground">
             Welcome back
@@ -139,13 +154,12 @@ export default function SignInScreen() {
         </Text>
 
         <View className="mt-6">
-          {/* Email Input*/}
           <View
-            className={`flex-row items-center h-14 border border-border rounded-2xl px-4 mb-3 ${
+            className={`mb-3 flex-row items-center h-14 rounded-2xl border px-4 ${
               emailFocused ? "border-2 border-primary" : "border-border"
             }`}
           >
-            <View className="w-12 justify-center items-center">
+            <View className="w-12 items-center justify-center">
               <FontAwesome6
                 name="envelope"
                 size={18}
@@ -156,7 +170,7 @@ export default function SignInScreen() {
               className="flex-1 text-card-foreground"
               placeholder="Email address"
               value={emailAddress}
-              onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
+              onChangeText={setEmailAddress}
               onFocus={() => setEmailFocused(true)}
               onBlur={() => setEmailFocused(false)}
               autoCapitalize="none"
@@ -165,18 +179,16 @@ export default function SignInScreen() {
               placeholderTextColor="#5f6e66"
             />
           </View>
-          {errors.fields.identifier && (
-            <Text className="text-red-500">
-              {errors.fields.identifier.message}
-            </Text>
-          )}
-          {/* Password Input*/}
+          {errors.fields.identifier?.message ? (
+            <AuthFieldError message={errors.fields.identifier.message} />
+          ) : null}
+
           <View
-            className={`flex-row items-center h-14 border border-border rounded-2xl px-4 mb-3 ${
+            className={`mb-3 flex-row items-center h-14 rounded-2xl border px-4 ${
               passwordFocused ? "border-2 border-primary" : "border-border"
             }`}
           >
-            <View className="w-12 justify-center items-center">
+            <View className="w-12 items-center justify-center">
               <FontAwesome6
                 name="lock"
                 size={18}
@@ -189,13 +201,13 @@ export default function SignInScreen() {
               placeholder="Enter password"
               placeholderTextColor="#5f6e66"
               secureTextEntry={!showPassword}
-              onChangeText={(password) => setPassword(password)}
+              onChangeText={setPassword}
               onFocus={() => setPasswordFocused(true)}
               onBlur={() => setPasswordFocused(false)}
             />
             <Pressable
               onPress={() => setShowPassword(!showPassword)}
-              className="w-14 h-full justify-center items-center"
+              className="h-full w-14 items-center justify-center"
             >
               <FontAwesome
                 name={showPassword ? "eye-slash" : "eye"}
@@ -204,36 +216,24 @@ export default function SignInScreen() {
               />
             </Pressable>
           </View>
-          {errors.fields.password && (
-            <Text className="text-red-500">
-              {errors.fields.password.message}
-            </Text>
-          )}
+          {errors.fields.password?.message ? (
+            <AuthFieldError message={errors.fields.password.message} />
+          ) : null}
 
-          {/* Forgot Password */}
           <Link href="/(auth)/forgot-password" asChild>
             <TouchableOpacity className="self-end">
-              <Text className="mt-2 mb-2 text-brand font-semibold">
+              <Text className="mb-2 text-brand font-semibold">
                 Forgot password?
               </Text>
             </TouchableOpacity>
           </Link>
 
-          {/* Error Message */}
-          {error ? (
-            <View className="flex-row items-center rounded-2xl border border-destructive bg-destructive/10 px-4 py-2">
-              <FontAwesome
-                name="exclamation-triangle"
-                size={16}
-                color="#DC2626"
-              />
-              <Text selectable className="ml-2 flex-1 text-red-500">
-                {error}
-              </Text>
-            </View>
+          {formError &&
+          !errors.fields.password?.message &&
+          !errors.fields.identifier?.message ? (
+            <AuthFieldError message={formError} />
           ) : null}
 
-          {/* Sign in Button*/}
           <Pressable
             className={`mt-3 h-14 flex-row items-center rounded-2xl bg-brand px-4 ${
               !emailAddress || !password || fetchStatus === "fetching"
@@ -243,10 +243,9 @@ export default function SignInScreen() {
             onPress={handleSubmit}
             disabled={!emailAddress || !password || fetchStatus === "fetching"}
           >
-            <Text className="ml-3 flex-1 text-lg text-center font-extrabold text-white">
+            <Text className="ml-3 flex-1 text-center text-lg font-extrabold text-white">
               {fetchStatus === "fetching" ? "Signing in..." : "Continue"}
             </Text>
-
             <FontAwesome name="angle-right" size={18} color="#fff" />
           </Pressable>
         </View>
@@ -254,7 +253,7 @@ export default function SignInScreen() {
         <Text className="mt-6 text-center text-base leading-6 text-muted-foreground">
           Don't have an account?{" "}
           <Link href="/(auth)/sign-up" asChild>
-            <Text className="text-brand font-semibold">Sign up</Text>
+            <Text className="font-semibold text-brand">Sign up</Text>
           </Link>
         </Text>
 
@@ -263,7 +262,7 @@ export default function SignInScreen() {
         <Text className="mt-3 text-center text-sm leading-5 text-muted-foreground">
           By continuing, you agree to our Terms and Privacy Policy.
         </Text>
-      </View>
+      </AuthFormCard>
     </ScreenLayout>
   );
 }

@@ -8,7 +8,8 @@ import {
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
-import { useColorScheme } from "react-native";
+import AuthLoadingScreen from "@/components/ui/AuthLoadingScreen";
+import { useColorScheme, View } from "react-native";
 import "../../global.css";
 
 // Completes pending OAuth browser sessions when the app reopens after redirect.
@@ -16,7 +17,16 @@ WebBrowser.maybeCompleteAuthSession();
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
+
+  if (!isLoaded) {
+    return (
+      <View className="flex-1">
+        <AuthLoadingScreen />
+        <StatusBar style="auto" />
+      </View>
+    );
+  }
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
