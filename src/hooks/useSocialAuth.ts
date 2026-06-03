@@ -1,18 +1,49 @@
 import { useSSO } from "@clerk/expo";
+import * as AuthSession from "expo-auth-session";
 import { useState } from "react";
 import { Alert } from "react-native";
 
+type OAuthStrategy = "oauth_google" | "oauth_apple";
+
+function getClerkErrorMessage(error: unknown): string | null {
+  const clerkError = error as {
+    errors?: { message?: string }[];
+    message?: string;
+  };
+
+  return clerkError.errors?.[0]?.message ?? clerkError.message ?? null;
+}
+
+function isOAuthCancelled(
+  authSessionResult?: { type?: string } | null,
+): boolean {
+  return (
+    authSessionResult?.type === "cancel" ||
+    authSessionResult?.type === "dismiss"
+  );
+}
+
 const useSocialAuth = () => {
-  const [loadingStrategy, setLoadingStrategy] = useState<string | null>(null);
+  const [loadingStrategy, setLoadingStrategy] = useState<OAuthStrategy | null>(
+    null,
+  );
   const { startSSOFlow } = useSSO();
 
-  const handleSocialAuth = async (strategy: "oauth_google" | "oauth_apple") => {
-    if (loadingStrategy) return; // guard againts concurrent flows
+  const handleSocialAuth = async (strategy: OAuthStrategy) => {
+    if (loadingStrategy) return;
 
     setLoadingStrategy(strategy);
 
     try {
-      const { createdSessionId, setActive } = await startSSOFlow({ strategy });
+      const { createdSessionId, setActive, authSessionResult } =
+        await startSSOFlow({
+          strategy,
+          redirectUrl: AuthSession.makeRedirectUri(),
+        });
+
+      if (isOAuthCancelled(authSessionResult)) {
+        return;
+      }
 
       if (!createdSessionId || !setActive) {
         Alert.alert(
@@ -24,8 +55,17 @@ const useSocialAuth = () => {
 
       await setActive({ session: createdSessionId });
     } catch (error) {
-      console.log("💥 Error in social auth:", error);
-      Alert.alert("Error", "Failed to sign in. Please try again.");
+      const message = getClerkErrorMessage(error);
+
+      if (message?.toLowerCase().includes("cancel")) {
+        return;
+      }
+
+      console.error("Social auth error:", error);
+      Alert.alert(
+        "Error",
+        message ?? "Failed to sign in. Please try again.",
+      );
     } finally {
       setLoadingStrategy(null);
     }

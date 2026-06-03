@@ -7,8 +7,12 @@ import {
 } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import * as WebBrowser from "expo-web-browser";
 import { useColorScheme } from "react-native";
 import "../../global.css";
+
+// Completes pending OAuth browser sessions when the app reopens after redirect.
+WebBrowser.maybeCompleteAuthSession();
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
