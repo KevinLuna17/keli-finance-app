@@ -1,6 +1,6 @@
-import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
+import { AuthTextField } from "@/components/auth/AuthTextField";
 import React from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import Bubbles from "../Bubbles";
 import { GlassBackButton } from "../glass";
@@ -32,7 +32,6 @@ export function CodeVerification({
   startOverButtonText = "Start over",
 }: CodeVerificationProps) {
   const [code, setCode] = React.useState("");
-  const [focused, setFocused] = React.useState(false);
   const [localError, setLocalError] = React.useState("");
 
   const displayError = codeError || localError;
@@ -93,45 +92,14 @@ export function CodeVerification({
               Security check
             </Text>
           </View>
-          <View
-            className={`mt-6 mb-3 flex-row items-center h-14 rounded-2xl border px-4 ${
-              focused ? "border-2 border-primary" : "border-border"
-            }`}
-          >
-            <View className="h-full w-12 items-center justify-center">
-              <FontAwesome6
-                name="shield-halved"
-                size={18}
-                color={focused ? "#508A67" : "#5f6e66"}
-              />
-            </View>
-            <TextInput
-              className="flex-1 text-base text-card-foreground"
-              value={code}
-              placeholder="Enter your verification code"
-              placeholderTextColor="#5f6e66"
-              onChangeText={setCode}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setFocused(false)}
-              keyboardType="number-pad"
-              autoComplete="one-time-code"
-              textContentType="oneTimeCode"
-            />
-          </View>
 
-          {displayError ? (
-            <Animated.View
-              entering={FadeInDown.duration(300)}
-              className="mb-3 flex-row items-center rounded-2xl border border-destructive bg-destructive/10 px-4 py-2"
-            >
-              <FontAwesome
-                name="exclamation-triangle"
-                size={16}
-                color="#DC2626"
-              />
-              <Text className="ml-2 flex-1 text-red-500">{displayError}</Text>
-            </Animated.View>
-          ) : null}
+          <AuthTextField
+            variant="code"
+            containerClassName="mt-6 mb-3"
+            value={code}
+            onChangeText={setCode}
+            error={displayError}
+          />
 
           <Animated.View entering={FadeInUp.delay(300).duration(500)}>
             <Pressable

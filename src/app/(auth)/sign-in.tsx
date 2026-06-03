@@ -1,5 +1,6 @@
 import { AuthFieldError } from "@/components/auth/AuthFieldError";
 import { AuthFormCard } from "@/components/auth/AuthFormCard";
+import { AuthTextField } from "@/components/auth/AuthTextField";
 import { CodeVerification } from "@/components/auth/CodeVerification";
 import { SocialLoginSection } from "@/components/auth/SocialLoginSection";
 import {
@@ -7,19 +8,13 @@ import {
   isFieldLevelClerkError,
 } from "@/lib/clerk-errors";
 import * as React from "react";
-import {
-  Pressable,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 
 import AuthHeader from "@/components/auth/AuthHeader";
 import Bubbles from "@/components/Bubbles";
 import ScreenLayout from "@/components/ui/ScreenLayout";
 import { useSignIn } from "@clerk/expo";
-import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { type Href, Link, useRouter } from "expo-router";
 
 export default function SignInScreen() {
@@ -27,10 +22,8 @@ export default function SignInScreen() {
   const router = useRouter();
 
   const [emailAddress, setEmailAddress] = React.useState("");
-  const [emailFocused, setEmailFocused] = React.useState(false);
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
-  const [passwordFocused, setPasswordFocused] = React.useState(false);
   const [secondFactor, setSecondFactor] = React.useState(false);
   const [formError, setFormError] = React.useState("");
 
@@ -154,71 +147,21 @@ export default function SignInScreen() {
         </Text>
 
         <View className="mt-6">
-          <View
-            className={`mb-3 flex-row items-center h-14 rounded-2xl border px-4 ${
-              emailFocused ? "border-2 border-primary" : "border-border"
-            }`}
-          >
-            <View className="w-12 items-center justify-center">
-              <FontAwesome6
-                name="envelope"
-                size={18}
-                color={emailFocused ? "#508A67" : "#5f6e66"}
-              />
-            </View>
-            <TextInput
-              className="flex-1 text-card-foreground"
-              placeholder="Email address"
-              value={emailAddress}
-              onChangeText={setEmailAddress}
-              onFocus={() => setEmailFocused(true)}
-              onBlur={() => setEmailFocused(false)}
-              autoCapitalize="none"
-              keyboardType="email-address"
-              autoComplete="email"
-              placeholderTextColor="#5f6e66"
-            />
-          </View>
-          {errors.fields.identifier?.message ? (
-            <AuthFieldError message={errors.fields.identifier.message} />
-          ) : null}
+          <AuthTextField
+            variant="email"
+            value={emailAddress}
+            onChangeText={setEmailAddress}
+            error={errors.fields.identifier?.message}
+          />
 
-          <View
-            className={`mb-3 flex-row items-center h-14 rounded-2xl border px-4 ${
-              passwordFocused ? "border-2 border-primary" : "border-border"
-            }`}
-          >
-            <View className="w-12 items-center justify-center">
-              <FontAwesome6
-                name="lock"
-                size={18}
-                color={passwordFocused ? "#508A67" : "#5f6e66"}
-              />
-            </View>
-            <TextInput
-              className="flex-1 text-card-foreground"
-              value={password}
-              placeholder="Enter password"
-              placeholderTextColor="#5f6e66"
-              secureTextEntry={!showPassword}
-              onChangeText={setPassword}
-              onFocus={() => setPasswordFocused(true)}
-              onBlur={() => setPasswordFocused(false)}
-            />
-            <Pressable
-              onPress={() => setShowPassword(!showPassword)}
-              className="h-full w-14 items-center justify-center"
-            >
-              <FontAwesome
-                name={showPassword ? "eye-slash" : "eye"}
-                size={18}
-                color={passwordFocused ? "#508A67" : "#5f6e66"}
-              />
-            </Pressable>
-          </View>
-          {errors.fields.password?.message ? (
-            <AuthFieldError message={errors.fields.password.message} />
-          ) : null}
+          <AuthTextField
+            variant="password"
+            value={password}
+            onChangeText={setPassword}
+            showPassword={showPassword}
+            onTogglePassword={() => setShowPassword((prev) => !prev)}
+            error={errors.fields.password?.message}
+          />
 
           <Link href="/(auth)/forgot-password" asChild>
             <TouchableOpacity className="self-end">
