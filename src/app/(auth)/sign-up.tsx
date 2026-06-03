@@ -6,105 +6,30 @@ import { CodeVerification } from "@/components/auth/CodeVerification";
 import { SocialLoginSection } from "@/components/auth/SocialLoginSection";
 import Bubbles from "@/components/Bubbles";
 import ScreenLayout from "@/components/ui/ScreenLayout";
-import {
-  getClerkErrorMessage,
-  isFieldLevelClerkError,
-} from "@/lib/clerk-errors";
-import {
-  useAuthFieldChange,
-  useAuthFlowFocusReset,
-} from "@/hooks/useAuthFlowReset";
-import { useAuth, useSignUp } from "@clerk/expo";
-import { type Href, Link, useRouter } from "expo-router";
+import { useSignUpFlow } from "@/hooks/useSignUpFlow";
+import { Link } from "expo-router";
 import React from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
-export default function Page() {
-  const { signUp, errors, fetchStatus } = useSignUp();
-  const { isSignedIn, isLoaded } = useAuth();
-  const router = useRouter();
-
-  const [emailAddress, setEmailAddress] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [formError, setFormError] = React.useState("");
-
-  const clearLocalErrors = React.useCallback(() => {
-    setFormError("");
-  }, []);
-
-  useAuthFlowFocusReset(signUp, clearLocalErrors);
-
-  const hasFieldErrors = Boolean(
-    errors.fields.emailAddress?.message || errors.fields.password?.message,
-  );
-
-  const setEmailWithErrorClear = useAuthFieldChange(
-    setEmailAddress,
-    signUp,
-    hasFieldErrors,
-    clearLocalErrors,
-  );
-
-  const setPasswordWithErrorClear = useAuthFieldChange(
-    setPassword,
-    signUp,
-    hasFieldErrors,
-    clearLocalErrors,
-  );
-
-  const handleSubmit = async () => {
-    setFormError("");
-
-    const { error } = await signUp.password({
-      emailAddress,
-      password,
-    });
-    if (error) {
-      console.error(JSON.stringify(error, null, 2));
-      if (!isFieldLevelClerkError(error)) {
-        setFormError(getClerkErrorMessage(error));
-      }
-      return;
-    }
-
-    const { error: sendError } = await signUp.verifications.sendEmailCode();
-    if (sendError) {
-      setFormError(getClerkErrorMessage(sendError));
-    }
-  };
-
-  const handleVerify = async (code: string) => {
-    const { error } = await signUp.verifications.verifyEmailCode({ code });
-    if (error) {
-      throw error;
-    }
-
-    if (signUp.status === "complete") {
-      await signUp.finalize({
-        navigate: ({ session, decorateUrl }) => {
-          if (session?.currentTask) {
-            console.log(session?.currentTask);
-            return;
-          }
-
-          const url = decorateUrl("/");
-          if (url.startsWith("http")) {
-            window.location.href = url;
-          } else {
-            router.push(url as Href);
-          }
-        },
-      });
-    } else {
-      console.error("Sign-up attempt not complete:", signUp);
-    }
-  };
-
-  const handleStartOver = () => {
-    signUp.reset();
-    setFormError("");
-  };
+export default function SignUpScreen() {
+  const {
+    emailAddress,
+    password,
+    showPassword,
+    setShowPassword,
+    formError,
+    errors,
+    fetchStatus,
+    isLoaded,
+    isSignedIn,
+    showEmailVerification,
+    setEmailWithErrorClear,
+    setPasswordWithErrorClear,
+    handleSubmit,
+    handleVerify,
+    handleStartOver,
+    resendEmailCode,
+  } = useSignUpFlow();
 
   if (!isLoaded) {
     return (
@@ -114,7 +39,7 @@ export default function Page() {
     );
   }
 
-  if (signUp.status === "complete" || isSignedIn) {
+  if (isSignedIn) {
     return (
       <View className="flex-1 items-center justify-center bg-background">
         <ActivityIndicator size="large" />
@@ -122,11 +47,7 @@ export default function Page() {
     );
   }
 
-  if (
-    signUp.status === "missing_requirements" &&
-    signUp.unverifiedFields.includes("email_address") &&
-    signUp.missingFields.length === 0
-  ) {
+  if (showEmailVerification) {
     return (
       <CodeVerification
         title="Verify your account"
@@ -134,9 +55,7 @@ export default function Page() {
         codeError={errors.fields.code?.message}
         isLoading={fetchStatus === "fetching"}
         onVerify={handleVerify}
-        onResendCode={async () => {
-          await signUp.verifications.sendEmailCode();
-        }}
+        onResendCode={resendEmailCode}
         onStartOver={handleStartOver}
       />
     );

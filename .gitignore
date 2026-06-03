@@ -21,6 +21,9 @@ expo-env.d.ts
 # Environment variables
 .env
 
+# Docs
+docs/
+
 # Metro
 .metro-health-check*
 

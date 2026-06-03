@@ -1,4 +1,4 @@
-import { AuthFieldError } from "@/components/auth/AuthFieldError";
+import { FieldErrorMessage } from "@/components/ui/FieldErrorMessage";
 import { fieldContainerClass, type FieldVisualState } from "@/lib/input-styles";
 import React from "react";
 import { View, type ViewProps } from "react-native";
@@ -21,9 +21,7 @@ export function FormField({
   return (
     <View className={className} {...viewProps}>
       <View className={fieldContainerClass(visualState)}>{children}</View>
-      {showError && error ? (
-        <AuthFieldError message={error} className="mt-3" />
-      ) : null}
+      {showError && error ? <FieldErrorMessage message={error} /> : null}
     </View>
   );
 }

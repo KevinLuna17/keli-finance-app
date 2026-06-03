@@ -2,12 +2,13 @@ import { AuthFieldError } from "@/components/auth/AuthFieldError";
 import { AuthStepScreen } from "@/components/auth/AuthStepScreen";
 import { AuthTextField } from "@/components/auth/AuthTextField";
 import { CodeVerification } from "@/components/auth/CodeVerification";
+import { createAuthNavigateHandler } from "@/lib/auth-finalize";
 import {
   getClerkErrorMessage,
   isFieldLevelClerkError,
 } from "@/lib/clerk-errors";
 import { useSignIn } from "@clerk/expo";
-import { type Href, Link, useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import React from "react";
 import { Pressable, Text, View } from "react-native";
 import Animated, { FadeInUp } from "react-native-reanimated";
@@ -15,6 +16,10 @@ import Animated, { FadeInUp } from "react-native-reanimated";
 export default function ForgotPassword() {
   const { signIn, errors, fetchStatus } = useSignIn();
   const router = useRouter();
+  const navigateAfterAuth = React.useMemo(
+    () => createAuthNavigateHandler(router),
+    [router],
+  );
 
   const [emailAddress, setEmailAddress] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -74,23 +79,11 @@ export default function ForgotPassword() {
 
     if (signIn.status === "complete") {
       const { error: finalizeError } = await signIn.finalize({
-        navigate: async ({ session, decorateUrl }) => {
-          if (session?.currentTask) {
-            console.log(session.currentTask);
-            return;
-          }
-
-          const url = decorateUrl("/");
-          if (url.startsWith("http")) {
-            window.location.href = url;
-          } else {
-            router.push(url as Href);
-          }
-        },
+        navigate: navigateAfterAuth,
       });
 
-      if (finalizeError) {
-        console.error(JSON.stringify(finalizeError, null, 2));
+      if (finalizeError && !isFieldLevelClerkError(finalizeError)) {
+        setFormError(getClerkErrorMessage(finalizeError));
       }
     } else if (signIn.status === "needs_second_factor") {
       // See https://clerk.com/docs/guides/development/custom-flows/authentication/multi-factor-authentication

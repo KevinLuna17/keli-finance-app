@@ -1,11 +1,17 @@
+import { TAB_BAR_ACTIVE, TAB_BAR_INACTIVE } from "@/lib/theme-colors";
 import { FontAwesome } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
-export default function Layout() {
+export default function HomeLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "bg-primary",
+        tabBarActiveTintColor: TAB_BAR_ACTIVE,
+        tabBarInactiveTintColor: TAB_BAR_INACTIVE,
+        tabBarStyle: {
+          backgroundColor: "hsl(0, 0%, 100%)",
+          borderTopColor: "hsl(150, 15%, 85%)",
+        },
         headerShown: false,
       }}
     >
@@ -14,8 +20,14 @@ export default function Layout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="home" color={color} />
+            <FontAwesome size={24} name="home" color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="session-task"
+        options={{
+          href: null,
         }}
       />
     </Tabs>
