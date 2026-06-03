@@ -10,6 +10,10 @@ import {
   getClerkErrorMessage,
   isFieldLevelClerkError,
 } from "@/lib/clerk-errors";
+import {
+  useAuthFieldChange,
+  useAuthFlowFocusReset,
+} from "@/hooks/useAuthFlowReset";
 import { useAuth, useSignUp } from "@clerk/expo";
 import { type Href, Link, useRouter } from "expo-router";
 import React from "react";
@@ -24,6 +28,30 @@ export default function Page() {
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
   const [formError, setFormError] = React.useState("");
+
+  const clearLocalErrors = React.useCallback(() => {
+    setFormError("");
+  }, []);
+
+  useAuthFlowFocusReset(signUp, clearLocalErrors);
+
+  const hasFieldErrors = Boolean(
+    errors.fields.emailAddress?.message || errors.fields.password?.message,
+  );
+
+  const setEmailWithErrorClear = useAuthFieldChange(
+    setEmailAddress,
+    signUp,
+    hasFieldErrors,
+    clearLocalErrors,
+  );
+
+  const setPasswordWithErrorClear = useAuthFieldChange(
+    setPassword,
+    signUp,
+    hasFieldErrors,
+    clearLocalErrors,
+  );
 
   const handleSubmit = async () => {
     setFormError("");
@@ -138,14 +166,14 @@ export default function Page() {
           <AuthTextField
             variant="email"
             value={emailAddress}
-            onChangeText={setEmailAddress}
+            onChangeText={setEmailWithErrorClear}
             error={errors.fields.emailAddress?.message}
           />
 
           <AuthTextField
             variant="password"
             value={password}
-            onChangeText={setPassword}
+            onChangeText={setPasswordWithErrorClear}
             showPassword={showPassword}
             onTogglePassword={() => setShowPassword((prev) => !prev)}
             error={errors.fields.password?.message}

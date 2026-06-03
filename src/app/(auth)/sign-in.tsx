@@ -13,6 +13,10 @@ import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import AuthHeader from "@/components/auth/AuthHeader";
 import Bubbles from "@/components/Bubbles";
 import ScreenLayout from "@/components/ui/ScreenLayout";
+import {
+  useAuthFieldChange,
+  useAuthFlowFocusReset,
+} from "@/hooks/useAuthFlowReset";
 import { useSignIn } from "@clerk/expo";
 import { FontAwesome } from "@expo/vector-icons";
 import { type Href, Link, useRouter } from "expo-router";
@@ -26,6 +30,31 @@ export default function SignInScreen() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [secondFactor, setSecondFactor] = React.useState(false);
   const [formError, setFormError] = React.useState("");
+
+  const clearLocalErrors = React.useCallback(() => {
+    setFormError("");
+    setSecondFactor(false);
+  }, []);
+
+  useAuthFlowFocusReset(signIn, clearLocalErrors);
+
+  const hasFieldErrors = Boolean(
+    errors.fields.identifier?.message || errors.fields.password?.message,
+  );
+
+  const setEmailWithErrorClear = useAuthFieldChange(
+    setEmailAddress,
+    signIn,
+    hasFieldErrors,
+    clearLocalErrors,
+  );
+
+  const setPasswordWithErrorClear = useAuthFieldChange(
+    setPassword,
+    signIn,
+    hasFieldErrors,
+    clearLocalErrors,
+  );
 
   const handleSubmit = async () => {
     setFormError("");
@@ -150,14 +179,14 @@ export default function SignInScreen() {
           <AuthTextField
             variant="email"
             value={emailAddress}
-            onChangeText={setEmailAddress}
+            onChangeText={setEmailWithErrorClear}
             error={errors.fields.identifier?.message}
           />
 
           <AuthTextField
             variant="password"
             value={password}
-            onChangeText={setPassword}
+            onChangeText={setPasswordWithErrorClear}
             showPassword={showPassword}
             onTogglePassword={() => setShowPassword((prev) => !prev)}
             error={errors.fields.password?.message}

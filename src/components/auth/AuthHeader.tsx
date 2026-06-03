@@ -19,7 +19,7 @@ export default function AuthHeader() {
           source={require("../../../assets/images/keli-icon.png")}
           style={{
             width: "100%",
-            height: 300,
+            height: 250,
             transform: [{ rotate: "10deg" }],
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 5 },
