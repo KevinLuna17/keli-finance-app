@@ -24,12 +24,6 @@ export default function HomeLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="session-task"
-        options={{
-          href: null,
-        }}
-      />
     </Tabs>
   );
 }
