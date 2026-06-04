@@ -1,3 +1,4 @@
+import LoadingScreen from "@/components/ui/LoadingScreen";
 import AppProviders from "@/providers";
 import { useAuth } from "@clerk/expo";
 import {
@@ -8,7 +9,6 @@ import {
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
-import AuthLoadingScreen from "@/components/ui/AuthLoadingScreen";
 import { useColorScheme, View } from "react-native";
 import "../../global.css";
 
@@ -22,7 +22,7 @@ function RootLayoutNav() {
   if (!isLoaded) {
     return (
       <View className="flex-1">
-        <AuthLoadingScreen />
+        <LoadingScreen />
         <StatusBar style="auto" />
       </View>
     );
