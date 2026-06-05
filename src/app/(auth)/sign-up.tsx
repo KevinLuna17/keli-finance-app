@@ -62,7 +62,7 @@ export default function SignUpScreen() {
   }
 
   return (
-    <ScreenLayout edges={["top"]}>
+    <ScreenLayout edges={["top"]} background="custom">
       <Bubbles />
       <AuthHeader />
 
