@@ -6,10 +6,19 @@ export default function HomeLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: "hsl(144, 16%, 37%)",
-        tabBarInactiveTintColor: "hsl(150, 9%, 40%)",
+        tabBarInactiveTintColor: "gray",
         tabBarStyle: {
-          backgroundColor: "hsl(0, 0%, 100%)",
-          borderTopColor: "hsl(150, 15%, 85%)",
+          borderTopWidth: 0,
+          marginBottom: 20,
+          height: 70,
+          width: "80%",
+          alignSelf: "center",
+          justifyContent: "center",
+          alignItems: "center",
+          paddingTop: 10,
+          paddingBottom: 10,
+          paddingHorizontal: 20,
+          borderRadius: 100,
         },
         headerShown: false,
       }}
@@ -19,7 +28,34 @@ export default function HomeLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => (
-            <FontAwesome size={24} name="home" color={color} />
+            <FontAwesome size={22} name="home" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="transactions"
+        options={{
+          title: "Transactions",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={22} name="history" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="stadistics"
+        options={{
+          title: "Stadistics",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={22} name="area-chart" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={22} name="user" color={color} />
           ),
         }}
       />

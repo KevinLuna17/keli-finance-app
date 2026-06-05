@@ -10,9 +10,7 @@ export default function HomeScreen() {
   const { signOut } = useClerk();
 
   const displayName =
-    user?.firstName ??
-    user?.emailAddresses[0]?.emailAddress ??
-    "there";
+    user?.firstName ?? user?.emailAddresses[0]?.emailAddress ?? "there";
 
   if (!isLoaded) {
     return (
@@ -23,7 +21,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <ScreenLayout edges={["top"]} className="px-6 pb-8">
+    <ScreenLayout edges={["top"]} className="px-6">
       <View className="pt-6">
         <Text className="text-xs font-semibold uppercase tracking-[1px] text-muted-foreground">
           Keli
@@ -32,8 +30,8 @@ export default function HomeScreen() {
           Hi, {displayName}
         </Text>
         <Text className="mt-2 text-base leading-6 text-muted-foreground">
-          Your financial coach is ready. Spending insights and budgets will
-          live here soon.
+          Your financial coach is ready. Spending insights and budgets will live
+          here soon.
         </Text>
       </View>
 
