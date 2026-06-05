@@ -21,7 +21,7 @@ export function AuthStepScreen({
   children,
 }: AuthStepScreenProps) {
   return (
-    <ScreenLayout edges={["top", "bottom"]}>
+    <ScreenLayout edges={["top", "bottom"]} background="custom">
       <Bubbles />
 
       {onBack ? (

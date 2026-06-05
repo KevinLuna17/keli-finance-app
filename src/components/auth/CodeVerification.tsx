@@ -62,7 +62,7 @@ export function CodeVerification({
   };
 
   return (
-    <ScreenLayout edges={["top", "bottom"]}>
+    <ScreenLayout edges={["top", "bottom"]} background="custom">
       <Bubbles />
 
       <View className="z-10 self-start pl-4 pt-4">

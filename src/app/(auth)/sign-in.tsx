@@ -45,7 +45,7 @@ export default function SignInScreen() {
   }
 
   return (
-    <ScreenLayout edges={["top"]}>
+    <ScreenLayout edges={["top"]} background="custom">
       <Bubbles />
       <AuthHeader />
 
