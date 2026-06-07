@@ -5,8 +5,12 @@ import { Text, View } from "react-native";
 export default function AuthHeader() {
   return (
     <View className="flex-row items-center justify-center">
-      <View className="flex-col px-4 w-1/2 items-center justify-center">
-        <Text className="text-6xl font-bold tracking-[1px] text-brand uppercase font-mono dark:text-foreground">
+      <View className="flex-1 px-4 items-center justify-center">
+        <Text
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          className="text-6xl font-bold tracking-[1px] text-brand uppercase font-mono dark:text-foreground"
+        >
           Keli
         </Text>
 
