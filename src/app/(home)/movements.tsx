@@ -1,10 +1,10 @@
 import React from "react";
 import { Text, View } from "react-native";
 
-export default function transactions() {
+export default function movements() {
   return (
     <View>
-      <Text>transactions</Text>
+      <Text>movements</Text>
     </View>
   );
 }
