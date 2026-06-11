@@ -1,4 +1,5 @@
 import ScreenLayout from "@/components/ui/ScreenLayout";
+import { useBackendSync } from "@/hooks/useBackendSync";
 import { useAuth, useClerk, useUser } from "@clerk/expo";
 import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
@@ -8,8 +9,10 @@ export default function HomeScreen() {
   const { isLoaded } = useAuth();
   const { user } = useUser();
   const { signOut } = useClerk();
+  const { backendUser } = useBackendSync();
 
   const displayName =
+    backendUser?.name ??
     user?.firstName ??
     user?.emailAddresses[0]?.emailAddress ??
     "there";
@@ -23,7 +26,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <ScreenLayout edges={["top"]} className="px-6 pb-8">
+    <ScreenLayout edges={["top"]} className="px-6">
       <View className="pt-6">
         <Text className="text-xs font-semibold uppercase tracking-[1px] text-muted-foreground">
           Keli
@@ -32,9 +35,14 @@ export default function HomeScreen() {
           Hi, {displayName}
         </Text>
         <Text className="mt-2 text-base leading-6 text-muted-foreground">
-          Your financial coach is ready. Spending insights and budgets will
-          live here soon.
+          Your financial coach is ready. Spending insights and budgets will live
+          here soon.
         </Text>
+        {backendUser ? (
+          <Text className="mt-3 text-sm text-muted-foreground">
+            Synced with backend as {backendUser.email}
+          </Text>
+        ) : null}
       </View>
 
       <View className="mt-8 rounded-[20px] border border-border bg-card p-6">

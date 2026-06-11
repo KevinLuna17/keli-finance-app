@@ -1,4 +1,6 @@
+import BackendSyncError from "@/components/ui/BackendSyncError";
 import LoadingScreen from "@/components/ui/LoadingScreen";
+import { useBackendSync } from "@/hooks/useBackendSync";
 import AppProviders from "@/providers";
 import { useAuth } from "@clerk/expo";
 import {
@@ -18,11 +20,21 @@ WebBrowser.maybeCompleteAuthSession();
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
   const { isSignedIn, isLoaded } = useAuth();
+  const { isBootstrapping, status, error, retry } = useBackendSync();
 
-  if (!isLoaded) {
+  if (!isLoaded || (isSignedIn && isBootstrapping)) {
     return (
       <View className="flex-1">
         <LoadingScreen />
+        <StatusBar style="auto" />
+      </View>
+    );
+  }
+
+  if (isSignedIn && status === "error" && error) {
+    return (
+      <View className="flex-1">
+        <BackendSyncError message={error} onRetry={retry} />
         <StatusBar style="auto" />
       </View>
     );

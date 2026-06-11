@@ -1,28 +1,32 @@
-import { FontAwesome } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+import { hapticTabPress } from "@/lib/haptics";
+import { NativeTabs } from "expo-router/unstable-native-tabs";
 
 export default function HomeLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: "hsl(144, 16%, 37%)",
-        tabBarInactiveTintColor: "hsl(150, 9%, 40%)",
-        tabBarStyle: {
-          backgroundColor: "hsl(0, 0%, 100%)",
-          borderTopColor: "hsl(150, 15%, 85%)",
+    <NativeTabs
+      tintColor={"forestgreen"}
+      screenListeners={{
+        tabPress: (e) => {
+          hapticTabPress();
         },
-        headerShown: false,
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={24} name="home" color={color} />
-          ),
-        }}
-      />
-    </Tabs>
+      <NativeTabs.Trigger name="index">
+        <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf={"house"} md={"home"} />
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="movements">
+        <NativeTabs.Trigger.Label>Movements</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf={"receipt"} md={"receipt_long"} />
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="statistics">
+        <NativeTabs.Trigger.Label>Statistics</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf={"chart.bar"} md={"bar_chart"} />
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="profile">
+        <NativeTabs.Trigger.Label>Profile</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf={"person.circle"} md={"account_circle"} />
+      </NativeTabs.Trigger>
+    </NativeTabs>
   );
 }
