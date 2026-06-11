@@ -21,6 +21,12 @@ expo-env.d.ts
 # Environment variables
 .env
 
+# Workspace
+*.code-workspace
+
+# Agents
+*.md
+
 # Docs
 docs/
 
