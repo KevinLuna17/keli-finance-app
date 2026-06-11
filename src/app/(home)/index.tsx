@@ -1,4 +1,5 @@
 import ScreenLayout from "@/components/ui/ScreenLayout";
+import { useBackendSync } from "@/hooks/useBackendSync";
 import { useAuth, useClerk, useUser } from "@clerk/expo";
 import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
@@ -8,9 +9,13 @@ export default function HomeScreen() {
   const { isLoaded } = useAuth();
   const { user } = useUser();
   const { signOut } = useClerk();
+  const { backendUser } = useBackendSync();
 
   const displayName =
-    user?.firstName ?? user?.emailAddresses[0]?.emailAddress ?? "there";
+    backendUser?.name ??
+    user?.firstName ??
+    user?.emailAddresses[0]?.emailAddress ??
+    "there";
 
   if (!isLoaded) {
     return (
@@ -33,6 +38,11 @@ export default function HomeScreen() {
           Your financial coach is ready. Spending insights and budgets will live
           here soon.
         </Text>
+        {backendUser ? (
+          <Text className="mt-3 text-sm text-muted-foreground">
+            Synced with backend as {backendUser.email}
+          </Text>
+        ) : null}
       </View>
 
       <View className="mt-8 rounded-[20px] border border-border bg-card p-6">
