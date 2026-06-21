@@ -15,8 +15,8 @@ export default function HomeLayout() {
         <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon sf={"house"} md={"home"} />
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="movements">
-        <NativeTabs.Trigger.Label>Movements</NativeTabs.Trigger.Label>
+      <NativeTabs.Trigger name="transactions">
+        <NativeTabs.Trigger.Label>Transactions</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon sf={"receipt"} md={"receipt_long"} />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="statistics">
