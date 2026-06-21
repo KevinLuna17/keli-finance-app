@@ -8,7 +8,6 @@ export type Transaction = {
   type: TransactionType;
   amountInCents: number;
   description: string;
-  notes: string | null;
   transactionDate: string;
   createdAt: string;
   updatedAt: string | null;
@@ -19,7 +18,6 @@ export type CreateTransactionRequest = {
   type: TransactionType;
   amountInCents: number;
   description: string;
-  notes?: string | null;
   transactionDate: string;
 };
 
@@ -28,7 +26,6 @@ export type UpdateTransactionRequest = {
   type?: TransactionType;
   amountInCents?: number;
   description?: string;
-  notes?: string | null;
   transactionDate?: string;
 };
 
