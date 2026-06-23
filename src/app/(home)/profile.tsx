@@ -1,7 +1,11 @@
+import { PendingInvitationsSection } from "@/components/profile/pending-invitations-section";
 import { ProfileAvatar } from "@/components/profile/profile-avatar";
+import { WorkspacesSection } from "@/components/profile/workspaces-section";
 import { TransactionsErrorState } from "@/components/transactions/transactions-error-state";
 import ScreenLayout from "@/components/ui/ScreenLayout";
+import { useInvitations } from "@/hooks/use-invitations";
 import { useProfile } from "@/hooks/use-profile";
+import { useWorkspaces } from "@/hooks/use-workspaces";
 import { useClerk } from "@clerk/expo";
 import { Href, useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useRef } from "react";
@@ -18,6 +22,8 @@ export default function ProfileScreen() {
   const { signOut } = useClerk();
   const isFirstFocus = useRef(true);
   const { profile, isLoading, error, refresh } = useProfile();
+  const workspacesState = useWorkspaces();
+  const invitationsState = useInvitations();
 
   useFocusEffect(
     useCallback(() => {
@@ -27,7 +33,9 @@ export default function ProfileScreen() {
       }
 
       refresh();
-    }, [refresh]),
+      void workspacesState.refresh();
+      void invitationsState.refresh();
+    }, [refresh, workspacesState.refresh, invitationsState.refresh]),
   );
 
   if (isLoading && !profile) {
@@ -86,6 +94,12 @@ export default function ProfileScreen() {
             </Text>
           </Pressable>
         </View>
+
+        <WorkspacesSection {...workspacesState} />
+        <PendingInvitationsSection
+          {...invitationsState}
+          onInvitationResolved={workspacesState.refresh}
+        />
 
         <Pressable
           className="mt-6 h-14 items-center justify-center rounded-2xl border border-border bg-card active:opacity-90"

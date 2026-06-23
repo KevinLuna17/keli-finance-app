@@ -8,6 +8,14 @@ export default function ProfileLayout() {
   return (
     <Stack screenOptions={getModalStackScreenOptions(colors)}>
       <Stack.Screen name="edit" options={{ title: "Edit Profile" }} />
+      <Stack.Screen
+        name="workspaces/create"
+        options={{ title: "Create Workspace" }}
+      />
+      <Stack.Screen
+        name="workspaces/[id]/edit"
+        options={{ title: "Edit Workspace" }}
+      />
     </Stack>
   );
 }
