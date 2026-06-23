@@ -1,5 +1,9 @@
 import { API_URL } from "./config";
-import type { ApiErrorResponse, ApiSuccessResponse } from "@/types/api";
+import type {
+  ApiErrorResponse,
+  ApiPaginatedResponse,
+  ApiSuccessResponse,
+} from "@/types/api";
 
 export class ApiError extends Error {
   readonly status: number;
@@ -21,17 +25,33 @@ type ApiRequestOptions = {
   getToken: GetToken;
 };
 
-export async function apiRequest<T>(
+async function parseErrorResponse(
+  response: Response,
+): Promise<ApiError> {
+  try {
+    const payload = (await response.json()) as ApiErrorResponse;
+
+    return new ApiError(
+      payload.error?.message ?? "Request failed",
+      response.status,
+      payload.error?.code ?? "REQUEST_FAILED",
+    );
+  } catch {
+    return new ApiError("Request failed", response.status, "REQUEST_FAILED");
+  }
+}
+
+async function authorizedFetch(
   path: string,
   { method = "GET", body, getToken }: ApiRequestOptions,
-): Promise<T> {
+): Promise<Response> {
   const token = await getToken();
 
   if (!token) {
     throw new ApiError("No auth token available", 401, "NO_TOKEN");
   }
 
-  const response = await fetch(`${API_URL}${path}`, {
+  return fetch(`${API_URL}${path}`, {
     method,
     headers: {
       Authorization: `Bearer ${token}`,
@@ -39,20 +59,42 @@ export async function apiRequest<T>(
     },
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
+}
 
-  const payload = (await response.json()) as
-    | ApiSuccessResponse<T>
-    | ApiErrorResponse;
+export async function apiRequest<T>(
+  path: string,
+  options: ApiRequestOptions,
+): Promise<T> {
+  const response = await authorizedFetch(path, options);
 
   if (!response.ok) {
-    const errorPayload = payload as ApiErrorResponse;
-
-    throw new ApiError(
-      errorPayload.error?.message ?? "Request failed",
-      response.status,
-      errorPayload.error?.code ?? "REQUEST_FAILED",
-    );
+    throw await parseErrorResponse(response);
   }
 
-  return (payload as ApiSuccessResponse<T>).data;
+  const payload = (await response.json()) as ApiSuccessResponse<T>;
+  return payload.data;
+}
+
+export async function apiPaginatedRequest<T>(
+  path: string,
+  options: ApiRequestOptions,
+): Promise<ApiPaginatedResponse<T>> {
+  const response = await authorizedFetch(path, options);
+
+  if (!response.ok) {
+    throw await parseErrorResponse(response);
+  }
+
+  return (await response.json()) as ApiPaginatedResponse<T>;
+}
+
+export async function apiRequestNoContent(
+  path: string,
+  options: ApiRequestOptions,
+): Promise<void> {
+  const response = await authorizedFetch(path, options);
+
+  if (!response.ok) {
+    throw await parseErrorResponse(response);
+  }
 }

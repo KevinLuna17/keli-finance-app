@@ -7,6 +7,7 @@ type FormFieldProps = ViewProps & {
   visualState: FieldVisualState;
   error?: string;
   showError?: boolean;
+  contentClassName?: string;
   children: React.ReactNode;
 };
 
@@ -14,13 +15,16 @@ export function FormField({
   visualState,
   error,
   showError = true,
+  contentClassName,
   children,
   className,
   ...viewProps
 }: FormFieldProps) {
   return (
     <View className={className} {...viewProps}>
-      <View className={fieldContainerClass(visualState)}>{children}</View>
+      <View className={`${fieldContainerClass(visualState)} ${contentClassName ?? ""}`}>
+        {children}
+      </View>
       {showError && error ? <FieldErrorMessage message={error} /> : null}
     </View>
   );

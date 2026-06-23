@@ -14,6 +14,7 @@ import {
 export type TextFieldProps = Omit<TextInputProps, "placeholderTextColor"> & {
   error?: string;
   containerClassName?: string;
+  contentClassName?: string;
   showError?: boolean;
   renderLeftSlot?: (state: FieldVisualState) => React.ReactNode;
   renderRightSlot?: (state: FieldVisualState) => React.ReactNode;
@@ -22,6 +23,7 @@ export type TextFieldProps = Omit<TextInputProps, "placeholderTextColor"> & {
 export function TextField({
   error,
   containerClassName = "mb-3",
+  contentClassName,
   showError = true,
   renderLeftSlot,
   renderRightSlot,
@@ -41,6 +43,7 @@ export function TextField({
       visualState={visualState}
       error={error}
       showError={showError}
+      contentClassName={contentClassName}
       className={containerClassName}
     >
       {renderLeftSlot?.(visualState)}

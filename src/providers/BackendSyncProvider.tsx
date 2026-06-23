@@ -1,5 +1,7 @@
 import { syncUser } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
+import { getCurrentWorkspace } from "@/services/workspaces/workspace.service";
+import type { CurrentWorkspace } from "@/services/workspaces/workspace.types";
 import type { BackendUser } from "@/types/api";
 import { useAuth } from "@clerk/expo";
 import React, {
@@ -18,6 +20,7 @@ type BackendSyncContextValue = {
   status: SyncStatus;
   error: string | null;
   backendUser: BackendUser | null;
+  currentWorkspace: CurrentWorkspace | null;
   retry: () => void;
   isBootstrapping: boolean;
 };
@@ -35,6 +38,8 @@ export function BackendSyncProvider({
   const [status, setStatus] = useState<SyncStatus>("idle");
   const [error, setError] = useState<string | null>(null);
   const [backendUser, setBackendUser] = useState<BackendUser | null>(null);
+  const [currentWorkspace, setCurrentWorkspace] =
+    useState<CurrentWorkspace | null>(null);
   const [retryCount, setRetryCount] = useState(0);
 
   getTokenRef.current = getToken;
@@ -53,6 +58,7 @@ export function BackendSyncProvider({
       setStatus("idle");
       setError(null);
       setBackendUser(null);
+      setCurrentWorkspace(null);
       syncInFlightRef.current = false;
       return;
     }
@@ -70,9 +76,11 @@ export function BackendSyncProvider({
 
       try {
         const user = await syncUser(() => getTokenRef.current());
+        const workspace = await getCurrentWorkspace(() => getTokenRef.current());
 
         if (!cancelled) {
           setBackendUser(user);
+          setCurrentWorkspace(workspace);
           setStatus("synced");
         }
       } catch (syncError) {
@@ -91,6 +99,8 @@ export function BackendSyncProvider({
 
         setError(message);
         setStatus("error");
+        setBackendUser(null);
+        setCurrentWorkspace(null);
       } finally {
         if (!cancelled) {
           syncInFlightRef.current = false;
@@ -111,11 +121,12 @@ export function BackendSyncProvider({
       status,
       error,
       backendUser,
+      currentWorkspace,
       retry,
       isBootstrapping:
         !!isSignedIn && (status === "idle" || status === "syncing"),
     }),
-    [status, error, backendUser, retry, isSignedIn],
+    [status, error, backendUser, currentWorkspace, retry, isSignedIn],
   );
 
   return (

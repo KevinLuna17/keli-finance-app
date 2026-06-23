@@ -51,6 +51,10 @@ function RootLayoutNav() {
         {/* App screens - only accesible when signed in*/}
         <Stack.Protected guard={!!isSignedIn}>
           <Stack.Screen name="(home)" />
+          <Stack.Screen
+            name="transaction"
+            options={{ headerShown: false, presentation: "modal" }}
+          />
         </Stack.Protected>
       </Stack>
       <StatusBar style="auto" />

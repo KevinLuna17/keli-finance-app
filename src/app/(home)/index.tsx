@@ -1,21 +1,44 @@
+import BalanceCard from "@/components/home/balance-card";
+import RecentActivitySection from "@/components/home/recent-activity-section";
+import { TransactionsErrorState } from "@/components/transactions/transactions-error-state";
 import ScreenLayout from "@/components/ui/ScreenLayout";
+import { useCategories } from "@/hooks/use-categories";
+import { useHomeDashboard } from "@/hooks/use-home-dashboard";
 import { useBackendSync } from "@/hooks/useBackendSync";
-import { useAuth, useClerk, useUser } from "@clerk/expo";
-import { FontAwesome6 } from "@expo/vector-icons";
-import React from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { buildCategoryLookup } from "@/lib/category-display";
+import { useAuth, useUser } from "@clerk/expo";
+import { Href, useFocusEffect, useRouter } from "expo-router";
+import React, { useCallback, useMemo, useRef } from "react";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function HomeScreen() {
   const { isLoaded } = useAuth();
   const { user } = useUser();
-  const { signOut } = useClerk();
-  const { backendUser } = useBackendSync();
+  const router = useRouter();
+  const isFirstFocus = useRef(true);
+  const { currentWorkspace } = useBackendSync();
+  const workspaceId = currentWorkspace?.id;
+  const { dashboard, isLoading, error, refresh } = useHomeDashboard(workspaceId);
+  const { categories } = useCategories({ workspaceId });
+
+  const categoryLookup = useMemo(
+    () => buildCategoryLookup(categories),
+    [categories],
+  );
 
   const displayName =
-    backendUser?.name ??
-    user?.firstName ??
-    user?.emailAddresses[0]?.emailAddress ??
-    "there";
+    user?.firstName ?? user?.emailAddresses[0]?.emailAddress ?? "Usuario Keli";
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isFirstFocus.current) {
+        isFirstFocus.current = false;
+        return;
+      }
+
+      refresh();
+    }, [refresh]),
+  );
 
   if (!isLoaded) {
     return (
@@ -25,54 +48,55 @@ export default function HomeScreen() {
     );
   }
 
+  if (error && !isLoading) {
+    return (
+      <ScreenLayout edges={["top"]} background="custom" className="flex-1">
+        <TransactionsErrorState message={error} onRetry={refresh} />
+      </ScreenLayout>
+    );
+  }
+
   return (
-    <ScreenLayout edges={["top"]} className="px-6">
-      <View className="pt-6">
-        <Text className="text-xs font-semibold uppercase tracking-[1px] text-muted-foreground">
-          Keli
-        </Text>
-        <Text className="mt-2 text-3xl font-extrabold text-brand">
-          Hi, {displayName}
-        </Text>
-        <Text className="mt-2 text-base leading-6 text-muted-foreground">
-          Your financial coach is ready. Spending insights and budgets will live
-          here soon.
-        </Text>
-        {backendUser ? (
-          <Text className="mt-3 text-sm text-muted-foreground">
-            Synced with backend as {backendUser.email}
-          </Text>
-        ) : null}
-      </View>
-
-      <View className="mt-8 rounded-[20px] border border-border bg-card p-6">
-        <View className="flex-row items-center">
-          <View className="h-12 w-12 items-center justify-center rounded-2xl bg-secondary">
-            <FontAwesome6
-              name="seedling"
-              size={22}
-              color="hsl(144, 16%, 37%)"
-            />
-          </View>
-          <View className="ml-4 flex-1">
-            <Text className="text-lg font-bold text-card-foreground">
-              Coming next
-            </Text>
-            <Text className="mt-1 text-sm leading-5 text-muted-foreground">
-              Track spending, set goals, and get AI guidance tailored to you.
-            </Text>
-          </View>
-        </View>
-      </View>
-
-      <Pressable
-        className="mt-8 h-14 items-center justify-center rounded-2xl border border-border bg-card active:opacity-90"
-        onPress={() => signOut()}
-        accessibilityRole="button"
-        accessibilityLabel="Sign out"
+    <ScreenLayout edges={["top"]} background="custom" className="flex-1">
+      <ScrollView
+        className="flex-1 px-6"
+        contentContainerClassName="pb-8 pt-6"
+        showsVerticalScrollIndicator={false}
       >
-        <Text className="text-base font-bold text-destructive">Sign out</Text>
-      </Pressable>
+        <View>
+          <Text className="text-sm text-muted-foreground">
+            ¡Hola de nuevo!
+          </Text>
+          <Text className="mt-1 text-2xl font-bold text-foreground">
+            {displayName}
+          </Text>
+        </View>
+
+        <View className="mt-6">
+          {isLoading ? (
+            <View className="items-center justify-center rounded-3xl bg-brand py-16">
+              <ActivityIndicator color="#FFFFFF" />
+            </View>
+          ) : (
+            <BalanceCard
+              label="Saldo Total"
+              amountInSmallestUnits={dashboard.balanceInCents}
+              incomeInSmallestUnits={dashboard.totalIncomeInCents}
+              expenseInSmallestUnits={dashboard.totalExpensesInCents}
+            />
+          )}
+        </View>
+
+        {!isLoading ? (
+          <RecentActivitySection
+            title="Actividad Reciente"
+            viewAllLabel="Ver todo"
+            transactions={dashboard.recentTransactions}
+            categoryLookup={categoryLookup}
+            onViewAllPress={() => router.push("/(home)/transactions" as Href)}
+          />
+        ) : null}
+      </ScrollView>
     </ScreenLayout>
   );
 }
