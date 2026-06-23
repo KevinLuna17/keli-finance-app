@@ -16,6 +16,10 @@ export default function ProfileLayout() {
         name="workspaces/[id]/edit"
         options={{ title: "Edit Workspace" }}
       />
+      <Stack.Screen
+        name="workspaces/[id]/invite"
+        options={{ title: "Invite Member" }}
+      />
     </Stack>
   );
 }

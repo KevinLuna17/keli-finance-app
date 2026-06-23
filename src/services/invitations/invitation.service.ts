@@ -1,9 +1,25 @@
 import { apiRequest } from "@/lib/api/client";
 import {
+  CreateWorkspaceInvitationRequest,
   GetToken,
   INVITATION_ENDPOINTS,
   WorkspaceInvitation,
 } from "./invitation.types";
+
+export function createWorkspaceInvitation(
+  getToken: GetToken,
+  workspaceId: string,
+  payload: CreateWorkspaceInvitationRequest,
+): Promise<WorkspaceInvitation> {
+  return apiRequest<WorkspaceInvitation>(
+    INVITATION_ENDPOINTS.workspaceInvitations(workspaceId),
+    {
+      method: "POST",
+      getToken,
+      body: payload,
+    },
+  );
+}
 
 export function listInvitations(
   getToken: GetToken,

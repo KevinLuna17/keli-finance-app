@@ -19,8 +19,14 @@ export type WorkspaceInvitation = {
   updatedAt: string | null;
 };
 
+export type CreateWorkspaceInvitationRequest = {
+  email: string;
+};
+
 export const INVITATION_ENDPOINTS = {
   base: "/invitations",
   accept: (id: string) => `/invitations/${id}/accept`,
   decline: (id: string) => `/invitations/${id}/decline`,
+  workspaceInvitations: (workspaceId: string) =>
+    `/workspaces/${workspaceId}/invitations`,
 } as const;

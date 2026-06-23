@@ -3,7 +3,7 @@ import { WorkspaceFormFields } from "@/components/profile/workspace-form-fields"
 import ScreenLayout from "@/components/ui/ScreenLayout";
 import { useWorkspaceForm } from "@/hooks/use-workspace-form";
 import { useBackendSync } from "@/hooks/useBackendSync";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter, Href } from "expo-router";
 import React from "react";
 import {
   ActivityIndicator,
@@ -139,6 +139,19 @@ export function EditWorkspaceScreen() {
       </ScrollView>
 
       <View className="gap-3 bg-card px-6 pb-6 pt-4">
+        <Pressable
+          accessibilityRole="button"
+          disabled={isSubmitting || isDeleting}
+          onPress={() =>
+            router.push(`/profile/workspaces/${workspace.id}/invite` as Href)
+          }
+          className="items-center rounded-2xl border border-border py-4 active:opacity-90"
+        >
+          <Text className="text-base font-semibold text-foreground">
+            Invite Member
+          </Text>
+        </Pressable>
+
         <Pressable
           accessibilityRole="button"
           accessibilityState={{ disabled: isSubmitDisabled }}
