@@ -1,22 +1,32 @@
 import { WorkspaceListItem } from "@/components/profile/workspace-list-item";
 import { TransactionsErrorState } from "@/components/transactions/transactions-error-state";
-import type { UseWorkspacesResult } from "@/hooks/use-workspaces";
+import { useCurrentWorkspaceId, useSetCurrentWorkspaceId } from "@/hooks/use-current-workspace";
+import { useBackendSync } from "@/hooks/useBackendSync";
+import { hapticTabPress } from "@/lib/haptics";
 import { Href, useRouter } from "expo-router";
 import React from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
-type WorkspacesSectionProps = Pick<
-  UseWorkspacesResult,
-  "workspaces" | "isLoading" | "error" | "refresh"
->;
+type WorkspacesSectionProps = {
+  onWorkspaceChanged?: () => void;
+};
 
 export function WorkspacesSection({
-  workspaces,
-  isLoading,
-  error,
-  refresh,
+  onWorkspaceChanged,
 }: WorkspacesSectionProps) {
   const router = useRouter();
+  const currentWorkspaceId = useCurrentWorkspaceId();
+  const setCurrentWorkspaceId = useSetCurrentWorkspaceId();
+  const {
+    workspaces,
+    isBootstrapping,
+    status,
+    error,
+    refreshWorkspaces,
+  } = useBackendSync();
+
+  const isLoading = isBootstrapping || (status === "syncing" && workspaces.length === 0);
+  const loadError = status === "error" ? error : null;
 
   const sortedWorkspaces = [...workspaces].sort((left, right) => {
     if (left.type === right.type) {
@@ -26,19 +36,37 @@ export function WorkspacesSection({
     return left.type === "personal" ? -1 : 1;
   });
 
+  const handleSelect = (workspaceId: string) => {
+    if (workspaceId === currentWorkspaceId) {
+      return;
+    }
+
+    hapticTabPress();
+    setCurrentWorkspaceId(workspaceId);
+    onWorkspaceChanged?.();
+  };
+
   return (
     <View className="mt-8">
       <Text className="text-lg font-bold text-foreground">Workspaces</Text>
+      <Text className="mt-1 text-sm text-muted-foreground">
+        Select the workspace used across Home, Transactions, and Statistics.
+      </Text>
 
-      {isLoading && workspaces.length === 0 ? (
+      {isLoading ? (
         <View className="mt-4 items-center py-8">
           <ActivityIndicator size="small" color="hsl(144, 16%, 37%)" />
         </View>
       ) : null}
 
-      {error && workspaces.length === 0 ? (
+      {loadError && workspaces.length === 0 ? (
         <View className="mt-4">
-          <TransactionsErrorState message={error} onRetry={refresh} />
+          <TransactionsErrorState
+            message={loadError}
+            onRetry={() => {
+              void refreshWorkspaces();
+            }}
+          />
         </View>
       ) : null}
 
@@ -48,7 +76,9 @@ export function WorkspacesSection({
             <WorkspaceListItem
               key={workspace.id}
               workspace={workspace}
-              onPress={
+              isActive={workspace.id === currentWorkspaceId}
+              onSelect={() => handleSelect(workspace.id)}
+              onEdit={
                 workspace.type === "shared" && workspace.role === "owner"
                   ? () =>
                       router.push(
@@ -61,7 +91,7 @@ export function WorkspacesSection({
         </View>
       ) : null}
 
-      {!isLoading && !error ? (
+      {!isLoading && !loadError ? (
         <Pressable
           className="mt-4 h-14 flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-card active:opacity-90"
           onPress={() =>

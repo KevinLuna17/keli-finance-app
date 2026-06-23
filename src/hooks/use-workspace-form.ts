@@ -8,6 +8,7 @@ import {
   deleteWorkspace,
   updateWorkspace,
 } from "@/services/workspaces/workspace.service";
+import type { CurrentWorkspace } from "@/services/workspaces/workspace.types";
 import type { Workspace } from "@/services/workspaces/workspace.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@clerk/expo";
@@ -16,11 +17,13 @@ import { useForm } from "react-hook-form";
 
 type UseWorkspaceFormMode = "create" | "edit";
 
+type WorkspaceFormTarget = Pick<Workspace, "id" | "name">;
+
 type UseWorkspaceFormOptions = {
   mode: UseWorkspaceFormMode;
-  workspace?: Workspace | null;
-  onSuccess?: () => void;
-  onDeleted?: () => void;
+  workspace?: WorkspaceFormTarget | CurrentWorkspace | null;
+  onSuccess?: () => void | Promise<void>;
+  onDeleted?: () => void | Promise<void>;
 };
 
 export function useWorkspaceForm({
@@ -57,7 +60,7 @@ export function useWorkspaceForm({
         });
       }
 
-      onSuccess?.();
+      await onSuccess?.();
     } catch (error) {
       setSubmitError(
         error instanceof ApiError
@@ -79,7 +82,7 @@ export function useWorkspaceForm({
 
     try {
       await deleteWorkspace(() => getToken(), workspace.id);
-      onDeleted?.();
+      await onDeleted?.();
     } catch (error) {
       setSubmitError(
         error instanceof ApiError

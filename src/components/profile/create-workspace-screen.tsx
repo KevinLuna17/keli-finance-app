@@ -2,6 +2,7 @@ import { AuthFieldError } from "@/components/auth/AuthFieldError";
 import { WorkspaceFormFields } from "@/components/profile/workspace-form-fields";
 import ScreenLayout from "@/components/ui/ScreenLayout";
 import { useWorkspaceForm } from "@/hooks/use-workspace-form";
+import { useBackendSync } from "@/hooks/useBackendSync";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
@@ -14,11 +15,15 @@ import {
 
 export function CreateWorkspaceScreen() {
   const router = useRouter();
+  const { refreshWorkspaces } = useBackendSync();
 
   const { form, onSubmit, submitError, isSubmitting, isSubmitDisabled } =
     useWorkspaceForm({
       mode: "create",
-      onSuccess: () => router.back(),
+      onSuccess: async () => {
+        await refreshWorkspaces();
+        router.back();
+      },
     });
 
   return (

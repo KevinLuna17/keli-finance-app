@@ -1,8 +1,9 @@
 import { syncUser } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
-import { getCurrentWorkspace } from "@/services/workspaces/workspace.service";
+import { listWorkspaces } from "@/services/workspaces/workspace.service";
 import type { CurrentWorkspace } from "@/services/workspaces/workspace.types";
 import type { BackendUser } from "@/types/api";
+import { useWorkspaceStore } from "@/stores/workspace-store";
 import { useAuth } from "@clerk/expo";
 import React, {
   createContext,
@@ -20,12 +21,47 @@ type BackendSyncContextValue = {
   status: SyncStatus;
   error: string | null;
   backendUser: BackendUser | null;
+  workspaces: CurrentWorkspace[];
   currentWorkspace: CurrentWorkspace | null;
+  refreshWorkspaces: () => Promise<void>;
   retry: () => void;
   isBootstrapping: boolean;
 };
 
 const BackendSyncContext = createContext<BackendSyncContextValue | null>(null);
+
+function toCurrentWorkspace(
+  workspace: Awaited<ReturnType<typeof listWorkspaces>>[number],
+): CurrentWorkspace {
+  return {
+    id: workspace.id,
+    name: workspace.name,
+    type: workspace.type,
+    role: workspace.role,
+  };
+}
+
+function resolveActiveWorkspaceId(
+  workspaces: CurrentWorkspace[],
+  storedWorkspaceId: string | null,
+): string | null {
+  if (workspaces.length === 0) {
+    return null;
+  }
+
+  if (
+    storedWorkspaceId &&
+    workspaces.some((workspace) => workspace.id === storedWorkspaceId)
+  ) {
+    return storedWorkspaceId;
+  }
+
+  const personalWorkspace = workspaces.find(
+    (workspace) => workspace.type === "personal",
+  );
+
+  return personalWorkspace?.id ?? workspaces[0]?.id ?? null;
+}
 
 export function BackendSyncProvider({
   children,
@@ -38,11 +74,41 @@ export function BackendSyncProvider({
   const [status, setStatus] = useState<SyncStatus>("idle");
   const [error, setError] = useState<string | null>(null);
   const [backendUser, setBackendUser] = useState<BackendUser | null>(null);
-  const [currentWorkspace, setCurrentWorkspace] =
-    useState<CurrentWorkspace | null>(null);
+  const [workspaces, setWorkspaces] = useState<CurrentWorkspace[]>([]);
   const [retryCount, setRetryCount] = useState(0);
+  const currentWorkspaceId = useWorkspaceStore(
+    (state) => state.currentWorkspaceId,
+  );
+  const setCurrentWorkspaceId = useWorkspaceStore(
+    (state) => state.setCurrentWorkspaceId,
+  );
+  const resetWorkspaceStore = useWorkspaceStore((state) => state.reset);
 
   getTokenRef.current = getToken;
+
+  const applyWorkspaces = useCallback(
+    (nextWorkspaces: CurrentWorkspace[]) => {
+      setWorkspaces(nextWorkspaces);
+
+      const activeWorkspaceId = resolveActiveWorkspaceId(
+        nextWorkspaces,
+        useWorkspaceStore.getState().currentWorkspaceId,
+      );
+
+      if (
+        activeWorkspaceId &&
+        activeWorkspaceId !== useWorkspaceStore.getState().currentWorkspaceId
+      ) {
+        setCurrentWorkspaceId(activeWorkspaceId);
+      }
+    },
+    [setCurrentWorkspaceId],
+  );
+
+  const refreshWorkspaces = useCallback(async () => {
+    const nextWorkspaces = await listWorkspaces(() => getTokenRef.current());
+    applyWorkspaces(nextWorkspaces.map(toCurrentWorkspace));
+  }, [applyWorkspaces]);
 
   const retry = useCallback(() => {
     syncInFlightRef.current = false;
@@ -58,7 +124,8 @@ export function BackendSyncProvider({
       setStatus("idle");
       setError(null);
       setBackendUser(null);
-      setCurrentWorkspace(null);
+      setWorkspaces([]);
+      resetWorkspaceStore();
       syncInFlightRef.current = false;
       return;
     }
@@ -76,11 +143,11 @@ export function BackendSyncProvider({
 
       try {
         const user = await syncUser(() => getTokenRef.current());
-        const workspace = await getCurrentWorkspace(() => getTokenRef.current());
+        const nextWorkspaces = await listWorkspaces(() => getTokenRef.current());
 
         if (!cancelled) {
           setBackendUser(user);
-          setCurrentWorkspace(workspace);
+          applyWorkspaces(nextWorkspaces.map(toCurrentWorkspace));
           setStatus("synced");
         }
       } catch (syncError) {
@@ -100,7 +167,7 @@ export function BackendSyncProvider({
         setError(message);
         setStatus("error");
         setBackendUser(null);
-        setCurrentWorkspace(null);
+        setWorkspaces([]);
       } finally {
         if (!cancelled) {
           syncInFlightRef.current = false;
@@ -114,19 +181,40 @@ export function BackendSyncProvider({
       cancelled = true;
       syncInFlightRef.current = false;
     };
-  }, [isLoaded, isSignedIn, retryCount]);
+  }, [applyWorkspaces, isLoaded, isSignedIn, resetWorkspaceStore, retryCount]);
+
+  const currentWorkspace = useMemo(() => {
+    if (!currentWorkspaceId) {
+      return null;
+    }
+
+    return (
+      workspaces.find((workspace) => workspace.id === currentWorkspaceId) ?? null
+    );
+  }, [currentWorkspaceId, workspaces]);
 
   const value = useMemo(
     () => ({
       status,
       error,
       backendUser,
+      workspaces,
       currentWorkspace,
+      refreshWorkspaces,
       retry,
       isBootstrapping:
         !!isSignedIn && (status === "idle" || status === "syncing"),
     }),
-    [status, error, backendUser, currentWorkspace, retry, isSignedIn],
+    [
+      status,
+      error,
+      backendUser,
+      workspaces,
+      currentWorkspace,
+      refreshWorkspaces,
+      retry,
+      isSignedIn,
+    ],
   );
 
   return (

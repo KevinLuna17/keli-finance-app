@@ -5,7 +5,7 @@ import { TransactionsErrorState } from "@/components/transactions/transactions-e
 import ScreenLayout from "@/components/ui/ScreenLayout";
 import { useInvitations } from "@/hooks/use-invitations";
 import { useProfile } from "@/hooks/use-profile";
-import { useWorkspaces } from "@/hooks/use-workspaces";
+import { useBackendSync } from "@/hooks/useBackendSync";
 import { useClerk } from "@clerk/expo";
 import { Href, useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useRef } from "react";
@@ -22,7 +22,7 @@ export default function ProfileScreen() {
   const { signOut } = useClerk();
   const isFirstFocus = useRef(true);
   const { profile, isLoading, error, refresh } = useProfile();
-  const workspacesState = useWorkspaces();
+  const { refreshWorkspaces } = useBackendSync();
   const invitationsState = useInvitations();
 
   useFocusEffect(
@@ -33,9 +33,9 @@ export default function ProfileScreen() {
       }
 
       refresh();
-      void workspacesState.refresh();
+      void refreshWorkspaces();
       void invitationsState.refresh();
-    }, [refresh, workspacesState.refresh, invitationsState.refresh]),
+    }, [refresh, refreshWorkspaces, invitationsState.refresh]),
   );
 
   if (isLoading && !profile) {
@@ -95,10 +95,14 @@ export default function ProfileScreen() {
           </Pressable>
         </View>
 
-        <WorkspacesSection {...workspacesState} />
+        <WorkspacesSection
+          onWorkspaceChanged={() => {
+            void refreshWorkspaces();
+          }}
+        />
         <PendingInvitationsSection
           {...invitationsState}
-          onInvitationResolved={workspacesState.refresh}
+          onInvitationResolved={refreshWorkspaces}
         />
 
         <Pressable

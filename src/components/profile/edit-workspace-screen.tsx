@@ -2,7 +2,7 @@ import { AuthFieldError } from "@/components/auth/AuthFieldError";
 import { WorkspaceFormFields } from "@/components/profile/workspace-form-fields";
 import ScreenLayout from "@/components/ui/ScreenLayout";
 import { useWorkspaceForm } from "@/hooks/use-workspace-form";
-import { useWorkspaces } from "@/hooks/use-workspaces";
+import { useBackendSync } from "@/hooks/useBackendSync";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import {
@@ -17,16 +17,29 @@ import {
 export function EditWorkspaceScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { workspaces, isLoading, error, refresh } = useWorkspaces();
+  const {
+    workspaces,
+    isBootstrapping,
+    status,
+    error,
+    refreshWorkspaces,
+  } = useBackendSync();
 
   const workspace = workspaces.find((item) => item.id === id) ?? null;
+  const isLoading = isBootstrapping || (status === "syncing" && workspaces.length === 0);
 
   const { form, onSubmit, onDelete, submitError, isSubmitting, isDeleting, isSubmitDisabled } =
     useWorkspaceForm({
       mode: "edit",
       workspace,
-      onSuccess: () => router.back(),
-      onDeleted: () => router.back(),
+      onSuccess: async () => {
+        await refreshWorkspaces();
+        router.back();
+      },
+      onDeleted: async () => {
+        await refreshWorkspaces();
+        router.back();
+      },
     });
 
   const confirmDelete = () => {
@@ -69,7 +82,7 @@ export function EditWorkspaceScreen() {
             className="rounded-2xl bg-brand px-5 py-3"
             onPress={() => {
               if (error) {
-                void refresh();
+                void refreshWorkspaces();
                 return;
               }
 
