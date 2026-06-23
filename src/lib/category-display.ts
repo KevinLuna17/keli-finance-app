@@ -1,79 +1,61 @@
-import { FontAwesome6 } from "@expo/vector-icons";
-import { MOCK_CATEGORIES } from "@/mocks/categories";
-import type { ComponentProps } from "react";
+import { resolveCategoryIconStyle } from "@/lib/category-icon-registry";
+import type { Category } from "@/services/categories/category.types";
+import { parseCategoryIconKey, type CategoryIconKey } from "@/types/category-icon";
 
-type CategoryIconName = ComponentProps<typeof FontAwesome6>["name"];
+export type CategoryDisplaySource = Pick<Category, "id" | "name"> & {
+  iconKey?: CategoryIconKey | string;
+};
 
-export type CategoryDisplay = {
-  id: string;
-  name: string;
-  icon: CategoryIconName;
+export type CategoryDisplay = CategoryDisplaySource & {
+  icon: ReturnType<typeof resolveCategoryIconStyle>["icon"];
   iconBackgroundClassName: string;
   iconColor: string;
 };
 
-const DEFAULT_DISPLAY: Omit<CategoryDisplay, "id" | "name"> = {
-  icon: "folder",
-  iconBackgroundClassName: "bg-muted",
-  iconColor: "#508A67",
-};
-
-const CATEGORY_DISPLAY_BY_ID: Record<
-  string,
-  Omit<CategoryDisplay, "id" | "name">
-> = {
-  "10000000-0000-4000-8000-000000000001": {
-    icon: "money-bill-wave",
-    iconBackgroundClassName: "bg-primary/20",
-    iconColor: "#508A67",
-  },
-  "10000000-0000-4000-8000-000000000002": {
-    icon: "laptop",
-    iconBackgroundClassName: "bg-accent/20",
-    iconColor: "#B8860B",
-  },
-  "10000000-0000-4000-8000-000000000003": {
-    icon: "utensils",
-    iconBackgroundClassName: "bg-destructive/10",
-    iconColor: "#DC2626",
-  },
-  "10000000-0000-4000-8000-000000000004": {
-    icon: "car",
-    iconBackgroundClassName: "bg-secondary",
-    iconColor: "#508A67",
-  },
-  "10000000-0000-4000-8000-000000000005": {
-    icon: "house",
-    iconBackgroundClassName: "bg-brand/15",
-    iconColor: "#508A67",
-  },
-  "10000000-0000-4000-8000-000000000006": {
-    icon: "film",
-    iconBackgroundClassName: "bg-accent/20",
-    iconColor: "#B8860B",
-  },
-  "10000000-0000-4000-8000-000000000007": {
-    icon: "heart-pulse",
-    iconBackgroundClassName: "bg-primary/20",
-    iconColor: "#508A67",
-  },
-  "10000000-0000-4000-8000-000000000008": {
-    icon: "ellipsis",
-    iconBackgroundClassName: "bg-muted",
-    iconColor: "#5f6e66",
-  },
-};
-
-const categoryNameById = Object.fromEntries(
-  MOCK_CATEGORIES.map((category) => [category.id, category.name]),
-);
-
-export function getCategoryDisplay(categoryId: string): CategoryDisplay {
-  const styling = CATEGORY_DISPLAY_BY_ID[categoryId] ?? DEFAULT_DISPLAY;
+export function getCategoryDisplay(
+  source: CategoryDisplaySource,
+): CategoryDisplay {
+  const iconKey = parseCategoryIconKey(source.iconKey);
+  const style = resolveCategoryIconStyle(iconKey);
 
   return {
-    id: categoryId,
-    name: categoryNameById[categoryId] ?? "Unknown",
-    ...styling,
+    id: source.id,
+    name: source.name,
+    iconKey,
+    ...style,
   };
+}
+
+export type CategoryLookup = Record<string, CategoryDisplaySource>;
+
+export function buildCategoryLookup(
+  categories: Category[],
+): CategoryLookup {
+  return Object.fromEntries(
+    categories.map((category) => [
+      category.id,
+      {
+        id: category.id,
+        name: category.name,
+        iconKey: parseCategoryIconKey(category.iconKey),
+      },
+    ]),
+  );
+}
+
+export function getCategoryDisplayById(
+  categoryId: string,
+  lookup: CategoryLookup,
+): CategoryDisplay {
+  const source = lookup[categoryId];
+
+  if (!source) {
+    return getCategoryDisplay({
+      id: categoryId,
+      name: "Unknown",
+      iconKey: "folder",
+    });
+  }
+
+  return getCategoryDisplay(source);
 }

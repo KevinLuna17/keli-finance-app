@@ -1,14 +1,18 @@
 import { TransactionsList } from "@/components/transactions/transactions-list";
 import ScreenLayout from "@/components/ui/ScreenLayout";
+import { useCategories } from "@/hooks/use-categories";
 import { useTransactionsList } from "@/hooks/use-transactions-list";
-import { MOCK_WORKSPACE_ID } from "@/mocks/workspace";
+import { useBackendSync } from "@/hooks/useBackendSync";
+import { buildCategoryLookup } from "@/lib/category-display";
 import { Href, useFocusEffect, useRouter } from "expo-router";
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import { Pressable, Text, View } from "react-native";
 
 export default function TransactionsScreen() {
   const router = useRouter();
   const isFirstFocus = useRef(true);
+  const { currentWorkspace } = useBackendSync();
+  const workspaceId = currentWorkspace?.id;
   const {
     rows,
     error,
@@ -20,7 +24,13 @@ export default function TransactionsScreen() {
     isLoadingMore,
     isEmpty,
     hasError,
-  } = useTransactionsList({ workspaceId: MOCK_WORKSPACE_ID });
+  } = useTransactionsList({ workspaceId });
+  const { categories } = useCategories({ workspaceId });
+
+  const categoryLookup = useMemo(
+    () => buildCategoryLookup(categories),
+    [categories],
+  );
 
   const handleAddPress = useCallback(() => {
     router.push("/transaction/new" as Href);
@@ -53,6 +63,7 @@ export default function TransactionsScreen() {
 
       <TransactionsList
         rows={rows}
+        categoryLookup={categoryLookup}
         isInitialLoading={isInitialLoading}
         isRefreshing={isRefreshing}
         isLoadingMore={isLoadingMore}

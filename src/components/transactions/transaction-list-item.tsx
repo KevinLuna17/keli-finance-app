@@ -1,4 +1,4 @@
-import { getCategoryDisplay } from "@/lib/category-display";
+import { getCategoryDisplayById, type CategoryLookup } from "@/lib/category-display";
 import { formatSignedMoney } from "@/lib/format-money";
 import { formatTransactionRowDate } from "@/lib/transaction-list-utils";
 import { Transaction } from "@/services/transactions/transaction.types";
@@ -8,10 +8,14 @@ import { Text, View } from "react-native";
 
 type TransactionListItemProps = {
   transaction: Transaction;
+  categoryLookup?: CategoryLookup;
 };
 
-function TransactionListItemComponent({ transaction }: TransactionListItemProps) {
-  const category = getCategoryDisplay(transaction.categoryId);
+function TransactionListItemComponent({
+  transaction,
+  categoryLookup = {},
+}: TransactionListItemProps) {
+  const category = getCategoryDisplayById(transaction.categoryId, categoryLookup);
   const isIncome = transaction.type === "income";
 
   return (

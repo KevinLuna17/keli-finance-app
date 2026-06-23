@@ -2,6 +2,7 @@ import { TransactionDateHeader } from "@/components/transactions/transaction-dat
 import { TransactionListItem } from "@/components/transactions/transaction-list-item";
 import { TransactionsEmptyState } from "@/components/transactions/transactions-empty-state";
 import { TransactionsErrorState } from "@/components/transactions/transactions-error-state";
+import type { CategoryLookup } from "@/lib/category-display";
 import { TransactionListRow } from "@/lib/transaction-list-utils";
 import React, { useCallback } from "react";
 import {
@@ -13,6 +14,7 @@ import {
 
 type TransactionsListProps = {
   rows: TransactionListRow[];
+  categoryLookup?: CategoryLookup;
   isInitialLoading: boolean;
   isRefreshing: boolean;
   isLoadingMore: boolean;
@@ -27,6 +29,7 @@ type TransactionsListProps = {
 
 export function TransactionsList({
   rows,
+  categoryLookup = {},
   isInitialLoading,
   isRefreshing,
   isLoadingMore,
@@ -43,8 +46,13 @@ export function TransactionsList({
       return <TransactionDateHeader label={item.label} />;
     }
 
-    return <TransactionListItem transaction={item.transaction} />;
-  }, []);
+    return (
+      <TransactionListItem
+        transaction={item.transaction}
+        categoryLookup={categoryLookup}
+      />
+    );
+  }, [categoryLookup]);
 
   const keyExtractor = useCallback((item: TransactionListRow) => item.key, []);
 

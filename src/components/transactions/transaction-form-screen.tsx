@@ -1,12 +1,12 @@
 import { AuthFieldError } from "@/components/auth/AuthFieldError";
 import { TransactionFormFields } from "@/components/transactions/transaction-form-fields";
 import ScreenLayout from "@/components/ui/ScreenLayout";
+import { useCategories } from "@/hooks/use-categories";
 import {
   TransactionFormMode,
   useTransactionForm,
 } from "@/hooks/use-transaction-form";
-import { MOCK_CATEGORIES } from "@/mocks/categories";
-import { MOCK_WORKSPACE_ID } from "@/mocks/workspace";
+import { useBackendSync } from "@/hooks/useBackendSync";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
@@ -20,17 +20,23 @@ import {
 type TransactionFormScreenProps = {
   mode: TransactionFormMode;
   transactionId?: string;
-  workspaceId?: string;
 };
 
 export function TransactionFormScreen({
   mode,
   transactionId,
-  workspaceId = MOCK_WORKSPACE_ID,
 }: TransactionFormScreenProps) {
   const router = useRouter();
+  const { currentWorkspace, status: syncStatus } = useBackendSync();
+  const workspaceId = currentWorkspace?.id;
   const submitLabel =
     mode === "create" ? "Save Transaction" : "Update Transaction";
+
+  const {
+    categories,
+    isLoading: isLoadingCategories,
+    error: categoriesError,
+  } = useCategories({ workspaceId });
 
   const {
     form,
@@ -43,11 +49,29 @@ export function TransactionFormScreen({
   } = useTransactionForm({
     mode,
     transactionId,
-    workspaceId,
+    workspaceId: workspaceId ?? "",
     onSuccess: () => router.back(),
   });
 
-  if (isLoadingInitial) {
+  if (!workspaceId) {
+    if (syncStatus === "synced") {
+      return (
+        <ScreenLayout edges={["bottom"]} background="modal" className="px-6">
+          <View className="flex-1 items-center justify-center gap-4">
+            <Text className="text-center text-base text-destructive">
+              Your workspace is not available. Please restart the app.
+            </Text>
+            <Pressable
+              className="rounded-2xl bg-brand px-5 py-3"
+              onPress={() => router.back()}
+            >
+              <Text className="font-semibold text-brand-foreground">Go back</Text>
+            </Pressable>
+          </View>
+        </ScreenLayout>
+      );
+    }
+
     return (
       <ScreenLayout
         edges={["bottom"]}
@@ -59,12 +83,24 @@ export function TransactionFormScreen({
     );
   }
 
-  if (loadError) {
+  if (isLoadingCategories || isLoadingInitial) {
+    return (
+      <ScreenLayout
+        edges={["bottom"]}
+        background="modal"
+        className="items-center justify-center"
+      >
+        <ActivityIndicator size="large" color="hsl(144, 16%, 37%)" />
+      </ScreenLayout>
+    );
+  }
+
+  if (loadError || categoriesError) {
     return (
       <ScreenLayout edges={["bottom"]} background="modal" className="px-6">
         <View className="flex-1 items-center justify-center gap-4">
           <Text className="text-center text-base text-destructive">
-            {loadError}
+            {loadError ?? categoriesError}
           </Text>
           <Pressable
             className="rounded-2xl bg-brand px-5 py-3"
@@ -94,8 +130,9 @@ export function TransactionFormScreen({
 
         <TransactionFormFields
           control={form.control}
+          setValue={form.setValue}
           errors={form.formState.errors}
-          categories={MOCK_CATEGORIES}
+          categories={categories}
           disabled={isSubmitting}
         />
       </ScrollView>

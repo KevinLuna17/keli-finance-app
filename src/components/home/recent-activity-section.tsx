@@ -1,4 +1,5 @@
 import { TransactionListItem } from "@/components/transactions/transaction-list-item";
+import type { CategoryLookup } from "@/lib/category-display";
 import { Transaction } from "@/services/transactions/transaction.types";
 import React from "react";
 import { Pressable, Text, View } from "react-native";
@@ -7,6 +8,7 @@ type RecentActivitySectionProps = {
   title: string;
   viewAllLabel: string;
   transactions: Transaction[];
+  categoryLookup?: CategoryLookup;
   onViewAllPress?: () => void;
 };
 
@@ -14,6 +16,7 @@ export default function RecentActivitySection({
   title,
   viewAllLabel,
   transactions,
+  categoryLookup = {},
   onViewAllPress,
 }: RecentActivitySectionProps) {
   return (
@@ -46,6 +49,7 @@ export default function RecentActivitySection({
             <TransactionListItem
               key={transaction.id}
               transaction={transaction}
+              categoryLookup={categoryLookup}
             />
           ))}
         </View>

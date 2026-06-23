@@ -4,16 +4,24 @@ import { TransactionTypeSegment } from "@/components/transactions/transaction-ty
 import { TextField, TextFieldIconSlot } from "@/components/ui/TextField";
 import { getInputIconColor } from "@/lib/input-styles";
 import { TransactionFormValues } from "@/lib/validations/transaction-form.schema";
-import { MockCategory } from "@/mocks/categories";
+import type { Category } from "@/services/categories/category.types";
+import { parseCategoryIconKey } from "@/types/category-icon";
 import { FontAwesome6 } from "@expo/vector-icons";
-import React from "react";
-import { Control, Controller, FieldErrors } from "react-hook-form";
+import React, { useEffect, useMemo } from "react";
+import {
+  Control,
+  Controller,
+  FieldErrors,
+  UseFormSetValue,
+  useWatch,
+} from "react-hook-form";
 import { Text, View } from "react-native";
 
 type TransactionFormFieldsProps = {
   control: Control<TransactionFormValues>;
+  setValue: UseFormSetValue<TransactionFormValues>;
   errors: FieldErrors<TransactionFormValues>;
-  categories: MockCategory[];
+  categories: Category[];
   disabled?: boolean;
 };
 
@@ -25,10 +33,34 @@ function FieldLabel({ children }: { children: string }) {
 
 export function TransactionFormFields({
   control,
+  setValue,
   errors,
   categories,
   disabled = false,
 }: TransactionFormFieldsProps) {
+  const selectedType = useWatch({ control, name: "type" });
+  const selectedCategoryId = useWatch({ control, name: "categoryId" });
+
+  const filteredCategories = useMemo(
+    () =>
+      categories.filter((category) => category.type === selectedType).map(
+        (category) => ({
+          ...category,
+          iconKey: parseCategoryIconKey(category.iconKey),
+        }),
+      ),
+    [categories, selectedType],
+  );
+
+  useEffect(() => {
+    if (
+      selectedCategoryId &&
+      !filteredCategories.some((category) => category.id === selectedCategoryId)
+    ) {
+      setValue("categoryId", "", { shouldValidate: true });
+    }
+  }, [filteredCategories, selectedCategoryId, setValue]);
+
   return (
     <View>
       <FieldLabel>Type</FieldLabel>
@@ -77,8 +109,9 @@ export function TransactionFormFields({
         name="categoryId"
         render={({ field: { value, onChange } }) => (
           <CategoryPickerField
+            key={selectedType}
             label="Category"
-            categories={categories}
+            categories={filteredCategories}
             value={value}
             onChange={onChange}
             error={errors.categoryId?.message}

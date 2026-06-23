@@ -2,10 +2,13 @@ import BalanceCard from "@/components/home/balance-card";
 import RecentActivitySection from "@/components/home/recent-activity-section";
 import { TransactionsErrorState } from "@/components/transactions/transactions-error-state";
 import ScreenLayout from "@/components/ui/ScreenLayout";
+import { useCategories } from "@/hooks/use-categories";
 import { useHomeDashboard } from "@/hooks/use-home-dashboard";
+import { useBackendSync } from "@/hooks/useBackendSync";
+import { buildCategoryLookup } from "@/lib/category-display";
 import { useAuth, useUser } from "@clerk/expo";
 import { Href, useFocusEffect, useRouter } from "expo-router";
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function HomeScreen() {
@@ -13,7 +16,15 @@ export default function HomeScreen() {
   const { user } = useUser();
   const router = useRouter();
   const isFirstFocus = useRef(true);
-  const { dashboard, isLoading, error, refresh } = useHomeDashboard();
+  const { currentWorkspace } = useBackendSync();
+  const workspaceId = currentWorkspace?.id;
+  const { dashboard, isLoading, error, refresh } = useHomeDashboard(workspaceId);
+  const { categories } = useCategories({ workspaceId });
+
+  const categoryLookup = useMemo(
+    () => buildCategoryLookup(categories),
+    [categories],
+  );
 
   const displayName =
     user?.firstName ?? user?.emailAddresses[0]?.emailAddress ?? "Usuario Keli";
@@ -81,6 +92,7 @@ export default function HomeScreen() {
             title="Actividad Reciente"
             viewAllLabel="Ver todo"
             transactions={dashboard.recentTransactions}
+            categoryLookup={categoryLookup}
             onViewAllPress={() => router.push("/(home)/transactions" as Href)}
           />
         ) : null}

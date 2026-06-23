@@ -13,7 +13,7 @@ const PAGE_LIMIT = 20;
 type ListStatus = "loading" | "refreshing" | "loadingMore" | "success" | "error";
 
 type UseTransactionsListOptions = {
-  workspaceId: string;
+  workspaceId: string | undefined;
 };
 
 export function useTransactionsList({ workspaceId }: UseTransactionsListOptions) {
@@ -37,6 +37,13 @@ export function useTransactionsList({ workspaceId }: UseTransactionsListOptions)
 
   const fetchPage = useCallback(
     async (nextPage: number, mode: "initial" | "refresh" | "more") => {
+      if (!workspaceId) {
+        setTransactions([]);
+        setTotal(0);
+        setStatus("success");
+        return;
+      }
+
       const requestId = ++requestIdRef.current;
 
       if (mode === "initial") {
