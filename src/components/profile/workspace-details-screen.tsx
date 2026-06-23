@@ -1,10 +1,13 @@
 import { AuthFieldError } from "@/components/auth/AuthFieldError";
 import { WorkspaceFormFields } from "@/components/profile/workspace-form-fields";
+import { WorkspaceMemberRow } from "@/components/profile/workspace-member-row";
+import { TransactionsErrorState } from "@/components/transactions/transactions-error-state";
 import ScreenLayout from "@/components/ui/ScreenLayout";
+import { useWorkspaceMembers } from "@/hooks/use-workspace-members";
 import { useWorkspaceForm } from "@/hooks/use-workspace-form";
 import { useBackendSync } from "@/hooks/useBackendSync";
-import { useLocalSearchParams, useRouter, Href } from "expo-router";
-import React from "react";
+import { useLocalSearchParams, useRouter, Href, useFocusEffect } from "expo-router";
+import React, { useCallback, useRef } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -14,8 +17,9 @@ import {
   View,
 } from "react-native";
 
-export function EditWorkspaceScreen() {
+export function WorkspaceDetailsScreen() {
   const router = useRouter();
+  const isFirstFocus = useRef(true);
   const { id } = useLocalSearchParams<{ id: string }>();
   const {
     workspaces,
@@ -26,7 +30,32 @@ export function EditWorkspaceScreen() {
   } = useBackendSync();
 
   const workspace = workspaces.find((item) => item.id === id) ?? null;
-  const isLoading = isBootstrapping || (status === "syncing" && workspaces.length === 0);
+  const isLoadingWorkspace =
+    isBootstrapping || (status === "syncing" && workspaces.length === 0);
+
+  const {
+    owner,
+    regularMembers,
+    isLoading: isLoadingMembers,
+    error: membersError,
+    removingMemberId,
+    refresh: refreshMembers,
+    removeMember,
+  } = useWorkspaceMembers({
+    workspaceId: workspace?.id,
+    enabled: Boolean(workspace && workspace.type === "shared"),
+    });
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isFirstFocus.current) {
+        isFirstFocus.current = false;
+        return;
+      }
+
+      void refreshMembers();
+    }, [refreshMembers]),
+  );
 
   const { form, onSubmit, onDelete, submitError, isSubmitting, isDeleting, isSubmitDisabled } =
     useWorkspaceForm({
@@ -59,7 +88,24 @@ export function EditWorkspaceScreen() {
     );
   };
 
-  if (isLoading) {
+  const confirmRemoveMember = (memberName: string, memberId: string) => {
+    Alert.alert(
+      "Remove member",
+      `Remove ${memberName} from this workspace?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Remove",
+          style: "destructive",
+          onPress: () => {
+            void removeMember(memberId);
+          },
+        },
+      ],
+    );
+  };
+
+  if (isLoadingWorkspace) {
     return (
       <ScreenLayout
         edges={["bottom"]}
@@ -103,7 +149,7 @@ export function EditWorkspaceScreen() {
       <ScreenLayout edges={["bottom"]} background="modal" className="px-6">
         <View className="flex-1 items-center justify-center gap-4">
           <Text className="text-center text-base text-muted-foreground">
-            Only shared workspace owners can edit this workspace.
+            Only shared workspace owners can manage workspace details.
           </Text>
           <Pressable
             className="rounded-2xl bg-brand px-5 py-3"
@@ -136,6 +182,75 @@ export function EditWorkspaceScreen() {
           errors={form.formState.errors}
           disabled={isSubmitting || isDeleting}
         />
+
+        <View className="mt-8">
+          <Text className="text-lg font-bold text-foreground">Owner</Text>
+
+          {isLoadingMembers ? (
+            <View className="mt-4 items-center py-6">
+              <ActivityIndicator size="small" color="hsl(144, 16%, 37%)" />
+            </View>
+          ) : null}
+
+          {membersError && !owner ? (
+            <View className="mt-4">
+              <TransactionsErrorState
+                message={membersError}
+                onRetry={refreshMembers}
+              />
+            </View>
+          ) : null}
+
+          {owner ? (
+            <View className="mt-4">
+              <WorkspaceMemberRow member={owner} subtitle="Owner" />
+            </View>
+          ) : null}
+        </View>
+
+        <View className="mt-8">
+          <Text className="text-lg font-bold text-foreground">Members</Text>
+
+          {isLoadingMembers && regularMembers.length === 0 ? (
+            <View className="mt-4 items-center py-6">
+              <ActivityIndicator size="small" color="hsl(144, 16%, 37%)" />
+            </View>
+          ) : null}
+
+          {membersError && !isLoadingMembers ? (
+            <View className="mt-4">
+              <Text className="text-sm text-destructive">{membersError}</Text>
+            </View>
+          ) : null}
+
+          {!isLoadingMembers && !membersError && regularMembers.length === 0 ? (
+            <View className="mt-4 rounded-2xl border border-dashed border-border bg-card px-4 py-6">
+              <Text className="text-center text-sm text-muted-foreground">
+                No members yet. Invite someone to join this workspace.
+              </Text>
+            </View>
+          ) : null}
+
+          {regularMembers.length > 0 ? (
+            <View className="mt-4 gap-3">
+              {regularMembers.map((member) => (
+                <WorkspaceMemberRow
+                  key={member.id}
+                  member={member}
+                  subtitle="Member"
+                  canRemove
+                  isRemoving={removingMemberId === member.id}
+                  onRemove={() =>
+                    confirmRemoveMember(
+                      member.name?.trim() || member.email,
+                      member.id,
+                    )
+                  }
+                />
+              ))}
+            </View>
+          ) : null}
+        </View>
       </ScrollView>
 
       <View className="gap-3 bg-card px-6 pb-6 pt-4">

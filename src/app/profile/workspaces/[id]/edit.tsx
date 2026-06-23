@@ -1,5 +1,5 @@
-import { EditWorkspaceScreen } from "@/components/profile/edit-workspace-screen";
+import { WorkspaceDetailsScreen } from "@/components/profile/workspace-details-screen";
 
-export default function EditWorkspaceRoute() {
-  return <EditWorkspaceScreen />;
+export default function WorkspaceDetailsRoute() {
+  return <WorkspaceDetailsScreen />;
 }

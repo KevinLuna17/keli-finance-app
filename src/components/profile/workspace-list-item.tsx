@@ -72,7 +72,7 @@ export function WorkspaceListItem({
           className="size-11 items-center justify-center rounded-2xl border border-border bg-card active:opacity-80"
           onPress={onEdit}
           accessibilityRole="button"
-          accessibilityLabel={`Edit ${workspace.name}`}
+          accessibilityLabel={`Manage ${workspace.name}`}
         >
           <FontAwesome6 name="pen" size={14} color="#64748B" />
         </Pressable>
