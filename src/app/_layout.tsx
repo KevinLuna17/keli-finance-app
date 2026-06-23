@@ -55,6 +55,10 @@ function RootLayoutNav() {
             name="transaction"
             options={{ headerShown: false, presentation: "modal" }}
           />
+          <Stack.Screen
+            name="profile"
+            options={{ headerShown: false, presentation: "modal" }}
+          />
         </Stack.Protected>
       </Stack>
       <StatusBar style="auto" />
