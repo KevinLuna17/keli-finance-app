@@ -18,7 +18,8 @@ export default function HomeScreen() {
   const isFirstFocus = useRef(true);
   const { currentWorkspace } = useBackendSync();
   const workspaceId = currentWorkspace?.id;
-  const { dashboard, isLoading, error, refresh } = useHomeDashboard(workspaceId);
+  const { dashboard, isLoading, error, refresh } =
+    useHomeDashboard(workspaceId);
   const { categories } = useCategories({ workspaceId });
 
   const categoryLookup = useMemo(
@@ -27,7 +28,7 @@ export default function HomeScreen() {
   );
 
   const displayName =
-    user?.firstName ?? user?.emailAddresses[0]?.emailAddress ?? "Usuario Keli";
+    user?.fullName ?? user?.emailAddresses[0]?.emailAddress ?? "Usuario Keli";
 
   useFocusEffect(
     useCallback(() => {
@@ -64,9 +65,7 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View>
-          <Text className="text-sm text-muted-foreground">
-            ¡Hola de nuevo!
-          </Text>
+          <Text className="text-sm text-muted-foreground">¡Hola de nuevo!</Text>
           <Text className="mt-1 text-2xl font-bold text-foreground">
             {displayName}
           </Text>
