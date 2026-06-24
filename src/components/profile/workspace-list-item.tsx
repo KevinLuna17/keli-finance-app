@@ -1,4 +1,8 @@
 import type { CurrentWorkspace } from "@/services/workspaces/workspace.types";
+import {
+  ProfileGlassCard,
+  ProfileGlassPressable,
+} from "@/components/profile/profile-glass-card";
 import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
 import { Pressable, Text, View } from "react-native";
@@ -25,12 +29,10 @@ export function WorkspaceListItem({
 
   return (
     <View className="flex-row items-center gap-2">
-      <Pressable
-        className={`flex-1 flex-row items-center rounded-2xl border px-4 py-4 active:opacity-90 ${
-          isActive
-            ? "border-brand bg-brand/10"
-            : "border-border bg-card"
-        }`}
+      <ProfileGlassPressable
+        className="flex-1"
+        contentClassName="flex-row items-center px-4 py-4"
+        active={isActive}
         onPress={onSelect}
         accessibilityRole="button"
         accessibilityState={{ selected: isActive }}
@@ -40,7 +42,7 @@ export function WorkspaceListItem({
       >
         <View
           className={`size-10 items-center justify-center rounded-full ${
-            isActive ? "bg-brand/20" : "bg-muted"
+            isActive ? "bg-brand/20" : "bg-muted/80"
           }`}
         >
           <FontAwesome6
@@ -65,16 +67,21 @@ export function WorkspaceListItem({
         {isActive ? (
           <FontAwesome6 name="circle-check" size={18} color="#508A67" />
         ) : null}
-      </Pressable>
+      </ProfileGlassPressable>
 
       {canEdit ? (
         <Pressable
-          className="size-11 items-center justify-center rounded-2xl border border-border bg-card active:opacity-80"
           onPress={onEdit}
           accessibilityRole="button"
           accessibilityLabel={`Manage ${workspace.name}`}
         >
-          <FontAwesome6 name="pen" size={14} color="#64748B" />
+          <ProfileGlassCard
+            radius={16}
+            interactive
+            contentClassName="size-11 items-center justify-center"
+          >
+            <FontAwesome6 name="pen" size={14} color="#64748B" />
+          </ProfileGlassCard>
         </Pressable>
       ) : null}
     </View>

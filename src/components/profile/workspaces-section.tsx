@@ -1,11 +1,12 @@
 import { WorkspaceListItem } from "@/components/profile/workspace-list-item";
+import { ProfileGlassPressable } from "@/components/profile/profile-glass-card";
 import { TransactionsErrorState } from "@/components/transactions/transactions-error-state";
 import { useCurrentWorkspaceId, useSetCurrentWorkspaceId } from "@/hooks/use-current-workspace";
 import { useBackendSync } from "@/hooks/useBackendSync";
 import { hapticTabPress } from "@/lib/haptics";
 import { Href, useRouter } from "expo-router";
 import React from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 
 type WorkspacesSectionProps = {
   onWorkspaceChanged?: () => void;
@@ -92,8 +93,9 @@ export function WorkspacesSection({
       ) : null}
 
       {!isLoading && !loadError ? (
-        <Pressable
-          className="mt-4 h-14 flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-card active:opacity-90"
+        <ProfileGlassPressable
+          className="mt-4"
+          contentClassName="h-14 flex-row items-center justify-center"
           onPress={() =>
             router.push("/profile/workspaces/create" as Href)
           }
@@ -103,7 +105,7 @@ export function WorkspacesSection({
           <Text className="text-base font-semibold text-brand">
             + Create Workspace
           </Text>
-        </Pressable>
+        </ProfileGlassPressable>
       ) : null}
     </View>
   );

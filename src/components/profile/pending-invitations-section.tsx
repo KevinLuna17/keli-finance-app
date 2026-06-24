@@ -1,4 +1,5 @@
 import { InvitationListItem } from "@/components/profile/invitation-list-item";
+import { ProfileGlassCard } from "@/components/profile/profile-glass-card";
 import { TransactionsErrorState } from "@/components/transactions/transactions-error-state";
 import type { UseInvitationsResult } from "@/hooks/use-invitations";
 import React from "react";
@@ -56,11 +57,16 @@ export function PendingInvitationsSection({
       ) : null}
 
       {!isLoading && !error && invitations.length === 0 ? (
-        <View className="mt-4 rounded-2xl border border-dashed border-border bg-card px-4 py-6">
+        <ProfileGlassCard
+          dashed
+          radius={16}
+          contentClassName="px-4 py-6"
+          className="mt-4"
+        >
           <Text className="text-center text-sm text-muted-foreground">
             No pending invitations
           </Text>
-        </View>
+        </ProfileGlassCard>
       ) : null}
 
       {invitations.length > 0 ? (

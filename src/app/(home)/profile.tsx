@@ -1,5 +1,9 @@
 import { PendingInvitationsSection } from "@/components/profile/pending-invitations-section";
 import { ProfileAvatar } from "@/components/profile/profile-avatar";
+import {
+  ProfileGlassCard,
+  ProfileGlassPressable,
+} from "@/components/profile/profile-glass-card";
 import { WorkspacesSection } from "@/components/profile/workspaces-section";
 import { TransactionsErrorState } from "@/components/transactions/transactions-error-state";
 import ScreenLayout from "@/components/ui/ScreenLayout";
@@ -9,16 +13,15 @@ import { useBackendSync } from "@/hooks/useBackendSync";
 import { useClerk } from "@clerk/expo";
 import { Href, useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useRef } from "react";
-import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, Text } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+/** Space for native tab bar above the home indicator. */
+const TAB_BAR_HEIGHT = 56;
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { signOut } = useClerk();
   const isFirstFocus = useRef(true);
   const { profile, isLoading, error, refresh } = useProfile();
@@ -68,12 +71,17 @@ export default function ProfileScreen() {
     <ScreenLayout edges={["top"]} background="custom" className="flex-1">
       <ScrollView
         className="flex-1 px-6"
-        contentContainerClassName="pb-8 pt-6"
+        contentContainerClassName="pt-6"
+        contentContainerStyle={{
+          paddingBottom: insets.bottom + TAB_BAR_HEIGHT + 24,
+        }}
+        contentInsetAdjustmentBehavior="automatic"
+        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <Text className="text-2xl font-bold text-foreground">Profile</Text>
+        <Text className="text-2xl font-bold text-foreground mb-4">Profile</Text>
 
-        <View className="mt-8 items-center rounded-3xl bg-card p-6 shadow-sm">
+        <ProfileGlassCard contentClassName="items-center p-6" className="mt-8">
           <ProfileAvatar profile={profile} size={96} />
 
           <Text className="mt-4 text-xl font-bold text-card-foreground">
@@ -93,7 +101,7 @@ export default function ProfileScreen() {
               Edit Profile
             </Text>
           </Pressable>
-        </View>
+        </ProfileGlassCard>
 
         <WorkspacesSection
           onWorkspaceChanged={() => {
@@ -105,14 +113,15 @@ export default function ProfileScreen() {
           onInvitationResolved={refreshWorkspaces}
         />
 
-        <Pressable
-          className="mt-6 h-14 items-center justify-center rounded-2xl border border-border bg-card active:opacity-90"
+        <ProfileGlassPressable
+          className="mt-6"
+          contentClassName="h-14 items-center justify-center"
           onPress={() => signOut()}
           accessibilityRole="button"
           accessibilityLabel="Sign out"
         >
           <Text className="text-base font-bold text-destructive">Sign out</Text>
-        </Pressable>
+        </ProfileGlassPressable>
       </ScrollView>
     </ScreenLayout>
   );

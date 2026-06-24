@@ -1,3 +1,4 @@
+import { ProfileGlassCard } from "@/components/profile/profile-glass-card";
 import type { WorkspaceInvitation } from "@/services/invitations/invitation.types";
 import React from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
@@ -24,7 +25,7 @@ export function InvitationListItem({
   onDecline,
 }: InvitationListItemProps) {
   return (
-    <View className="rounded-2xl border border-border bg-card p-4">
+    <ProfileGlassCard radius={16} contentClassName="p-4">
       <Text className="text-base font-semibold text-card-foreground">
         {invitation.workspaceName}
       </Text>
@@ -52,7 +53,7 @@ export function InvitationListItem({
         </Pressable>
 
         <Pressable
-          className="flex-1 items-center rounded-xl border border-border py-3 active:opacity-90"
+          className="flex-1 items-center rounded-xl border border-border/60 bg-white/30 py-3 active:opacity-90 dark:bg-card/20"
           onPress={onDecline}
           disabled={isActing}
           accessibilityRole="button"
@@ -61,6 +62,6 @@ export function InvitationListItem({
           <Text className="text-sm font-semibold text-foreground">Decline</Text>
         </Pressable>
       </View>
-    </View>
+    </ProfileGlassCard>
   );
 }
