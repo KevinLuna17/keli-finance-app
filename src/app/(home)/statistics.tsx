@@ -1,5 +1,5 @@
+import { EmptyAnalyticsState } from "@/components/analytics";
 import { StatisticsChartsSection } from "@/components/statistics/statistics-charts-section";
-import { StatisticsEmptyState } from "@/components/statistics/statistics-empty-state";
 import {
   StatisticsSegment,
   StatisticsSegmentControl,
@@ -91,7 +91,7 @@ export default function StatisticsScreen() {
 
         <View className="mt-6">
           {showGlobalEmpty ? (
-            <StatisticsEmptyState />
+            <EmptyAnalyticsState />
           ) : (
             <StatisticsChartsSection
               segment={segment}

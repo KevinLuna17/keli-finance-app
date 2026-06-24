@@ -1,3 +1,7 @@
+import type {
+  CategoryPieChartDatum,
+  MonthlyBarChartDatum,
+} from "@/components/analytics";
 import {
   CategoryAnalyticsItem,
   MonthlyAnalyticsItem,
@@ -40,15 +44,14 @@ export function isStatisticsEmpty(data: StatisticsAnalytics): boolean {
   );
 }
 
-export type MonthlyChartDatum = {
-  month: string;
-  income: number;
-  expense: number;
-};
+export type {
+  CategoryPieChartDatum as CategoryChartDatum,
+  MonthlyBarChartDatum as MonthlyChartDatum,
+} from "@/components/analytics";
 
 export function toMonthlyChartData(
   monthly: MonthlyAnalyticsItem[],
-): MonthlyChartDatum[] {
+): MonthlyBarChartDatum[] {
   return monthly.map((item) => ({
     month: item.month,
     income: item.income / 100,
@@ -56,16 +59,10 @@ export function toMonthlyChartData(
   }));
 }
 
-export type CategoryChartDatum = {
-  label: string;
-  value: number;
-  color: string;
-};
-
 export function toCategoryChartData(
   categories: CategoryAnalyticsItem[],
   colors: string[],
-): CategoryChartDatum[] {
+): CategoryPieChartDatum[] {
   return categories
     .filter((item) => item.amount > 0)
     .map((item, index) => ({

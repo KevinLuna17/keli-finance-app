@@ -1,35 +1,33 @@
 import { formatMoney } from "@/lib/format-money";
-import { CategoryChartDatum } from "@/lib/statistics-helpers";
 import React, { useMemo } from "react";
 import { Text, View } from "react-native";
 import { Pie, PolarChart } from "victory-native";
 
-type CategoryBreakdownChartProps = {
-  data: CategoryChartDatum[];
+export type CategoryPieChartDatum = {
+  label: string;
+  value: number;
+  color: string;
+};
+
+export type CategoryPieChartProps = {
+  data: CategoryPieChartDatum[];
   height?: number;
 };
 
-export function CategoryBreakdownChart({
+export function CategoryPieChart({
   data,
   height = 280,
-}: CategoryBreakdownChartProps) {
+}: CategoryPieChartProps) {
   const pieHeight = Math.min(height, 220);
 
-  const legendItems = useMemo(
-    () =>
-      data.map((item) => ({
-        ...item,
-        percentage:
-          data.reduce((total, entry) => total + entry.value, 0) > 0
-            ? Math.round(
-                (item.value /
-                  data.reduce((total, entry) => total + entry.value, 0)) *
-                  100,
-              )
-            : 0,
-      })),
-    [data],
-  );
+  const legendItems = useMemo(() => {
+    const total = data.reduce((sum, entry) => sum + entry.value, 0);
+
+    return data.map((item) => ({
+      ...item,
+      percentage: total > 0 ? Math.round((item.value / total) * 100) : 0,
+    }));
+  }, [data]);
 
   return (
     <View style={{ minHeight: height }}>
