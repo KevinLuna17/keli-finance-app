@@ -8,6 +8,7 @@ export default function ProfileLayout() {
   return (
     <Stack screenOptions={getModalStackScreenOptions(colors)}>
       <Stack.Screen name="edit" options={{ title: "Edit Profile" }} />
+      <Stack.Screen name="language" options={{ title: "Language" }} />
       <Stack.Screen
         name="workspaces/create"
         options={{ title: "Create Workspace" }}

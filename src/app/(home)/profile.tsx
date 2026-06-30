@@ -10,11 +10,20 @@ import ScreenLayout from "@/components/ui/ScreenLayout";
 import { useInvitations } from "@/hooks/use-invitations";
 import { useProfile } from "@/hooks/use-profile";
 import { useBackendSync } from "@/hooks/useBackendSync";
+import { usePreferencesStore } from "@/stores/preferences-store";
+import { type SupportedLanguage } from "@/i18n/languages";
 import { useClerk } from "@clerk/expo";
+import { FontAwesome6 } from "@expo/vector-icons";
 import { Href, useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useRef } from "react";
-import { ActivityIndicator, Pressable, ScrollView, Text } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+const LANGUAGE_LABELS: Record<SupportedLanguage, string> = {
+  en: "languageEnglish",
+  es: "languageSpanish",
+};
 
 /** Space for native tab bar above the home indicator. */
 const TAB_BAR_HEIGHT = 56;
@@ -23,10 +32,12 @@ export default function ProfileScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { signOut } = useClerk();
+  const { t } = useTranslation();
   const isFirstFocus = useRef(true);
   const { profile, isLoading, error, refresh } = useProfile();
   const { refreshWorkspaces } = useBackendSync();
   const invitationsState = useInvitations();
+  const { language } = usePreferencesStore();
 
   useFocusEffect(
     useCallback(() => {
@@ -102,6 +113,39 @@ export default function ProfileScreen() {
             </Text>
           </Pressable>
         </ProfileGlassCard>
+
+        <View className="mt-8">
+          <Text className="text-lg font-bold text-foreground">
+            {t("settings")}
+          </Text>
+
+          <View className="mt-4">
+            <ProfileGlassPressable
+              contentClassName="flex-row items-center px-4 py-4"
+              onPress={() => router.push("/profile/language" as Href)}
+              accessibilityRole="button"
+              accessibilityLabel={t("language")}
+            >
+              <View className="size-10 items-center justify-center rounded-full bg-muted/80">
+                <FontAwesome6 name="language" size={16} color="#508A67" />
+              </View>
+
+              <Text className="ml-3 flex-1 text-base font-semibold text-card-foreground">
+                {t("language")}
+              </Text>
+
+              <Text className="mr-2 text-sm text-muted-foreground">
+                {t(LANGUAGE_LABELS[language])}
+              </Text>
+
+              <FontAwesome6
+                name="chevron-right"
+                size={12}
+                color="#64748B"
+              />
+            </ProfileGlassPressable>
+          </View>
+        </View>
 
         <WorkspacesSection
           onWorkspaceChanged={() => {

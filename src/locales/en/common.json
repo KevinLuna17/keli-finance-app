@@ -10,5 +10,9 @@
   "cancel": "Cancel",
   "edit": "Edit",
   "delete": "Delete",
-  "signOut": "Sign Out"
+  "signOut": "Sign Out",
+  "language": "Language",
+  "languageEnglish": "English",
+  "languageSpanish": "Español",
+  "languageSyncError": "Language saved locally. Could not sync with server."
 }
