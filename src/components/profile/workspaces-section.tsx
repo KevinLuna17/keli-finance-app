@@ -7,6 +7,7 @@ import { hapticTabPress } from "@/lib/haptics";
 import { Href, useRouter } from "expo-router";
 import React from "react";
 import { ActivityIndicator, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type WorkspacesSectionProps = {
   onWorkspaceChanged?: () => void;
@@ -15,6 +16,7 @@ type WorkspacesSectionProps = {
 export function WorkspacesSection({
   onWorkspaceChanged,
 }: WorkspacesSectionProps) {
+  const { t } = useTranslation();
   const router = useRouter();
   const currentWorkspaceId = useCurrentWorkspaceId();
   const setCurrentWorkspaceId = useSetCurrentWorkspaceId();
@@ -49,9 +51,9 @@ export function WorkspacesSection({
 
   return (
     <View className="mt-8">
-      <Text className="text-lg font-bold text-foreground">Workspaces</Text>
+      <Text className="text-lg font-bold text-foreground">{t("workspaces.title")}</Text>
       <Text className="mt-1 text-sm text-muted-foreground">
-        Select the workspace used across Home, Transactions, and Statistics.
+        {t("workspaces.subtitle")}
       </Text>
 
       {isLoading ? (
@@ -100,10 +102,10 @@ export function WorkspacesSection({
             router.push("/profile/workspaces/create" as Href)
           }
           accessibilityRole="button"
-          accessibilityLabel="Create workspace"
+          accessibilityLabel={t("workspaces.createWorkspaceLabel")}
         >
           <Text className="text-base font-semibold text-brand">
-            + Create Workspace
+            + {t("workspaces.createWorkspace")}
           </Text>
         </ProfileGlassPressable>
       ) : null}

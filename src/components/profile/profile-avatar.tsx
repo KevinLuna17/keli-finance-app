@@ -2,6 +2,7 @@ import type { Profile } from "@/services/profile/profile.types";
 import { Image } from "expo-image";
 import React, { useMemo } from "react";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type ProfileAvatarProps = {
   profile: Pick<Profile, "name" | "email" | "imageUrl">;
@@ -19,6 +20,7 @@ function getInitials(name: string | null, email: string): string {
 }
 
 export function ProfileAvatar({ profile, size = 96 }: ProfileAvatarProps) {
+  const { t } = useTranslation();
   const initials = useMemo(
     () => getInitials(profile.name, profile.email),
     [profile.email, profile.name],
@@ -28,7 +30,7 @@ export function ProfileAvatar({ profile, size = 96 }: ProfileAvatarProps) {
     return (
       <Image
         source={{ uri: profile.imageUrl }}
-        accessibilityLabel="Profile photo"
+        accessibilityLabel={t("profileScreen.photoLabel")}
         style={{ width: size, height: size, borderRadius: size / 2 }}
         contentFit="cover"
       />

@@ -14,6 +14,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type InviteMemberScreenProps = {
   workspaceId: string;
@@ -24,6 +25,7 @@ export function InviteMemberScreen({
   workspaceId,
   workspaceName,
 }: InviteMemberScreenProps) {
+  const { t } = useTranslation();
   const router = useRouter();
 
   const { form, onSubmit, submitError, isSubmitting, isSubmitDisabled } =
@@ -42,9 +44,9 @@ export function InviteMemberScreen({
         showsVerticalScrollIndicator={false}
       >
         <Text className="text-base text-muted-foreground">
-          Invite someone to join{" "}
+          {t("invitations.inviteIntro")}{" "}
           <Text className="font-semibold text-foreground">{workspaceName}</Text>
-          . They will see the invitation inside the app.
+          {t("invitations.inviteNote")}
         </Text>
 
         {submitError ? (
@@ -55,7 +57,7 @@ export function InviteMemberScreen({
 
         <View className={submitError ? "mt-2" : "mt-4"}>
           <Text className="mb-2 text-sm font-medium text-foreground">
-            Email address
+            {t("invitations.emailLabel")}
           </Text>
           <Controller
             control={form.control}
@@ -66,7 +68,7 @@ export function InviteMemberScreen({
                 onChangeText={onChange}
                 onBlur={onBlur}
                 editable={!isSubmitting}
-                placeholder="name@example.com"
+                placeholder={t("invitations.emailPlaceholder")}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -84,8 +86,7 @@ export function InviteMemberScreen({
             )}
           />
           <Text className="-mt-1 text-xs text-muted-foreground">
-            No email will be sent. The invitation appears in their Profile when
-            they sign in with this address.
+            {t("invitations.emailHint")}
           </Text>
         </View>
       </ScrollView>
@@ -110,7 +111,7 @@ export function InviteMemberScreen({
                   : "text-brand-foreground"
               }`}
             >
-              Send Invitation
+              {t("invitations.sendInvitation")}
             </Text>
           )}
         </Pressable>

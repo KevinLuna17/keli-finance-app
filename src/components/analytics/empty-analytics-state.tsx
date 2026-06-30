@@ -2,6 +2,7 @@ import { useAnalyticsChartTheme } from "@/components/analytics/use-analytics-cha
 import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export type EmptyAnalyticsStateProps = {
   title?: string;
@@ -11,12 +12,16 @@ export type EmptyAnalyticsStateProps = {
 };
 
 export function EmptyAnalyticsState({
-  title = "No insights yet",
-  message = "Add income and expense transactions to unlock charts and summaries for this workspace.",
+  title,
+  message,
   icon = "chart-pie",
   className,
 }: EmptyAnalyticsStateProps) {
+  const { t } = useTranslation();
   const theme = useAnalyticsChartTheme();
+
+  const resolvedTitle = title ?? t("statistics.noInsightsTitle");
+  const resolvedMessage = message ?? t("statistics.noInsightsSubtitle");
 
   return (
     <View
@@ -26,10 +31,10 @@ export function EmptyAnalyticsState({
         <FontAwesome6 name={icon} size={28} color={theme.brand} />
       </View>
       <Text className="mt-4 text-center text-lg font-bold text-foreground">
-        {title}
+        {resolvedTitle}
       </Text>
       <Text className="mt-2 text-center text-base leading-6 text-muted-foreground">
-        {message}
+        {resolvedMessage}
       </Text>
     </View>
   );

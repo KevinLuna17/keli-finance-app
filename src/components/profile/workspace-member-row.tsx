@@ -2,6 +2,7 @@ import { ProfileAvatar } from "@/components/profile/profile-avatar";
 import type { WorkspaceMember } from "@/services/workspace-members/workspace-member.types";
 import React from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type WorkspaceMemberRowProps = {
   member: WorkspaceMember;
@@ -18,6 +19,7 @@ export function WorkspaceMemberRow({
   isRemoving = false,
   onRemove,
 }: WorkspaceMemberRowProps) {
+  const { t } = useTranslation();
   const displayName = member.name?.trim() || member.email;
 
   return (
@@ -46,12 +48,12 @@ export function WorkspaceMemberRow({
           onPress={onRemove}
           disabled={isRemoving}
           accessibilityRole="button"
-          accessibilityLabel={`Remove ${displayName}`}
+          accessibilityLabel={t("workspaces.removeLabel", { name: displayName })}
         >
           {isRemoving ? (
             <ActivityIndicator color="#DC2626" size="small" />
           ) : (
-            <Text className="text-sm font-semibold text-destructive">Remove</Text>
+            <Text className="text-sm font-semibold text-destructive">{t("workspaces.remove")}</Text>
           )}
         </Pressable>
       ) : null}

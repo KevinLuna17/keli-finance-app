@@ -2,6 +2,7 @@ import { formatMoney } from "@/lib/format-money";
 import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type BalanceCardProps = {
   label: string;
@@ -39,9 +40,13 @@ export default function BalanceCard({
   amountInSmallestUnits,
   incomeInSmallestUnits,
   expenseInSmallestUnits,
-  incomeLabel = "Ingresos",
-  expenseLabel = "Gastos",
+  incomeLabel,
+  expenseLabel,
 }: BalanceCardProps) {
+  const { t } = useTranslation();
+  const resolvedIncomeLabel = incomeLabel ?? t("income");
+  const resolvedExpenseLabel = expenseLabel ?? t("expense");
+
   return (
     <View className="relative overflow-hidden rounded-3xl bg-brand p-6 shadow-md">
       <View className="absolute -right-10 -top-10 size-40 rounded-full bg-white/10" />
@@ -56,12 +61,12 @@ export default function BalanceCard({
 
       <View className="mt-6 flex-row gap-3">
         <SummaryStat
-          label={incomeLabel}
+          label={resolvedIncomeLabel}
           amountInSmallestUnits={incomeInSmallestUnits}
           icon="arrow-down"
         />
         <SummaryStat
-          label={expenseLabel}
+          label={resolvedExpenseLabel}
           amountInSmallestUnits={expenseInSmallestUnits}
           icon="arrow-up"
         />

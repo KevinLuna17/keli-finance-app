@@ -18,6 +18,7 @@ import {
 } from "@/services/analytics/analytics.types";
 import React, { useMemo } from "react";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type StatisticsChartsSectionProps = {
   segment: StatisticsSegment;
@@ -34,6 +35,7 @@ export function StatisticsChartsSection({
   incomeByCategory,
   isLoading = false,
 }: StatisticsChartsSectionProps) {
+  const { t } = useTranslation();
   const chartTheme = useAnalyticsChartTheme();
 
   const monthlyChartData = useMemo(() => toMonthlyChartData(monthly), [monthly]);
@@ -65,22 +67,22 @@ export function StatisticsChartsSection({
   return (
     <View className="gap-4">
       <AnalyticsSection
-        title="Monthly income vs expense"
-        subtitle="Last 12 months"
+        title={t("statistics.monthlyChartTitle")}
+        subtitle={t("statistics.monthlyChartSubtitle")}
         isLoading={isLoading}
         isEmpty={!isLoading && !hasMonthlyActivity(monthly)}
-        emptyMessage="No monthly activity yet. Transactions will appear here once recorded."
+        emptyMessage={t("statistics.noMonthlyActivity")}
       >
         <MonthlyBarChart data={monthlyChartData} />
       </AnalyticsSection>
 
       {showExpenseCategories ? (
         <AnalyticsSection
-          title="Expenses by category"
-          subtitle="Where your money goes"
+          title={t("statistics.expensesByCategoryTitle")}
+          subtitle={t("statistics.expensesByCategorySubtitle")}
           isLoading={isLoading}
           isEmpty={!isLoading && !hasCategoryActivity(expensesByCategory)}
-          emptyMessage="No expense categories yet. Add expenses to see this breakdown."
+          emptyMessage={t("statistics.noExpenseCategories")}
           contentHeight={320}
         >
           <CategoryPieChart data={expenseChartData} height={320} />
@@ -89,11 +91,11 @@ export function StatisticsChartsSection({
 
       {showIncomeCategories ? (
         <AnalyticsSection
-          title="Income by category"
-          subtitle="Where your money comes from"
+          title={t("statistics.incomeByCategoryTitle")}
+          subtitle={t("statistics.incomeByCategorySubtitle")}
           isLoading={isLoading}
           isEmpty={!isLoading && !hasCategoryActivity(incomeByCategory)}
-          emptyMessage="No income categories yet. Add income to see this breakdown."
+          emptyMessage={t("statistics.noIncomeCategories")}
           contentHeight={320}
         >
           <CategoryPieChart data={incomeChartData} height={320} />

@@ -3,6 +3,7 @@ import type { CategoryLookup } from "@/lib/category-display";
 import { Transaction } from "@/services/transactions/transaction.types";
 import React from "react";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type RecentActivitySectionProps = {
   title: string;
@@ -19,6 +20,8 @@ export default function RecentActivitySection({
   categoryLookup = {},
   onViewAllPress,
 }: RecentActivitySectionProps) {
+  const { t } = useTranslation();
+
   return (
     <View className="mt-8">
       <View className="mb-4 flex-row items-center justify-between">
@@ -40,7 +43,7 @@ export default function RecentActivitySection({
       {transactions.length === 0 ? (
         <View className="rounded-2xl bg-card p-6">
           <Text className="text-center text-sm text-muted-foreground">
-            No recent transactions yet.
+            {t("dashboard.noRecentTransactions")}
           </Text>
         </View>
       ) : (

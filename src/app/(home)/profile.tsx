@@ -76,7 +76,7 @@ export default function ProfileScreen() {
     return null;
   }
 
-  const displayName = profile.name?.trim() || "User";
+  const displayName = profile.name?.trim() || t("profileScreen.user");
 
   return (
     <ScreenLayout edges={["top"]} background="custom" className="flex-1">
@@ -90,7 +90,7 @@ export default function ProfileScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <Text className="text-2xl font-bold text-foreground mb-4">Profile</Text>
+        <Text className="text-2xl font-bold text-foreground mb-4">{t("profile")}</Text>
 
         <ProfileGlassCard contentClassName="items-center p-6" className="mt-8">
           <ProfileAvatar profile={profile} size={96} />
@@ -106,10 +106,10 @@ export default function ProfileScreen() {
             className="mt-6 w-full items-center rounded-2xl bg-brand py-3"
             onPress={() => router.push("/profile/edit" as Href)}
             accessibilityRole="button"
-            accessibilityLabel="Edit profile"
+            accessibilityLabel={t("profileScreen.editProfileLabel")}
           >
             <Text className="text-base font-semibold text-brand-foreground">
-              Edit Profile
+              {t("profileScreen.editProfile")}
             </Text>
           </Pressable>
         </ProfileGlassCard>
@@ -162,9 +162,9 @@ export default function ProfileScreen() {
           contentClassName="h-14 items-center justify-center"
           onPress={() => signOut()}
           accessibilityRole="button"
-          accessibilityLabel="Sign out"
+          accessibilityLabel={t("signOut")}
         >
-          <Text className="text-base font-bold text-destructive">Sign out</Text>
+          <Text className="text-base font-bold text-destructive">{t("signOut")}</Text>
         </ProfileGlassPressable>
       </ScrollView>
     </ScreenLayout>

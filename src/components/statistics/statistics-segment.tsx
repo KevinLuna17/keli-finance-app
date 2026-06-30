@@ -1,6 +1,7 @@
 import { hapticTabPress } from "@/lib/haptics";
 import React from "react";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export type StatisticsSegment = "overview" | "income" | "expense";
 
@@ -10,17 +11,19 @@ type StatisticsSegmentProps = {
   disabled?: boolean;
 };
 
-const OPTIONS: { value: StatisticsSegment; label: string }[] = [
-  { value: "overview", label: "Overview" },
-  { value: "income", label: "Income" },
-  { value: "expense", label: "Expense" },
-];
-
 export function StatisticsSegmentControl({
   value,
   onChange,
   disabled = false,
 }: StatisticsSegmentProps) {
+  const { t } = useTranslation();
+
+  const OPTIONS: { value: StatisticsSegment; label: string }[] = [
+    { value: "overview", label: t("statistics.overview") },
+    { value: "income", label: t("statistics.income") },
+    { value: "expense", label: t("expense") },
+  ];
+
   return (
     <View className="flex-row rounded-2xl border border-border bg-card p-1">
       {OPTIONS.map((option) => {

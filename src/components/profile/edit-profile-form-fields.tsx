@@ -1,4 +1,3 @@
-import { AuthFieldError } from "@/components/auth/AuthFieldError";
 import { TextField, TextFieldIconSlot } from "@/components/ui/TextField";
 import { getInputIconColor } from "@/lib/input-styles";
 import { ProfileFormValues } from "@/lib/validations/profile-form.schema";
@@ -7,6 +6,7 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type EditProfileFormFieldsProps = {
   control: Control<ProfileFormValues>;
@@ -27,9 +27,11 @@ export function EditProfileFormFields({
   profile,
   disabled = false,
 }: EditProfileFormFieldsProps) {
+  const { t } = useTranslation();
+
   return (
     <View>
-      <FieldLabel>Name</FieldLabel>
+      <FieldLabel>{t("profileScreen.nameLabel")}</FieldLabel>
       <Controller
         control={control}
         name="name"
@@ -39,7 +41,7 @@ export function EditProfileFormFields({
             onChangeText={onChange}
             onBlur={onBlur}
             editable={!disabled}
-            placeholder="Your name"
+            placeholder={t("profileScreen.namePlaceholder")}
             autoCapitalize="words"
             error={errors.name?.message}
             renderLeftSlot={(state) => (
@@ -55,7 +57,7 @@ export function EditProfileFormFields({
         )}
       />
 
-      <FieldLabel>Email</FieldLabel>
+      <FieldLabel>{t("profileScreen.emailLabel")}</FieldLabel>
       <TextField
         value={profile.email}
         editable={false}
@@ -71,7 +73,7 @@ export function EditProfileFormFields({
         )}
       />
       <Text className="-mt-1 mb-3 text-xs text-muted-foreground">
-        Email is managed by your sign-in provider and cannot be changed here.
+        {t("profileScreen.emailReadOnly")}
       </Text>
     </View>
   );

@@ -6,6 +6,7 @@ import {
 import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type WorkspaceListItemProps = {
   workspace: CurrentWorkspace;
@@ -14,18 +15,18 @@ type WorkspaceListItemProps = {
   onEdit?: () => void;
 };
 
-function getWorkspaceTypeLabel(type: CurrentWorkspace["type"]): string {
-  return type === "personal" ? "Personal" : "Shared";
-}
-
 export function WorkspaceListItem({
   workspace,
   isActive,
   onSelect,
   onEdit,
 }: WorkspaceListItemProps) {
+  const { t } = useTranslation();
   const canEdit =
     workspace.type === "shared" && workspace.role === "owner" && onEdit;
+
+  const typeLabel =
+    workspace.type === "personal" ? t("workspaces.personal") : t("workspaces.shared");
 
   return (
     <View className="flex-row items-center gap-2">
@@ -36,8 +37,8 @@ export function WorkspaceListItem({
         onPress={onSelect}
         accessibilityRole="button"
         accessibilityState={{ selected: isActive }}
-        accessibilityLabel={`${workspace.name}, ${getWorkspaceTypeLabel(workspace.type)}${
-          isActive ? ", current workspace" : ""
+        accessibilityLabel={`${workspace.name}, ${typeLabel}${
+          isActive ? `, ${t("workspaces.currentWorkspace")}` : ""
         }`}
       >
         <View
@@ -57,9 +58,9 @@ export function WorkspaceListItem({
             {workspace.name}
           </Text>
           <Text className="mt-0.5 text-sm text-muted-foreground">
-            {getWorkspaceTypeLabel(workspace.type)}
+            {typeLabel}
             {workspace.type === "shared" && workspace.role === "member"
-              ? " · Member"
+              ? ` · ${t("workspaces.member")}`
               : null}
           </Text>
         </View>
@@ -73,7 +74,7 @@ export function WorkspaceListItem({
         <Pressable
           onPress={onEdit}
           accessibilityRole="button"
-          accessibilityLabel={`Manage ${workspace.name}`}
+          accessibilityLabel={t("workspaces.manage", { name: workspace.name })}
         >
           <ProfileGlassCard
             radius={16}

@@ -16,8 +16,10 @@ import {
   Text,
   View,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export function WorkspaceDetailsScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const isFirstFocus = useRef(true);
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -73,12 +75,12 @@ export function WorkspaceDetailsScreen() {
 
   const confirmDelete = () => {
     Alert.alert(
-      "Delete workspace",
-      "This will permanently remove the shared workspace and its data for all members.",
+      t("workspaces.deleteConfirmTitle"),
+      t("workspaces.deleteConfirmMessage"),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("cancel"), style: "cancel" },
         {
-          text: "Delete",
+          text: t("workspaces.remove"),
           style: "destructive",
           onPress: () => {
             void onDelete();
@@ -90,12 +92,12 @@ export function WorkspaceDetailsScreen() {
 
   const confirmRemoveMember = (memberName: string, memberId: string) => {
     Alert.alert(
-      "Remove member",
-      `Remove ${memberName} from this workspace?`,
+      t("workspaces.removeMemberTitle"),
+      t("workspaces.removeMemberMessage", { name: memberName }),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("cancel"), style: "cancel" },
         {
-          text: "Remove",
+          text: t("workspaces.remove"),
           style: "destructive",
           onPress: () => {
             void removeMember(memberId);
@@ -122,7 +124,7 @@ export function WorkspaceDetailsScreen() {
       <ScreenLayout edges={["bottom"]} background="modal" className="px-6">
         <View className="flex-1 items-center justify-center gap-4">
           <Text className="text-center text-base text-destructive">
-            {error ?? "Workspace not found"}
+            {error ?? t("workspaces.notFound")}
           </Text>
           <Pressable
             className="rounded-2xl bg-brand px-5 py-3"
@@ -136,7 +138,7 @@ export function WorkspaceDetailsScreen() {
             }}
           >
             <Text className="font-semibold text-brand-foreground">
-              {error ? "Retry" : "Go back"}
+              {error ? t("workspaces.retry") : t("workspaces.goBack")}
             </Text>
           </Pressable>
         </View>
@@ -149,13 +151,13 @@ export function WorkspaceDetailsScreen() {
       <ScreenLayout edges={["bottom"]} background="modal" className="px-6">
         <View className="flex-1 items-center justify-center gap-4">
           <Text className="text-center text-base text-muted-foreground">
-            Only shared workspace owners can manage workspace details.
+            {t("workspaces.onlyOwnersCanManage")}
           </Text>
           <Pressable
             className="rounded-2xl bg-brand px-5 py-3"
             onPress={() => router.back()}
           >
-            <Text className="font-semibold text-brand-foreground">Go back</Text>
+            <Text className="font-semibold text-brand-foreground">{t("workspaces.goBack")}</Text>
           </Pressable>
         </View>
       </ScreenLayout>
@@ -184,7 +186,7 @@ export function WorkspaceDetailsScreen() {
         />
 
         <View className="mt-8">
-          <Text className="text-lg font-bold text-foreground">Owner</Text>
+          <Text className="text-lg font-bold text-foreground">{t("workspaces.ownerTitle")}</Text>
 
           {isLoadingMembers ? (
             <View className="mt-4 items-center py-6">
@@ -203,13 +205,13 @@ export function WorkspaceDetailsScreen() {
 
           {owner ? (
             <View className="mt-4">
-              <WorkspaceMemberRow member={owner} subtitle="Owner" />
+              <WorkspaceMemberRow member={owner} subtitle={t("workspaces.ownerSubtitle")} />
             </View>
           ) : null}
         </View>
 
         <View className="mt-8">
-          <Text className="text-lg font-bold text-foreground">Members</Text>
+          <Text className="text-lg font-bold text-foreground">{t("workspaces.membersTitle")}</Text>
 
           {isLoadingMembers && regularMembers.length === 0 ? (
             <View className="mt-4 items-center py-6">
@@ -226,7 +228,7 @@ export function WorkspaceDetailsScreen() {
           {!isLoadingMembers && !membersError && regularMembers.length === 0 ? (
             <View className="mt-4 rounded-2xl border border-dashed border-border bg-card px-4 py-6">
               <Text className="text-center text-sm text-muted-foreground">
-                No members yet. Invite someone to join this workspace.
+                {t("workspaces.noMembers")}
               </Text>
             </View>
           ) : null}
@@ -237,7 +239,7 @@ export function WorkspaceDetailsScreen() {
                 <WorkspaceMemberRow
                   key={member.id}
                   member={member}
-                  subtitle="Member"
+                  subtitle={t("workspaces.memberSubtitle")}
                   canRemove
                   isRemoving={removingMemberId === member.id}
                   onRemove={() =>
@@ -263,7 +265,7 @@ export function WorkspaceDetailsScreen() {
           className="items-center rounded-2xl border border-border py-4 active:opacity-90"
         >
           <Text className="text-base font-semibold text-foreground">
-            Invite Member
+            {t("workspaces.inviteMember")}
           </Text>
         </Pressable>
 
@@ -286,7 +288,7 @@ export function WorkspaceDetailsScreen() {
                   : "text-brand-foreground"
               }`}
             >
-              Save Changes
+              {t("profileScreen.saveChanges")}
             </Text>
           )}
         </Pressable>
@@ -302,7 +304,7 @@ export function WorkspaceDetailsScreen() {
             <ActivityIndicator color="#DC2626" />
           ) : (
             <Text className="text-base font-semibold text-destructive">
-              Delete Workspace
+              {t("workspaces.deleteWorkspace")}
             </Text>
           )}
         </Pressable>

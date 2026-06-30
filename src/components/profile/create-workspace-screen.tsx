@@ -12,8 +12,10 @@ import {
   Text,
   View,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export function CreateWorkspaceScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { refreshWorkspaces } = useBackendSync();
 
@@ -68,7 +70,7 @@ export function CreateWorkspaceScreen() {
                   : "text-brand-foreground"
               }`}
             >
-              Create Workspace
+              {t("workspaces.createWorkspace")}
             </Text>
           )}
         </Pressable>

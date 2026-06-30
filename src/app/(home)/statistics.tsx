@@ -14,10 +14,12 @@ import { useFocusEffect } from "expo-router";
 import React, { useCallback, useRef, useState } from "react";
 import { RefreshControl, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 
 const TAB_BAR_HEIGHT = 56;
 
 export default function StatisticsScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const isFirstFocus = useRef(true);
   const [segment, setSegment] = useState<StatisticsSegment>("overview");
@@ -71,9 +73,9 @@ export default function StatisticsScreen() {
         }
       >
         <View>
-          <Text className="text-sm text-muted-foreground">Insights</Text>
+          <Text className="text-sm text-muted-foreground">{t("statistics.insights")}</Text>
           <Text className="mt-1 text-2xl font-bold text-foreground">
-            Statistics
+            {t("statistics.title")}
           </Text>
         </View>
 

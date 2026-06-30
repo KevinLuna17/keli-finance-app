@@ -2,6 +2,7 @@ import { ProfileGlassCard } from "@/components/profile/profile-glass-card";
 import type { WorkspaceInvitation } from "@/services/invitations/invitation.types";
 import React from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type InvitationListItemProps = {
   invitation: WorkspaceInvitation;
@@ -10,27 +11,25 @@ type InvitationListItemProps = {
   onDecline: () => void;
 };
 
-function getInviterLabel(invitation: WorkspaceInvitation): string {
-  if (invitation.invitedByName) {
-    return `Invited by ${invitation.invitedByName}`;
-  }
-
-  return "Invited to join";
-}
-
 export function InvitationListItem({
   invitation,
   isActing,
   onAccept,
   onDecline,
 }: InvitationListItemProps) {
+  const { t } = useTranslation();
+
+  const inviterLabel = invitation.invitedByName
+    ? t("invitations.invitedBy", { name: invitation.invitedByName })
+    : t("invitations.invitedToJoin");
+
   return (
     <ProfileGlassCard radius={16} contentClassName="p-4">
       <Text className="text-base font-semibold text-card-foreground">
         {invitation.workspaceName}
       </Text>
       <Text className="mt-1 text-sm text-muted-foreground">
-        {getInviterLabel(invitation)}
+        {inviterLabel}
       </Text>
 
       <View className="mt-4 flex-row gap-3">
@@ -41,13 +40,13 @@ export function InvitationListItem({
           onPress={onAccept}
           disabled={isActing}
           accessibilityRole="button"
-          accessibilityLabel={`Accept invitation to ${invitation.workspaceName}`}
+          accessibilityLabel={t("invitations.acceptLabel", { name: invitation.workspaceName })}
         >
           {isActing ? (
             <ActivityIndicator color="white" />
           ) : (
             <Text className="text-sm font-semibold text-brand-foreground">
-              Accept
+              {t("invitations.accept")}
             </Text>
           )}
         </Pressable>
@@ -57,9 +56,9 @@ export function InvitationListItem({
           onPress={onDecline}
           disabled={isActing}
           accessibilityRole="button"
-          accessibilityLabel={`Decline invitation to ${invitation.workspaceName}`}
+          accessibilityLabel={t("invitations.declineLabel", { name: invitation.workspaceName })}
         >
-          <Text className="text-sm font-semibold text-foreground">Decline</Text>
+          <Text className="text-sm font-semibold text-foreground">{t("invitations.decline")}</Text>
         </Pressable>
       </View>
     </ProfileGlassCard>

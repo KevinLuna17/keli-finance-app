@@ -2,6 +2,7 @@ import { useAnalyticsChartTheme } from "@/components/analytics/use-analytics-cha
 import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export type AnalyticsSectionProps = {
   title: string;
@@ -19,12 +20,15 @@ export function AnalyticsSection({
   subtitle,
   isLoading = false,
   isEmpty = false,
-  emptyMessage = "No data for this period yet.",
+  emptyMessage,
   contentHeight = 280,
   children,
   className,
 }: AnalyticsSectionProps) {
+  const { t } = useTranslation();
   const theme = useAnalyticsChartTheme();
+
+  const resolvedEmptyMessage = emptyMessage ?? t("statistics.noDataForPeriod");
 
   return (
     <View
@@ -68,7 +72,7 @@ export function AnalyticsSection({
               />
             </View>
             <Text className="mt-3 text-center text-sm text-muted-foreground">
-              {emptyMessage}
+              {resolvedEmptyMessage}
             </Text>
           </View>
         ) : (

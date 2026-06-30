@@ -12,8 +12,10 @@ import {
   Text,
   View,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export function EditProfileScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { profile, isLoading, error, refresh } = useProfile();
 
@@ -43,13 +45,13 @@ export function EditProfileScreen() {
       <ScreenLayout edges={["bottom"]} background="modal" className="px-6">
         <View className="flex-1 items-center justify-center gap-4">
           <Text className="text-center text-base text-destructive">
-            {error ?? "Profile not available"}
+            {error ?? t("profileScreen.profileNotAvailable")}
           </Text>
           <Pressable
             className="rounded-2xl bg-brand px-5 py-3"
             onPress={() => router.back()}
           >
-            <Text className="font-semibold text-brand-foreground">Go back</Text>
+            <Text className="font-semibold text-brand-foreground">{t("profileScreen.goBack")}</Text>
           </Pressable>
         </View>
       </ScreenLayout>
@@ -99,7 +101,7 @@ export function EditProfileScreen() {
                   : "text-brand-foreground"
               }`}
             >
-              Save Changes
+              {t("profileScreen.saveChanges")}
             </Text>
           )}
         </Pressable>

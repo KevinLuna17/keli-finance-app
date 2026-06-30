@@ -5,6 +5,7 @@ import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import Bubbles from "../Bubbles";
 import { GlassBackButton } from "../glass";
 import ScreenLayout from "../ui/ScreenLayout";
+import { useTranslation } from "react-i18next";
 
 interface CodeVerificationProps {
   title: string;
@@ -21,18 +22,24 @@ interface CodeVerificationProps {
 
 export function CodeVerification({
   title,
-  subtitle = "Enter the verification code we sent to your email.",
+  subtitle,
   codeError,
   isLoading = false,
   onVerify,
   onResendCode,
   onStartOver,
-  verifyButtonText = "Verify",
-  resendButtonText = "I need a new code",
-  startOverButtonText = "Start over",
+  verifyButtonText,
+  resendButtonText,
+  startOverButtonText,
 }: CodeVerificationProps) {
+  const { t } = useTranslation();
   const [code, setCode] = React.useState("");
   const [localError, setLocalError] = React.useState("");
+
+  const resolvedSubtitle = subtitle ?? t("auth.enterVerificationCode");
+  const resolvedVerifyText = verifyButtonText ?? t("auth.verify");
+  const resolvedResendText = resendButtonText ?? t("auth.iNeedNewCode");
+  const resolvedStartOverText = startOverButtonText ?? t("auth.startOver");
 
   const displayError = codeError || localError;
   const isVerifyDisabled = isLoading || code.length === 0;
@@ -50,7 +57,7 @@ export function CodeVerification({
       setLocalError(
         clerkError.errors?.[0]?.message ||
           clerkError.message ||
-          "Verification failed",
+          t("auth.verificationFailed"),
       );
     }
   };
@@ -79,7 +86,7 @@ export function CodeVerification({
           </Text>
 
           <Text className="mt-2 text-center text-base leading-6 text-secondary-foreground dark:text-foreground/75">
-            {subtitle}
+            {resolvedSubtitle}
           </Text>
         </Animated.View>
 
@@ -89,7 +96,7 @@ export function CodeVerification({
         >
           <View className="self-center rounded-full bg-secondary px-3 py-1">
             <Text className="text-xs font-semibold uppercase tracking-[1px] text-secondary-foreground">
-              Security check
+              {t("auth.securityCheck")}
             </Text>
           </View>
 
@@ -110,7 +117,7 @@ export function CodeVerification({
               disabled={isVerifyDisabled}
             >
               <Text className="text-lg font-extrabold text-white">
-                {isLoading ? "Verifying..." : verifyButtonText}
+                {isLoading ? t("auth.verifying") : resolvedVerifyText}
               </Text>
             </Pressable>
 
@@ -120,7 +127,7 @@ export function CodeVerification({
               disabled={isLoading}
             >
               <Text className="text-base font-semibold text-card-foreground">
-                {resendButtonText}
+                {resolvedResendText}
               </Text>
             </Pressable>
 
@@ -130,7 +137,7 @@ export function CodeVerification({
               disabled={isLoading}
             >
               <Text className="text-base font-bold text-muted-foreground">
-                {startOverButtonText}
+                {resolvedStartOverText}
               </Text>
             </Pressable>
           </Animated.View>

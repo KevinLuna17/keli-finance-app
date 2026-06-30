@@ -3,6 +3,7 @@ import { formatChartAxisMoney } from "@/lib/chart-money";
 import React from "react";
 import { Text, View } from "react-native";
 import { BarGroup, CartesianChart } from "victory-native";
+import { useTranslation } from "react-i18next";
 
 export type MonthlyBarChartDatum = {
   month: string;
@@ -20,10 +21,14 @@ export type MonthlyBarChartProps = {
 export function MonthlyBarChart({
   data,
   height = 280,
-  incomeLabel = "Income",
-  expenseLabel = "Expense",
+  incomeLabel,
+  expenseLabel,
 }: MonthlyBarChartProps) {
+  const { t } = useTranslation();
   const theme = useAnalyticsChartTheme();
+
+  const resolvedIncomeLabel = incomeLabel ?? t("income");
+  const resolvedExpenseLabel = expenseLabel ?? t("expense");
 
   return (
     <View style={{ height }}>
@@ -53,8 +58,8 @@ export function MonthlyBarChart({
       </CartesianChart>
 
       <View className="mt-3 flex-row items-center justify-center gap-5">
-        <ChartLegendDot color={theme.income} label={incomeLabel} />
-        <ChartLegendDot color={theme.expense} label={expenseLabel} />
+        <ChartLegendDot color={theme.income} label={resolvedIncomeLabel} />
+        <ChartLegendDot color={theme.expense} label={resolvedExpenseLabel} />
       </View>
     </View>
   );

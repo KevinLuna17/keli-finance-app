@@ -5,6 +5,7 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type WorkspaceFormFieldsProps = {
   control: Control<WorkspaceFormValues>;
@@ -23,9 +24,11 @@ export function WorkspaceFormFields({
   errors,
   disabled = false,
 }: WorkspaceFormFieldsProps) {
+  const { t } = useTranslation();
+
   return (
     <View>
-      <FieldLabel>Workspace name</FieldLabel>
+      <FieldLabel>{t("workspaces.nameLabel")}</FieldLabel>
       <Controller
         control={control}
         name="name"
@@ -35,7 +38,7 @@ export function WorkspaceFormFields({
             onChangeText={onChange}
             onBlur={onBlur}
             editable={!disabled}
-            placeholder="Family Budget"
+            placeholder={t("workspaces.namePlaceholder")}
             autoCapitalize="words"
             error={errors.name?.message}
             renderLeftSlot={(state) => (
@@ -51,7 +54,7 @@ export function WorkspaceFormFields({
         )}
       />
       <Text className="-mt-1 text-xs text-muted-foreground">
-        Shared workspaces let you manage finances with others.
+        {t("workspaces.sharedWorkspaceInfo")}
       </Text>
     </View>
   );

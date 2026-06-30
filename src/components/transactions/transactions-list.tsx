@@ -11,6 +11,7 @@ import {
   RefreshControl,
   View,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type TransactionsListProps = {
   rows: TransactionListRow[];
@@ -41,6 +42,8 @@ export function TransactionsList({
   onRetry,
   onAddPress,
 }: TransactionsListProps) {
+  const { t } = useTranslation();
+
   const renderItem = useCallback(({ item }: { item: TransactionListRow }) => {
     if (item.type === "header") {
       return <TransactionDateHeader label={item.label} />;
@@ -67,7 +70,7 @@ export function TransactionsList({
   if (hasError && rows.length === 0) {
     return (
       <TransactionsErrorState
-        message={errorMessage ?? "Something went wrong"}
+        message={errorMessage ?? t("transactionsList.somethingWentWrong")}
         onRetry={onRetry}
       />
     );

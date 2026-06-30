@@ -4,6 +4,7 @@ import { TransactionsErrorState } from "@/components/transactions/transactions-e
 import type { UseInvitationsResult } from "@/hooks/use-invitations";
 import React from "react";
 import { ActivityIndicator, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type PendingInvitationsSectionProps = Pick<
   UseInvitationsResult,
@@ -28,6 +29,8 @@ export function PendingInvitationsSection({
   decline,
   onInvitationResolved,
 }: PendingInvitationsSectionProps) {
+  const { t } = useTranslation();
+
   const handleAccept = async (invitationId: string) => {
     await accept(invitationId);
     await onInvitationResolved?.();
@@ -41,7 +44,7 @@ export function PendingInvitationsSection({
   return (
     <View className="mt-8">
       <Text className="text-lg font-bold text-foreground">
-        Pending Invitations
+        {t("invitations.pendingTitle")}
       </Text>
 
       {isLoading && invitations.length === 0 ? (
@@ -64,7 +67,7 @@ export function PendingInvitationsSection({
           className="mt-4"
         >
           <Text className="text-center text-sm text-muted-foreground">
-            No pending invitations
+            {t("invitations.noPending")}
           </Text>
         </ProfileGlassCard>
       ) : null}
