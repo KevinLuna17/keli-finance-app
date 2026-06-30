@@ -1,0 +1,14 @@
+{
+  "home": "Home",
+  "transactions": "Transactions",
+  "analytics": "Analytics",
+  "profile": "Profile",
+  "settings": "Settings",
+  "income": "Income",
+  "expense": "Expense",
+  "save": "Save",
+  "cancel": "Cancel",
+  "edit": "Edit",
+  "delete": "Delete",
+  "signOut": "Sign Out"
+}

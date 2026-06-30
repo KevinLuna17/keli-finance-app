@@ -1,0 +1,14 @@
+{
+  "home": "Inicio",
+  "transactions": "Transacciones",
+  "analytics": "Análisis",
+  "profile": "Perfil",
+  "settings": "Configuración",
+  "income": "Ingreso",
+  "expense": "Gasto",
+  "save": "Guardar",
+  "cancel": "Cancelar",
+  "edit": "Editar",
+  "delete": "Eliminar",
+  "signOut": "Cerrar sesión"
+}
