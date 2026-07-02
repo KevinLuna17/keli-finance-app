@@ -161,7 +161,11 @@
     "nameLabel": "Workspace name",
     "namePlaceholder": "Family Budget",
     "sharedWorkspaceInfo": "Shared workspaces let you manage finances with others.",
-    "currencyLabel": "Currency"
+    "currencyLabel": "Currency",
+    "workspaceCurrency": "Workspace Currency",
+    "currencyModalTitle": "Workspace Currency",
+    "currencyHint": "Currency can only be changed before adding any transactions.",
+    "dismissCurrencyError": "Dismiss error"
   },
   "invitations": {
     "pendingTitle": "Pending Invitations",

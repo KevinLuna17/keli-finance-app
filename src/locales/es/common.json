@@ -161,7 +161,11 @@
     "nameLabel": "Nombre del espacio de trabajo",
     "namePlaceholder": "Presupuesto familiar",
     "sharedWorkspaceInfo": "Los espacios de trabajo compartidos te permiten administrar finanzas con otros.",
-    "currencyLabel": "Moneda"
+    "currencyLabel": "Moneda",
+    "workspaceCurrency": "Moneda del espacio de trabajo",
+    "currencyModalTitle": "Moneda del espacio de trabajo",
+    "currencyHint": "La moneda solo puede cambiarse antes de agregar transacciones.",
+    "dismissCurrencyError": "Cerrar error"
   },
   "invitations": {
     "pendingTitle": "Invitaciones pendientes",

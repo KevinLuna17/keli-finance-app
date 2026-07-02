@@ -32,8 +32,13 @@ export type UpdateWorkspaceRequest = {
   name: string;
 };
 
+export type UpdateWorkspaceCurrencyRequest = {
+  currency: string;
+};
+
 export const WORKSPACE_ENDPOINTS = {
   base: "/workspaces",
   current: "/workspaces/current",
   byId: (id: string) => `/workspaces/${id}`,
+  currency: (id: string) => `/workspaces/${id}/currency`,
 } as const;

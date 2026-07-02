@@ -21,6 +21,10 @@ export default function ProfileLayout() {
         name="workspaces/[id]/invite"
         options={{ title: "Invite Member" }}
       />
+      <Stack.Screen
+        name="workspaces/[id]/currency"
+        options={{ title: "Workspace Currency" }}
+      />
     </Stack>
   );
 }

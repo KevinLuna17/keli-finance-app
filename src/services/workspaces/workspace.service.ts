@@ -3,6 +3,7 @@ import {
   CreateWorkspaceRequest,
   CurrentWorkspace,
   GetToken,
+  UpdateWorkspaceCurrencyRequest,
   UpdateWorkspaceRequest,
   WORKSPACE_ENDPOINTS,
   Workspace,
@@ -41,6 +42,18 @@ export function updateWorkspace(
   payload: UpdateWorkspaceRequest,
 ): Promise<Workspace> {
   return apiRequest<Workspace>(WORKSPACE_ENDPOINTS.byId(workspaceId), {
+    method: "PATCH",
+    getToken,
+    body: payload,
+  });
+}
+
+export function updateWorkspaceCurrency(
+  getToken: GetToken,
+  workspaceId: string,
+  payload: UpdateWorkspaceCurrencyRequest,
+): Promise<Workspace> {
+  return apiRequest<Workspace>(WORKSPACE_ENDPOINTS.currency(workspaceId), {
     method: "PATCH",
     getToken,
     body: payload,

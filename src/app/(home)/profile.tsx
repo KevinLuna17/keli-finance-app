@@ -35,7 +35,7 @@ export default function ProfileScreen() {
   const { t } = useTranslation();
   const isFirstFocus = useRef(true);
   const { profile, isLoading, error, refresh } = useProfile();
-  const { refreshWorkspaces } = useBackendSync();
+  const { refreshWorkspaces, currentWorkspace } = useBackendSync();
   const invitationsState = useInvitations();
   const { language } = usePreferencesStore();
 
@@ -119,7 +119,7 @@ export default function ProfileScreen() {
             {t("settings")}
           </Text>
 
-          <View className="mt-4">
+          <View className="mt-4 gap-3">
             <ProfileGlassPressable
               contentClassName="flex-row items-center px-4 py-4"
               onPress={() => router.push("/profile/language" as Href)}
@@ -144,6 +144,37 @@ export default function ProfileScreen() {
                 color="#64748B"
               />
             </ProfileGlassPressable>
+
+            {currentWorkspace ? (
+              <ProfileGlassPressable
+                contentClassName="flex-row items-center px-4 py-4"
+                onPress={() =>
+                  router.push(
+                    `/profile/workspaces/${currentWorkspace.id}/currency` as Href,
+                  )
+                }
+                accessibilityRole="button"
+                accessibilityLabel={t("workspaces.workspaceCurrency")}
+              >
+                <View className="size-10 items-center justify-center rounded-full bg-muted/80">
+                  <FontAwesome6 name="coins" size={14} color="#508A67" />
+                </View>
+
+                <Text className="ml-3 flex-1 text-base font-semibold text-card-foreground">
+                  {t("workspaces.workspaceCurrency")}
+                </Text>
+
+                <Text className="mr-2 text-sm text-muted-foreground">
+                  {currentWorkspace.currency}
+                </Text>
+
+                <FontAwesome6
+                  name="chevron-right"
+                  size={12}
+                  color="#64748B"
+                />
+              </ProfileGlassPressable>
+            ) : null}
           </View>
         </View>
 
