@@ -6,9 +6,12 @@ import {
   detectDeviceRegion,
   detectDeviceTimezone,
 } from "@/lib/region";
+import { getPreferences } from "@/services/preferences/preferences.service";
 import { listWorkspaces } from "@/services/workspaces/workspace.service";
 import type { CurrentWorkspace } from "@/services/workspaces/workspace.types";
 import type { BackendUser } from "@/types/api";
+import { SUPPORTED_LANGUAGES, type SupportedLanguage } from "@/i18n/languages";
+import { usePreferencesStore } from "@/stores/preferences-store";
 import { useWorkspaceStore } from "@/stores/workspace-store";
 import { useAuth } from "@clerk/expo";
 import React, {
@@ -152,8 +155,17 @@ export function BackendSyncProvider({
         const language = detectDeviceLanguage();
         const region = detectDeviceRegion();
         const timezone = detectDeviceTimezone();
+
         const user = await syncUser(() => getTokenRef.current(), { language, region, timezone });
-        const nextWorkspaces = await listWorkspaces(() => getTokenRef.current());
+
+        const [preferences, nextWorkspaces] = await Promise.all([
+          getPreferences(() => getTokenRef.current()),
+          listWorkspaces(() => getTokenRef.current()),
+        ]);
+
+        if ((SUPPORTED_LANGUAGES as readonly string[]).includes(preferences.language)) {
+          usePreferencesStore.getState().setLanguage(preferences.language as SupportedLanguage);
+        }
 
         if (!cancelled) {
           setBackendUser(user);
