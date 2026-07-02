@@ -4,6 +4,7 @@ import { apiRequest } from "./client";
 type GetToken = () => Promise<string | null>;
 
 type SyncUserPayload = {
+  language: string;
   region: string;
   timezone: string;
 };
