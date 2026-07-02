@@ -97,7 +97,6 @@ export default function StatisticsScreen() {
           ) : (
             <StatisticsChartsSection
               segment={segment}
-              monthly={data.monthly}
               expensesByCategory={data.expensesByCategory}
               incomeByCategory={data.incomeByCategory}
               isLoading={isLoading}

@@ -116,7 +116,9 @@
     "noIncomeCategories": "Aún no hay categorías de ingresos. Agrega ingresos para ver este desglose.",
     "noDataForPeriod": "Aún no hay datos para este período.",
     "noInsightsTitle": "Sin perspectivas aún",
-    "noInsightsSubtitle": "Agrega transacciones de ingresos y gastos para desbloquear gráficas y resúmenes."
+    "noInsightsSubtitle": "Agrega transacciones de ingresos y gastos para desbloquear gráficas y resúmenes.",
+    "totalExpenses": "Total Gastos",
+    "totalIncome": "Total Ingresos"
   },
   "profileScreen": {
     "user": "Usuario",

@@ -116,7 +116,9 @@
     "noIncomeCategories": "No income categories yet. Add income to see this breakdown.",
     "noDataForPeriod": "No data for this period yet.",
     "noInsightsTitle": "No insights yet",
-    "noInsightsSubtitle": "Add income and expense transactions to unlock charts and summaries for this workspace."
+    "noInsightsSubtitle": "Add income and expense transactions to unlock charts and summaries for this workspace.",
+    "totalExpenses": "Total Expenses",
+    "totalIncome": "Total Income"
   },
   "profileScreen": {
     "user": "User",
