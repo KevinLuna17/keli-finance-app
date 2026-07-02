@@ -16,6 +16,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type TransactionFormScreenProps = {
   mode: TransactionFormMode;
@@ -26,11 +27,12 @@ export function TransactionFormScreen({
   mode,
   transactionId,
 }: TransactionFormScreenProps) {
+  const { t } = useTranslation();
   const router = useRouter();
   const { currentWorkspace, status: syncStatus } = useBackendSync();
   const workspaceId = currentWorkspace?.id;
   const submitLabel =
-    mode === "create" ? "Save Transaction" : "Update Transaction";
+    mode === "create" ? t("transactionForm.saveTransaction") : t("transactionForm.updateTransaction");
 
   const {
     categories,
@@ -59,13 +61,13 @@ export function TransactionFormScreen({
         <ScreenLayout edges={["bottom"]} background="modal" className="px-6">
           <View className="flex-1 items-center justify-center gap-4">
             <Text className="text-center text-base text-destructive">
-              Your workspace is not available. Please restart the app.
+              {t("transactionForm.workspaceUnavailable")}
             </Text>
             <Pressable
               className="rounded-2xl bg-brand px-5 py-3"
               onPress={() => router.back()}
             >
-              <Text className="font-semibold text-brand-foreground">Go back</Text>
+              <Text className="font-semibold text-brand-foreground">{t("transactionForm.goBack")}</Text>
             </Pressable>
           </View>
         </ScreenLayout>
@@ -106,7 +108,7 @@ export function TransactionFormScreen({
             className="rounded-2xl bg-brand px-5 py-3"
             onPress={() => router.back()}
           >
-            <Text className="font-semibold text-brand-foreground">Go back</Text>
+            <Text className="font-semibold text-brand-foreground">{t("transactionForm.goBack")}</Text>
           </Pressable>
         </View>
       </ScreenLayout>

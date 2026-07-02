@@ -7,8 +7,10 @@ import { buildCategoryLookup } from "@/lib/category-display";
 import { Href, useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useRef } from "react";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export default function TransactionsScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const isFirstFocus = useRef(true);
   const { currentWorkspace } = useBackendSync();
@@ -50,14 +52,14 @@ export default function TransactionsScreen() {
   return (
     <ScreenLayout edges={["top"]} background="custom" className="flex-1">
       <View className="flex-row items-center justify-between px-6 pb-4 pt-6">
-        <Text className="text-2xl font-bold text-foreground">Transactions</Text>
+        <Text className="text-2xl font-bold text-foreground">{t("transactions")}</Text>
         <Pressable
           className="rounded-full bg-brand px-4 py-2"
           onPress={handleAddPress}
           accessibilityRole="button"
-          accessibilityLabel="Add transaction"
+          accessibilityLabel={t("transactionsList.addTransaction")}
         >
-          <Text className="text-sm font-semibold text-brand-foreground">Add</Text>
+          <Text className="text-sm font-semibold text-brand-foreground">{t("transactionsList.add")}</Text>
         </Pressable>
       </View>
 

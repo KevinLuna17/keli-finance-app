@@ -10,8 +10,10 @@ import { useSignUpFlow } from "@/hooks/useSignUpFlow";
 import { Link } from "expo-router";
 import React from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export default function SignUpScreen() {
+  const { t } = useTranslation();
   const {
     emailAddress,
     password,
@@ -50,8 +52,8 @@ export default function SignUpScreen() {
   if (showEmailVerification) {
     return (
       <CodeVerification
-        title="Verify your account"
-        subtitle={`We sent a verification code to ${emailAddress}.`}
+        title={t("auth.verifyAccount")}
+        subtitle={t("auth.verificationCodeSentTo", { email: emailAddress })}
         codeError={errors.fields.code?.message}
         isLoading={fetchStatus === "fetching"}
         onVerify={handleVerify}
@@ -69,12 +71,12 @@ export default function SignUpScreen() {
       <AuthFormCard>
         <View className="self-center rounded-full bg-secondary px-3 py-1">
           <Text className="text-xs font-semibold uppercase tracking-[1px] text-secondary-foreground">
-            Create your account
+            {t("auth.createAccount")}
           </Text>
         </View>
 
         <Text className="mt-2 text-center text-sm leading-6 text-muted-foreground">
-          Let's get you started with{" "}
+          {t("auth.letsGetStarted")}{" "}
           <Text className="font-mono text-sm font-semibold leading-6 text-brand">
             KELI
           </Text>
@@ -114,22 +116,22 @@ export default function SignUpScreen() {
             disabled={!emailAddress || !password || fetchStatus === "fetching"}
           >
             <Text className="ml-3 flex-1 text-center text-lg font-extrabold text-white">
-              {fetchStatus === "fetching" ? "Signing up..." : "Sign up"}
+              {fetchStatus === "fetching" ? t("auth.signingUp") : t("auth.signUp")}
             </Text>
           </Pressable>
         </View>
 
         <Text className="mt-6 text-center text-base leading-6 text-muted-foreground">
-          Already have an account?{" "}
+          {t("auth.alreadyHaveAccount")}{" "}
           <Link href="/(auth)/sign-in" asChild>
-            <Text className="font-semibold text-brand">Sign in</Text>
+            <Text className="font-semibold text-brand">{t("auth.signIn")}</Text>
           </Link>
         </Text>
 
-        <SocialLoginSection dividerLabel="Or sign up with" />
+        <SocialLoginSection dividerLabel={t("auth.orSignUpWith")} />
 
         <Text className="mt-3 text-center text-sm leading-5 text-muted-foreground">
-          By signing up, you agree to our Terms and Privacy Policy.
+          {t("auth.termsSignUp")}
         </Text>
 
         <View nativeID="clerk-captcha" />

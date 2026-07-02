@@ -1,33 +1,30 @@
+/**
+ * @deprecated
+ * Use `useFormatCurrency` from `@/hooks/use-format-currency` instead.
+ * These wrappers exist only for backward-compatibility during migration.
+ * New code must never import from this file directly.
+ */
+import {
+  formatCurrency,
+  formatSignedCurrency,
+} from "@/utils/format-currency";
+
 const DEFAULT_CURRENCY = "USD";
-const DEFAULT_LOCALE = "en-US";
+const DEFAULT_LANGUAGE = "en";
 
 export function formatMoney(
   amountInSmallestUnits: number,
-  currency = DEFAULT_CURRENCY,
-  locale = DEFAULT_LOCALE,
+  currency: string = DEFAULT_CURRENCY,
+  language: string = DEFAULT_LANGUAGE,
 ): string {
-  const amount = amountInSmallestUnits / 100;
-
-  return new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount);
+  return formatCurrency(amountInSmallestUnits, currency, language);
 }
 
 export function formatSignedMoney(
   amountInSmallestUnits: number,
   type: "income" | "expense",
-  currency = DEFAULT_CURRENCY,
-  locale = DEFAULT_LOCALE,
+  currency: string = DEFAULT_CURRENCY,
+  language: string = DEFAULT_LANGUAGE,
 ): string {
-  const formattedAmount = formatMoney(
-    Math.abs(amountInSmallestUnits),
-    currency,
-    locale,
-  );
-  const prefix = type === "income" ? "+ " : "- ";
-
-  return `${prefix}${formattedAmount}`;
+  return formatSignedCurrency(amountInSmallestUnits, type, currency, language);
 }

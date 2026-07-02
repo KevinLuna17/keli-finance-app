@@ -10,15 +10,18 @@ import { useAuth, useUser } from "@clerk/expo";
 import { Href, useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useRef } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export default function HomeScreen() {
+  const { t } = useTranslation();
   const { isLoaded } = useAuth();
   const { user } = useUser();
   const router = useRouter();
   const isFirstFocus = useRef(true);
   const { currentWorkspace } = useBackendSync();
   const workspaceId = currentWorkspace?.id;
-  const { dashboard, isLoading, error, refresh } = useHomeDashboard(workspaceId);
+  const { dashboard, isLoading, error, refresh } =
+    useHomeDashboard(workspaceId);
   const { categories } = useCategories({ workspaceId });
 
   const categoryLookup = useMemo(
@@ -27,7 +30,7 @@ export default function HomeScreen() {
   );
 
   const displayName =
-    user?.firstName ?? user?.emailAddresses[0]?.emailAddress ?? "Usuario Keli";
+    user?.fullName ?? user?.emailAddresses[0]?.emailAddress ?? t("dashboard.defaultName");
 
   useFocusEffect(
     useCallback(() => {
@@ -64,9 +67,7 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View>
-          <Text className="text-sm text-muted-foreground">
-            ¡Hola de nuevo!
-          </Text>
+          <Text className="text-sm text-muted-foreground">{t("dashboard.greeting")}</Text>
           <Text className="mt-1 text-2xl font-bold text-foreground">
             {displayName}
           </Text>
@@ -79,7 +80,7 @@ export default function HomeScreen() {
             </View>
           ) : (
             <BalanceCard
-              label="Saldo Total"
+              label={t("dashboard.totalBalance")}
               amountInSmallestUnits={dashboard.balanceInCents}
               incomeInSmallestUnits={dashboard.totalIncomeInCents}
               expenseInSmallestUnits={dashboard.totalExpensesInCents}
@@ -89,8 +90,8 @@ export default function HomeScreen() {
 
         {!isLoading ? (
           <RecentActivitySection
-            title="Actividad Reciente"
-            viewAllLabel="Ver todo"
+            title={t("dashboard.recentActivity")}
+            viewAllLabel={t("dashboard.seeAll")}
             transactions={dashboard.recentTransactions}
             categoryLookup={categoryLookup}
             onViewAllPress={() => router.push("/(home)/transactions" as Href)}

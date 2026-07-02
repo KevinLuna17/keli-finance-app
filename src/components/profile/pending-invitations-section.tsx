@@ -1,0 +1,93 @@
+import { InvitationListItem } from "@/components/profile/invitation-list-item";
+import { ProfileGlassCard } from "@/components/profile/profile-glass-card";
+import { TransactionsErrorState } from "@/components/transactions/transactions-error-state";
+import type { UseInvitationsResult } from "@/hooks/use-invitations";
+import React from "react";
+import { ActivityIndicator, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
+
+type PendingInvitationsSectionProps = Pick<
+  UseInvitationsResult,
+  | "invitations"
+  | "isLoading"
+  | "error"
+  | "actingInvitationId"
+  | "refresh"
+  | "accept"
+  | "decline"
+> & {
+  onInvitationResolved?: () => Promise<void>;
+};
+
+export function PendingInvitationsSection({
+  invitations,
+  isLoading,
+  error,
+  actingInvitationId,
+  refresh,
+  accept,
+  decline,
+  onInvitationResolved,
+}: PendingInvitationsSectionProps) {
+  const { t } = useTranslation();
+
+  const handleAccept = async (invitationId: string) => {
+    await accept(invitationId);
+    await onInvitationResolved?.();
+  };
+
+  const handleDecline = async (invitationId: string) => {
+    await decline(invitationId);
+    await onInvitationResolved?.();
+  };
+
+  return (
+    <View className="mt-8">
+      <Text className="text-lg font-bold text-foreground">
+        {t("invitations.pendingTitle")}
+      </Text>
+
+      {isLoading && invitations.length === 0 ? (
+        <View className="mt-4 items-center py-8">
+          <ActivityIndicator size="small" color="hsl(144, 16%, 37%)" />
+        </View>
+      ) : null}
+
+      {error && invitations.length === 0 ? (
+        <View className="mt-4">
+          <TransactionsErrorState message={error} onRetry={refresh} />
+        </View>
+      ) : null}
+
+      {!isLoading && !error && invitations.length === 0 ? (
+        <ProfileGlassCard
+          dashed
+          radius={16}
+          contentClassName="px-4 py-6"
+          className="mt-4"
+        >
+          <Text className="text-center text-sm text-muted-foreground">
+            {t("invitations.noPending")}
+          </Text>
+        </ProfileGlassCard>
+      ) : null}
+
+      {invitations.length > 0 ? (
+        <View className="mt-4 gap-3">
+          {error ? (
+            <Text className="text-sm text-destructive">{error}</Text>
+          ) : null}
+          {invitations.map((invitation) => (
+            <InvitationListItem
+              key={invitation.id}
+              invitation={invitation}
+              isActing={actingInvitationId === invitation.id}
+              onAccept={() => handleAccept(invitation.id)}
+              onDecline={() => handleDecline(invitation.id)}
+            />
+          ))}
+        </View>
+      ) : null}
+    </View>
+  );
+}

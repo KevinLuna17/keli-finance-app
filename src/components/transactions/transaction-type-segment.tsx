@@ -2,6 +2,7 @@ import { TransactionType } from "@/services/transactions/transaction.types";
 import { hapticTabPress } from "@/lib/haptics";
 import React from "react";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type TransactionTypeSegmentProps = {
   value: TransactionType;
@@ -9,16 +10,18 @@ type TransactionTypeSegmentProps = {
   disabled?: boolean;
 };
 
-const OPTIONS: { value: TransactionType; label: string }[] = [
-  { value: "expense", label: "Expense" },
-  { value: "income", label: "Income" },
-];
-
 export function TransactionTypeSegment({
   value,
   onChange,
   disabled = false,
 }: TransactionTypeSegmentProps) {
+  const { t } = useTranslation();
+
+  const OPTIONS: { value: TransactionType; label: string }[] = [
+    { value: "expense", label: t("expense") },
+    { value: "income", label: t("income") },
+  ];
+
   return (
     <View className="flex-row rounded-2xl border border-border bg-card p-1">
       {OPTIONS.map((option) => {

@@ -16,6 +16,7 @@ import {
   useWatch,
 } from "react-hook-form";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type TransactionFormFieldsProps = {
   control: Control<TransactionFormValues>;
@@ -38,6 +39,7 @@ export function TransactionFormFields({
   categories,
   disabled = false,
 }: TransactionFormFieldsProps) {
+  const { t } = useTranslation();
   const selectedType = useWatch({ control, name: "type" });
   const selectedCategoryId = useWatch({ control, name: "categoryId" });
 
@@ -63,7 +65,7 @@ export function TransactionFormFields({
 
   return (
     <View>
-      <FieldLabel>Type</FieldLabel>
+      <FieldLabel>{t("transactionForm.typeLabel")}</FieldLabel>
       <Controller
         control={control}
         name="type"
@@ -78,7 +80,7 @@ export function TransactionFormFields({
         )}
       />
 
-      <FieldLabel>Amount</FieldLabel>
+      <FieldLabel>{t("transactionForm.amountLabel")}</FieldLabel>
       <Controller
         control={control}
         name="amount"
@@ -88,7 +90,7 @@ export function TransactionFormFields({
             onChangeText={onChange}
             onBlur={onBlur}
             editable={!disabled}
-            placeholder="0.00"
+            placeholder={t("transactionForm.amountPlaceholder")}
             keyboardType="decimal-pad"
             error={errors.amount?.message}
             renderLeftSlot={(state) => (
@@ -110,7 +112,7 @@ export function TransactionFormFields({
         render={({ field: { value, onChange } }) => (
           <CategoryPickerField
             key={selectedType}
-            label="Category"
+            label={t("transactionForm.categoryLabel")}
             categories={filteredCategories}
             value={value}
             onChange={onChange}
@@ -120,7 +122,7 @@ export function TransactionFormFields({
         )}
       />
 
-      <FieldLabel>Description</FieldLabel>
+      <FieldLabel>{t("transactionForm.descriptionLabel")}</FieldLabel>
       <Controller
         control={control}
         name="description"
@@ -130,7 +132,7 @@ export function TransactionFormFields({
             onChangeText={onChange}
             onBlur={onBlur}
             editable={!disabled}
-            placeholder="What was this for?"
+            placeholder={t("transactionForm.descriptionPlaceholder")}
             error={errors.description?.message}
             renderLeftSlot={(state) => (
               <TextFieldIconSlot>
@@ -150,7 +152,7 @@ export function TransactionFormFields({
         name="date"
         render={({ field: { value, onChange } }) => (
           <DatePickerField
-            label="Date"
+            label={t("transactionForm.dateLabel")}
             value={value}
             onChange={onChange}
             error={errors.date?.message}

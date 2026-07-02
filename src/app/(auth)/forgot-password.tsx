@@ -12,8 +12,10 @@ import { Link, useRouter } from "expo-router";
 import React from "react";
 import { Pressable, Text, View } from "react-native";
 import Animated, { FadeInUp } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 export default function ForgotPassword() {
+  const { t } = useTranslation();
   const { signIn, errors, fetchStatus } = useSignIn();
   const router = useRouter();
   const navigateAfterAuth = React.useMemo(
@@ -108,16 +110,16 @@ export default function ForgotPassword() {
   if (signIn.status === "needs_second_factor") {
     return (
       <AuthStepScreen
-        title="Two-factor required"
-        subtitle="Your account has 2FA enabled. Sign in from the login screen to continue."
-        badge="Security"
+        title={t("auth.twoFactorRequired")}
+        subtitle={t("auth.twoFactorMessage")}
+        badge={t("auth.security")}
         onBack={handleBackToSignIn}
       >
         <Animated.View entering={FadeInUp.delay(300).duration(500)}>
           <Link href="/(auth)/sign-in" asChild>
             <Pressable className="mt-6 h-14 items-center justify-center rounded-2xl bg-foreground active:opacity-90">
               <Text className="text-lg font-extrabold text-background">
-                Back to sign in
+                {t("auth.backToSignIn")}
               </Text>
             </Pressable>
           </Link>
@@ -129,9 +131,9 @@ export default function ForgotPassword() {
   if (signIn.status === "needs_new_password") {
     return (
       <AuthStepScreen
-        title="Set new password"
-        subtitle="Choose a strong password for your account."
-        badge="Almost done"
+        title={t("auth.setNewPassword")}
+        subtitle={t("auth.setNewPasswordSubtitle")}
+        badge={t("auth.almostDone")}
         onBack={handleStartOver}
       >
         <AuthTextField
@@ -139,7 +141,7 @@ export default function ForgotPassword() {
           containerClassName="mt-6 mb-3"
           value={password}
           onChangeText={setPassword}
-          placeholder="Enter new password"
+          placeholder={t("auth.enterNewPassword")}
           showPassword={showPassword}
           onTogglePassword={() => setShowPassword((prev) => !prev)}
           error={errors.fields.password?.message}
@@ -158,7 +160,7 @@ export default function ForgotPassword() {
             disabled={!password || isLoading}
           >
             <Text className="text-lg font-extrabold text-white">
-              {isLoading ? "Saving..." : "Set new password"}
+              {isLoading ? t("auth.saving") : t("auth.setNewPassword")}
             </Text>
           </Pressable>
 
@@ -168,7 +170,7 @@ export default function ForgotPassword() {
             disabled={isLoading}
           >
             <Text className="text-base font-bold text-muted-foreground">
-              Start over
+              {t("auth.startOver")}
             </Text>
           </Pressable>
         </Animated.View>
@@ -179,8 +181,8 @@ export default function ForgotPassword() {
   if (codeSent) {
     return (
       <CodeVerification
-        title="Verify your code"
-        subtitle={`We sent a password reset code to ${emailAddress}.`}
+        title={t("auth.verifyAccount")}
+        subtitle={t("auth.resetCodeSentTo", { email: emailAddress })}
         codeError={errors.fields.code?.message}
         isLoading={isLoading}
         onVerify={handleVerifyCode}
@@ -188,16 +190,16 @@ export default function ForgotPassword() {
           await signIn.resetPasswordEmailCode.sendCode();
         }}
         onStartOver={handleStartOver}
-        verifyButtonText="Verify code"
+        verifyButtonText={t("auth.verifyCode")}
       />
     );
   }
 
   return (
     <AuthStepScreen
-      title="Forgot password?"
-      subtitle="Enter your email and we'll send you a reset code."
-      badge="Reset password"
+      title={t("auth.resetPasswordTitle")}
+      subtitle={t("auth.resetPasswordSubtitle")}
+      badge={t("auth.resetPassword")}
       onBack={handleBackToSignIn}
     >
       <AuthTextField
@@ -222,7 +224,7 @@ export default function ForgotPassword() {
           disabled={!emailAddress || isLoading}
         >
           <Text className="text-lg font-extrabold text-white">
-            {isLoading ? "Sending..." : "Send reset code"}
+            {isLoading ? t("auth.sending") : t("auth.sendResetCode")}
           </Text>
         </Pressable>
       </Animated.View>

@@ -11,8 +11,10 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import * as React from "react";
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export default function SignInScreen() {
+  const { t } = useTranslation();
   const {
     emailAddress,
     password,
@@ -33,8 +35,8 @@ export default function SignInScreen() {
   if (secondFactor) {
     return (
       <CodeVerification
-        title="Verify your account"
-        subtitle={`We sent a verification code to ${emailAddress}.`}
+        title={t("auth.verifyAccount")}
+        subtitle={t("auth.verificationCodeSentTo", { email: emailAddress })}
         codeError={errors.fields.code?.message}
         isLoading={fetchStatus === "fetching"}
         onVerify={handleVerify}
@@ -52,12 +54,12 @@ export default function SignInScreen() {
       <AuthFormCard>
         <View className="self-center rounded-full bg-secondary px-3 py-1">
           <Text className="text-xs font-semibold uppercase tracking-[1px] text-secondary-foreground">
-            Welcome back
+            {t("auth.welcomeBack")}
           </Text>
         </View>
 
         <Text className="mt-2 text-center text-sm leading-6 text-muted-foreground">
-          Login to continue to your account.
+          {t("auth.loginToContinue")}
         </Text>
 
         <View className="mt-6">
@@ -80,7 +82,7 @@ export default function SignInScreen() {
           <Link href="/(auth)/forgot-password" asChild>
             <TouchableOpacity className="self-end">
               <Text className="mb-2 text-brand font-semibold">
-                Forgot password?
+                {t("auth.forgotPassword")}
               </Text>
             </TouchableOpacity>
           </Link>
@@ -101,23 +103,23 @@ export default function SignInScreen() {
             disabled={!emailAddress || !password || fetchStatus === "fetching"}
           >
             <Text className="ml-3 flex-1 text-center text-lg font-extrabold text-white">
-              {fetchStatus === "fetching" ? "Signing in..." : "Continue"}
+              {fetchStatus === "fetching" ? t("auth.signingIn") : t("auth.continue")}
             </Text>
             <FontAwesome name="angle-right" size={18} color="#fff" />
           </Pressable>
         </View>
 
         <Text className="mt-6 text-center text-base leading-6 text-muted-foreground">
-          Don't have an account?{" "}
+          {t("auth.noAccount")}{" "}
           <Link href="/(auth)/sign-up" asChild>
-            <Text className="font-semibold text-brand">Sign up</Text>
+            <Text className="font-semibold text-brand">{t("auth.signUp")}</Text>
           </Link>
         </Text>
 
-        <SocialLoginSection dividerLabel="Or login with" />
+        <SocialLoginSection dividerLabel={t("auth.orLoginWith")} />
 
         <Text className="mt-3 text-center text-sm leading-5 text-muted-foreground">
-          By continuing, you agree to our Terms and Privacy Policy.
+          {t("auth.termsSignIn")}
         </Text>
       </AuthFormCard>
     </ScreenLayout>

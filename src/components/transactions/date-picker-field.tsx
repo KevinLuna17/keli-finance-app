@@ -6,6 +6,7 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import React from "react";
 import { Platform, Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type DatePickerFieldProps = {
   label: string;
@@ -30,6 +31,7 @@ export function DatePickerField({
   error,
   disabled = false,
 }: DatePickerFieldProps) {
+  const { t } = useTranslation();
   const [showPicker, setShowPicker] = React.useState(false);
   const visualState = { focused: showPicker, hasError: Boolean(error) };
 
@@ -78,7 +80,7 @@ export function DatePickerField({
           className="mt-2 self-end rounded-xl bg-brand px-4 py-2"
           onPress={() => setShowPicker(false)}
         >
-          <Text className="text-sm font-semibold text-brand-foreground">Done</Text>
+          <Text className="text-sm font-semibold text-brand-foreground">{t("transactionForm.done")}</Text>
         </Pressable>
       ) : null}
     </View>

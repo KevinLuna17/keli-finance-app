@@ -8,6 +8,7 @@ import { getInputIconColor } from "@/lib/input-styles";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
 import { Pressable } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type AuthTextFieldVariant = "email" | "password" | "code";
 
@@ -20,11 +21,10 @@ type AuthTextFieldProps = Omit<
   onTogglePassword?: () => void;
 };
 
-const VARIANT_DEFAULTS: Record<
+const VARIANT_SETTINGS: Record<
   AuthTextFieldVariant,
   Pick<
     TextFieldProps,
-    | "placeholder"
     | "autoCapitalize"
     | "keyboardType"
     | "autoComplete"
@@ -33,18 +33,15 @@ const VARIANT_DEFAULTS: Record<
   >
 > = {
   email: {
-    placeholder: "Email address",
     autoCapitalize: "none",
     keyboardType: "email-address",
     autoComplete: "email",
   },
   password: {
-    placeholder: "Enter password",
     autoComplete: "password",
     secureTextEntry: true,
   },
   code: {
-    placeholder: "Enter your verification code",
     keyboardType: "number-pad",
     autoComplete: "one-time-code",
     textContentType: "oneTimeCode",
@@ -67,19 +64,27 @@ export function AuthTextField({
   placeholder,
   ...textFieldProps
 }: AuthTextFieldProps) {
-  const defaults = VARIANT_DEFAULTS[variant];
+  const { t } = useTranslation();
+
+  const VARIANT_PLACEHOLDERS: Record<AuthTextFieldVariant, string> = {
+    email: t("auth.emailPlaceholder"),
+    password: t("auth.passwordPlaceholder"),
+    code: t("auth.codePlaceholder"),
+  };
+
+  const settings = VARIANT_SETTINGS[variant];
   const isPassword = variant === "password";
   const resolvedSecureTextEntry = isPassword
     ? !showPassword
-    : defaults.secureTextEntry;
+    : settings.secureTextEntry;
 
   return (
     <TextField
-      placeholder={placeholder ?? defaults.placeholder}
-      autoCapitalize={defaults.autoCapitalize}
-      keyboardType={defaults.keyboardType ?? textFieldProps.keyboardType}
-      autoComplete={defaults.autoComplete ?? textFieldProps.autoComplete}
-      textContentType={defaults.textContentType ?? textFieldProps.textContentType}
+      placeholder={placeholder ?? VARIANT_PLACEHOLDERS[variant]}
+      autoCapitalize={settings.autoCapitalize}
+      keyboardType={settings.keyboardType ?? textFieldProps.keyboardType}
+      autoComplete={settings.autoComplete ?? textFieldProps.autoComplete}
+      textContentType={settings.textContentType ?? textFieldProps.textContentType}
       secureTextEntry={resolvedSecureTextEntry}
       renderLeftSlot={(state) => (
         <TextFieldIconSlot

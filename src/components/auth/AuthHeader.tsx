@@ -1,8 +1,11 @@
 import { Image } from "expo-image";
 import React from "react";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export default function AuthHeader() {
+  const { t } = useTranslation();
+
   return (
     <View className="flex-row items-center justify-center">
       <View className="flex-1 px-4 items-center justify-center">
@@ -15,7 +18,7 @@ export default function AuthHeader() {
         </Text>
 
         <Text className="px-6 mt-1 text-[16px] text-secondary-foreground dark:text-foreground/75">
-          Plan smarter. Spend happier🌿
+          {t("auth.tagline")}
         </Text>
       </View>
       <View className="w-1/2 self-center">
