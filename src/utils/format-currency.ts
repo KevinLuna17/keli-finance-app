@@ -6,22 +6,72 @@
  * - Never hardcodes decimal separators, thousands separators, or fraction digits.
  * - Fraction digits follow the ISO 4217 standard for each currency (e.g. 2 for
  *   USD/EUR, 0 for JPY). Do not override unless a product requirement demands it.
+ * - The currency symbol is always placed before the amount, using the narrow
+ *   symbol form (e.g. "$" not "US$"), while number separators follow the locale.
  * - Every function that formats money for display must go through this module.
  */
 
 /**
+ * Static narrow symbol map for all supported currencies.
+ * Intl.NumberFormat with narrowSymbol is unreliable on some Hermes builds
+ * (e.g. USD in Spanish locale returns "US$" instead of "$"), so we use a
+ * hardcoded map as the primary source and fall back to the ISO code.
+ */
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  USD: "$",
+  EUR: "€",
+  COP: "$",
+  MXN: "$",
+  PEN: "S/",
+  CLP: "$",
+  ARS: "$",
+  UYU: "$U",
+  BRL: "R$",
+  CAD: "$",
+  GBP: "£",
+};
+
+/**
+ * Returns the display symbol for a currency.
+ * e.g. "USD" → "$", "EUR" → "€", "BRL" → "R$", "PEN" → "S/"
+ */
+function getCurrencySymbol(currency: string): string {
+  return CURRENCY_SYMBOLS[currency] ?? currency;
+}
+
+/**
+ * Returns the standard number of fraction digits for a currency (ISO 4217).
+ * e.g. "USD" → 2, "JPY" → 0, "COP" → 0 or 2 depending on context.
+ */
+function getCurrencyFractionDigits(currency: string): number {
+  return (
+    new Intl.NumberFormat("en", {
+      style: "currency",
+      currency,
+    }).resolvedOptions().maximumFractionDigits ?? 2
+  );
+}
+
+/**
  * Formats an amount already expressed in major currency units (e.g. 12.50 USD).
- * Use this when the value has already been divided out of its smallest-unit form.
+ * Symbol is always placed first. Number separators follow the locale.
+ *
+ * Example: formatCurrencyAmount(1250.50, "USD", "es") → "$1.250,50"
+ *          formatCurrencyAmount(1250.50, "USD", "en") → "$1,250.50"
  */
 export function formatCurrencyAmount(
   amount: number,
   currency: string,
   language: string,
 ): string {
-  return new Intl.NumberFormat(language, {
-    style: "currency",
-    currency,
-  }).format(amount);
+  const symbol = getCurrencySymbol(currency);
+  const digits = getCurrencyFractionDigits(currency);
+  const numberStr = new Intl.NumberFormat(language, {
+    style: "decimal",
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  }).format(Math.abs(amount));
+  return amount < 0 ? `-${symbol}${numberStr}` : `${symbol}${numberStr}`;
 }
 
 /**
@@ -29,7 +79,7 @@ export function formatCurrencyAmount(
  * Divides by 100 before delegating to formatCurrencyAmount.
  *
  * Example: formatCurrency(125050, "USD", "en") → "$1,250.50"
- *          formatCurrency(125000000, "COP", "es") → "$ 1.250.000"
+ *          formatCurrency(125000000, "COP", "es") → "$1.250.000"
  */
 export function formatCurrency(
   amountInSmallestUnits: number,
@@ -63,38 +113,38 @@ export function formatSignedCurrency(
 /**
  * Returns a compact Y-axis label for chart tick values.
  * Receives amounts already in major units (output of centsToChartUnits).
- * Uses compact notation to keep axis labels short (e.g. $1.2k, $2.5M).
+ * Symbol is always placed first using compact notation (e.g. $1.2K, $2.5M).
  */
 export function formatChartAxisCurrency(
   majorUnitAmount: number,
   currency: string,
   language: string,
 ): string {
-  const absoluteValue = Math.abs(majorUnitAmount);
+  const symbol = getCurrencySymbol(currency);
+  const abs = Math.abs(majorUnitAmount);
+  const sign = majorUnitAmount < 0 ? "-" : "";
 
-  if (absoluteValue >= 1_000_000) {
-    return new Intl.NumberFormat(language, {
-      style: "currency",
-      currency,
+  if (abs >= 1_000_000) {
+    const compact = new Intl.NumberFormat(language, {
       notation: "compact",
       maximumFractionDigits: 1,
-    }).format(majorUnitAmount);
+    }).format(abs);
+    return `${sign}${symbol}${compact}`;
   }
 
-  if (absoluteValue >= 1_000) {
-    return new Intl.NumberFormat(language, {
-      style: "currency",
-      currency,
+  if (abs >= 1_000) {
+    const compact = new Intl.NumberFormat(language, {
       notation: "compact",
-      maximumFractionDigits: absoluteValue >= 10_000 ? 0 : 1,
-    }).format(majorUnitAmount);
+      maximumFractionDigits: abs >= 10_000 ? 0 : 1,
+    }).format(abs);
+    return `${sign}${symbol}${compact}`;
   }
 
-  return new Intl.NumberFormat(language, {
-    style: "currency",
-    currency,
+  const numberStr = new Intl.NumberFormat(language, {
+    style: "decimal",
     maximumFractionDigits: 0,
-  }).format(majorUnitAmount);
+  }).format(abs);
+  return `${sign}${symbol}${numberStr}`;
 }
 
 /**
