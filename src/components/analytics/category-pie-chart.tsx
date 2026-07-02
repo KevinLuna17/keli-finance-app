@@ -1,6 +1,12 @@
 import { useFormatCurrency } from "@/hooks/use-format-currency";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
 import { Pie, PolarChart } from "victory-native";
 
 export type CategoryPieChartDatum = {
@@ -15,6 +21,13 @@ export type CategoryPieChartProps = {
   totalLabel?: string;
 };
 
+const SLICE_ANIMATION = {
+  type: "spring" as const,
+  damping: 16,
+  stiffness: 130,
+  mass: 0.8,
+};
+
 export function CategoryPieChart({
   data,
   height = 280,
@@ -22,6 +35,20 @@ export function CategoryPieChart({
 }: CategoryPieChartProps) {
   const { formatAmount } = useFormatCurrency();
   const pieHeight = Math.min(height, 220);
+
+  const scale = useSharedValue(0.88);
+  const opacity = useSharedValue(0);
+
+  useEffect(() => {
+    scale.value = withSpring(1, { damping: 18, stiffness: 200 });
+    opacity.value = withTiming(1, { duration: 380 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const containerStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+    opacity: opacity.value,
+  }));
 
   const { legendItems, total } = useMemo(() => {
     const sum = data.reduce((acc, entry) => acc + entry.value, 0);
@@ -36,14 +63,16 @@ export function CategoryPieChart({
 
   return (
     <View style={{ minHeight: height }}>
-      <View style={{ height: pieHeight }}>
+      <Animated.View style={[{ height: pieHeight }, containerStyle]}>
         <PolarChart
           data={data}
           labelKey="label"
           valueKey="value"
           colorKey="color"
         >
-          <Pie.Chart innerRadius="55%" />
+          <Pie.Chart innerRadius="55%">
+            {() => <Pie.Slice animate={SLICE_ANIMATION} />}
+          </Pie.Chart>
         </PolarChart>
 
         {totalLabel ? (
@@ -65,14 +94,11 @@ export function CategoryPieChart({
             </Text>
           </View>
         ) : null}
-      </View>
+      </Animated.View>
 
       <View className="mt-4 gap-3">
         {legendItems.map((item) => (
-          <View
-            key={item.label}
-            className="flex-row items-center gap-3"
-          >
+          <View key={item.label} className="flex-row items-center gap-3">
             <View
               className="size-3 shrink-0 rounded-full"
               style={{ backgroundColor: item.color }}
