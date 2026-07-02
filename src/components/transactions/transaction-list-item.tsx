@@ -1,6 +1,6 @@
 import { getCategoryDisplayById, type CategoryLookup } from "@/lib/category-display";
-import { formatSignedMoney } from "@/lib/format-money";
 import { formatTransactionRowDate } from "@/lib/transaction-list-utils";
+import { useFormatCurrency } from "@/hooks/use-format-currency";
 import { Transaction } from "@/services/transactions/transaction.types";
 import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
@@ -9,14 +9,13 @@ import { Text, View } from "react-native";
 type TransactionListItemProps = {
   transaction: Transaction;
   categoryLookup?: CategoryLookup;
-  currency?: string;
 };
 
 function TransactionListItemComponent({
   transaction,
   categoryLookup = {},
-  currency,
 }: TransactionListItemProps) {
+  const { formatSigned } = useFormatCurrency();
   const category = getCategoryDisplayById(transaction.categoryId, categoryLookup);
   const isIncome = transaction.type === "income";
 
@@ -48,7 +47,7 @@ function TransactionListItemComponent({
           isIncome ? "text-success" : "text-card-foreground"
         }`}
       >
-        {formatSignedMoney(transaction.amountInCents, transaction.type, currency)}
+        {formatSigned(transaction.amountInCents, transaction.type)}
       </Text>
     </View>
   );

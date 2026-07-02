@@ -1,50 +1,32 @@
+/**
+ * @deprecated
+ * Use `useFormatCurrency` from `@/hooks/use-format-currency` (chartFormatter)
+ * or `makeChartCurrencyFormatter` from `@/utils/format-currency` instead.
+ * These wrappers exist only for backward-compatibility during migration.
+ */
 import { DEFAULT_CURRENCY } from "@/lib/currencies";
+import {
+  formatChartAxisCurrency,
+  makeChartCurrencyFormatter,
+} from "@/utils/format-currency";
+
+const DEFAULT_LANGUAGE = "en";
 
 export function centsToChartUnits(amountInCents: number): number {
   return amountInCents / 100;
 }
 
-/**
- * Returns a compact axis label for chart Y-axis tick values.
- * Values arrive as major units (already divided by 100 via centsToChartUnits).
- */
 export function formatChartAxisMoney(
   value: number,
   currency: string = DEFAULT_CURRENCY,
+  language: string = DEFAULT_LANGUAGE,
 ): string {
-  const absoluteValue = Math.abs(value);
-
-  if (absoluteValue >= 1_000_000) {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency,
-      notation: "compact",
-      maximumFractionDigits: 1,
-    }).format(value);
-  }
-
-  if (absoluteValue >= 1_000) {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency,
-      notation: "compact",
-      maximumFractionDigits: absoluteValue >= 10_000 ? 0 : 1,
-    }).format(value);
-  }
-
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 0,
-  }).format(value);
+  return formatChartAxisCurrency(value, currency, language);
 }
 
-/**
- * Creates a chart axis money formatter bound to a specific currency.
- * Use this when you need to pass a plain (value: number) => string callback.
- */
 export function makeChartAxisMoneyFormatter(
   currency: string = DEFAULT_CURRENCY,
+  language: string = DEFAULT_LANGUAGE,
 ): (value: number) => string {
-  return (value: number) => formatChartAxisMoney(value, currency);
+  return makeChartCurrencyFormatter(currency, language);
 }

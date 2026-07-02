@@ -1,6 +1,6 @@
 import { useAnalyticsChartTheme } from "@/components/analytics/use-analytics-chart-theme";
-import { makeChartAxisMoneyFormatter } from "@/lib/chart-money";
-import React, { useMemo } from "react";
+import { useFormatCurrency } from "@/hooks/use-format-currency";
+import React from "react";
 import { Text, View } from "react-native";
 import { BarGroup, CartesianChart } from "victory-native";
 import { useTranslation } from "react-i18next";
@@ -14,7 +14,6 @@ export type MonthlyBarChartDatum = {
 export type MonthlyBarChartProps = {
   data: MonthlyBarChartDatum[];
   height?: number;
-  currency?: string;
   incomeLabel?: string;
   expenseLabel?: string;
 };
@@ -22,19 +21,15 @@ export type MonthlyBarChartProps = {
 export function MonthlyBarChart({
   data,
   height = 280,
-  currency,
   incomeLabel,
   expenseLabel,
 }: MonthlyBarChartProps) {
   const { t } = useTranslation();
+  const { chartFormatter } = useFormatCurrency();
   const theme = useAnalyticsChartTheme();
 
   const resolvedIncomeLabel = incomeLabel ?? t("income");
   const resolvedExpenseLabel = expenseLabel ?? t("expense");
-  const formatYLabel = useMemo(
-    () => makeChartAxisMoneyFormatter(currency),
-    [currency],
-  );
 
   return (
     <View style={{ height }}>
@@ -47,7 +42,7 @@ export function MonthlyBarChart({
         axisOptions={{
           lineColor: theme.grid,
           labelColor: theme.axis,
-          formatYLabel,
+          formatYLabel: chartFormatter,
         }}
       >
         {({ points, chartBounds }) => (

@@ -16,7 +16,6 @@ import { useTranslation } from "react-i18next";
 type TransactionsListProps = {
   rows: TransactionListRow[];
   categoryLookup?: CategoryLookup;
-  currency?: string;
   isInitialLoading: boolean;
   isRefreshing: boolean;
   isLoadingMore: boolean;
@@ -32,7 +31,6 @@ type TransactionsListProps = {
 export function TransactionsList({
   rows,
   categoryLookup = {},
-  currency,
   isInitialLoading,
   isRefreshing,
   isLoadingMore,
@@ -55,10 +53,9 @@ export function TransactionsList({
       <TransactionListItem
         transaction={item.transaction}
         categoryLookup={categoryLookup}
-        currency={currency}
       />
     );
-  }, [categoryLookup, currency]);
+  }, [categoryLookup]);
 
   const keyExtractor = useCallback((item: TransactionListRow) => item.key, []);
 

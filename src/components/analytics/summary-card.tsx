@@ -1,4 +1,4 @@
-import { formatMoney } from "@/lib/format-money";
+import { useFormatCurrency } from "@/hooks/use-format-currency";
 import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
 import { Text, View } from "react-native";
@@ -8,7 +8,6 @@ export type SummaryCardAccent = "brand" | "success" | "destructive" | "accent";
 export type SummaryCardProps = {
   label: string;
   amountInSmallestUnits: number;
-  currency?: string;
   icon: React.ComponentProps<typeof FontAwesome6>["name"];
   accent?: SummaryCardAccent;
   isLoading?: boolean;
@@ -36,12 +35,13 @@ function SummaryCardSkeleton({ className }: { className?: string }) {
 export function SummaryCard({
   label,
   amountInSmallestUnits,
-  currency,
   icon,
   accent = "brand",
   isLoading = false,
   className,
 }: SummaryCardProps) {
+  const { format } = useFormatCurrency();
+
   if (isLoading) {
     return <SummaryCardSkeleton className={className} />;
   }
@@ -61,7 +61,7 @@ export function SummaryCard({
         </Text>
       </View>
       <Text className="mt-3 text-xl font-bold text-foreground">
-        {formatMoney(amountInSmallestUnits, currency)}
+        {format(amountInSmallestUnits)}
       </Text>
     </View>
   );

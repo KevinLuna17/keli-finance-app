@@ -1,4 +1,4 @@
-import { formatMoney } from "@/lib/format-money";
+import { useFormatCurrency } from "@/hooks/use-format-currency";
 import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
 import { Text, View } from "react-native";
@@ -9,7 +9,6 @@ type BalanceCardProps = {
   amountInSmallestUnits: number;
   incomeInSmallestUnits: number;
   expenseInSmallestUnits: number;
-  currency?: string;
   incomeLabel?: string;
   expenseLabel?: string;
 };
@@ -17,11 +16,11 @@ type BalanceCardProps = {
 type SummaryStatProps = {
   label: string;
   amountInSmallestUnits: number;
-  currency?: string;
+  format: (amount: number) => string;
   icon: React.ComponentProps<typeof FontAwesome6>["name"];
 };
 
-function SummaryStat({ label, amountInSmallestUnits, currency, icon }: SummaryStatProps) {
+function SummaryStat({ label, amountInSmallestUnits, format, icon }: SummaryStatProps) {
   return (
     <View className="flex-1 rounded-2xl bg-white/20 px-4 py-3">
       <View className="flex-row items-center gap-2">
@@ -31,7 +30,7 @@ function SummaryStat({ label, amountInSmallestUnits, currency, icon }: SummarySt
         </Text>
       </View>
       <Text className="mt-2 text-lg font-bold text-brand-foreground">
-        {formatMoney(amountInSmallestUnits, currency)}
+        {format(amountInSmallestUnits)}
       </Text>
     </View>
   );
@@ -42,11 +41,12 @@ export default function BalanceCard({
   amountInSmallestUnits,
   incomeInSmallestUnits,
   expenseInSmallestUnits,
-  currency,
   incomeLabel,
   expenseLabel,
 }: BalanceCardProps) {
   const { t } = useTranslation();
+  const { format } = useFormatCurrency();
+
   const resolvedIncomeLabel = incomeLabel ?? t("income");
   const resolvedExpenseLabel = expenseLabel ?? t("expense");
 
@@ -59,20 +59,20 @@ export default function BalanceCard({
         {label}
       </Text>
       <Text className="mt-1 text-3xl font-bold text-brand-foreground">
-        {formatMoney(amountInSmallestUnits, currency)}
+        {format(amountInSmallestUnits)}
       </Text>
 
       <View className="mt-6 flex-row gap-3">
         <SummaryStat
           label={resolvedIncomeLabel}
           amountInSmallestUnits={incomeInSmallestUnits}
-          currency={currency}
+          format={format}
           icon="arrow-down"
         />
         <SummaryStat
           label={resolvedExpenseLabel}
           amountInSmallestUnits={expenseInSmallestUnits}
-          currency={currency}
+          format={format}
           icon="arrow-up"
         />
       </View>

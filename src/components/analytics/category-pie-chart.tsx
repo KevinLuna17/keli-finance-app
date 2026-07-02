@@ -1,4 +1,4 @@
-import { formatMoney } from "@/lib/format-money";
+import { useFormatCurrency } from "@/hooks/use-format-currency";
 import React, { useMemo } from "react";
 import { Text, View } from "react-native";
 import { Pie, PolarChart } from "victory-native";
@@ -18,6 +18,7 @@ export function CategoryPieChart({
   data,
   height = 280,
 }: CategoryPieChartProps) {
+  const { formatAmount } = useFormatCurrency();
   const pieHeight = Math.min(height, 220);
 
   const legendItems = useMemo(() => {
@@ -61,7 +62,7 @@ export function CategoryPieChart({
               </Text>
             </View>
             <Text className="text-sm font-semibold text-foreground">
-              {formatMoney(Math.round(item.value * 100))}
+              {formatAmount(item.value)}
             </Text>
             <Text className="w-10 text-right text-xs text-muted-foreground">
               {item.percentage}%

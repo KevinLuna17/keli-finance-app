@@ -20,7 +20,6 @@ export default function HomeScreen() {
   const isFirstFocus = useRef(true);
   const { currentWorkspace } = useBackendSync();
   const workspaceId = currentWorkspace?.id;
-  const workspaceCurrency = currentWorkspace?.currency;
   const { dashboard, isLoading, error, refresh } =
     useHomeDashboard(workspaceId);
   const { categories } = useCategories({ workspaceId });
@@ -85,7 +84,6 @@ export default function HomeScreen() {
               amountInSmallestUnits={dashboard.balanceInCents}
               incomeInSmallestUnits={dashboard.totalIncomeInCents}
               expenseInSmallestUnits={dashboard.totalExpensesInCents}
-              currency={workspaceCurrency}
             />
           )}
         </View>
@@ -96,7 +94,6 @@ export default function HomeScreen() {
             viewAllLabel={t("dashboard.seeAll")}
             transactions={dashboard.recentTransactions}
             categoryLookup={categoryLookup}
-            currency={workspaceCurrency}
             onViewAllPress={() => router.push("/(home)/transactions" as Href)}
           />
         ) : null}

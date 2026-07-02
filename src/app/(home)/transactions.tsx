@@ -15,7 +15,6 @@ export default function TransactionsScreen() {
   const isFirstFocus = useRef(true);
   const { currentWorkspace } = useBackendSync();
   const workspaceId = currentWorkspace?.id;
-  const workspaceCurrency = currentWorkspace?.currency;
   const {
     rows,
     error,
@@ -67,7 +66,6 @@ export default function TransactionsScreen() {
       <TransactionsList
         rows={rows}
         categoryLookup={categoryLookup}
-        currency={workspaceCurrency}
         isInitialLoading={isInitialLoading}
         isRefreshing={isRefreshing}
         isLoadingMore={isLoadingMore}
