@@ -6,6 +6,7 @@ import {
   useAnalyticsChartTheme,
 } from "@/components/analytics";
 import { StatisticsSegment } from "@/components/statistics/statistics-segment";
+import { useCurrency } from "@/hooks/use-currency";
 import {
   hasCategoryActivity,
   hasMonthlyActivity,
@@ -36,6 +37,7 @@ export function StatisticsChartsSection({
   isLoading = false,
 }: StatisticsChartsSectionProps) {
   const { t } = useTranslation();
+  const currency = useCurrency();
   const chartTheme = useAnalyticsChartTheme();
 
   const monthlyChartData = useMemo(() => toMonthlyChartData(monthly), [monthly]);
@@ -73,7 +75,7 @@ export function StatisticsChartsSection({
         isEmpty={!isLoading && !hasMonthlyActivity(monthly)}
         emptyMessage={t("statistics.noMonthlyActivity")}
       >
-        <MonthlyBarChart data={monthlyChartData} />
+        <MonthlyBarChart data={monthlyChartData} currency={currency} />
       </AnalyticsSection>
 
       {showExpenseCategories ? (

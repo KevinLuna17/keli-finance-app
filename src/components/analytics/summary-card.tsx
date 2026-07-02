@@ -8,6 +8,7 @@ export type SummaryCardAccent = "brand" | "success" | "destructive" | "accent";
 export type SummaryCardProps = {
   label: string;
   amountInSmallestUnits: number;
+  currency?: string;
   icon: React.ComponentProps<typeof FontAwesome6>["name"];
   accent?: SummaryCardAccent;
   isLoading?: boolean;
@@ -35,6 +36,7 @@ function SummaryCardSkeleton({ className }: { className?: string }) {
 export function SummaryCard({
   label,
   amountInSmallestUnits,
+  currency,
   icon,
   accent = "brand",
   isLoading = false,
@@ -59,7 +61,7 @@ export function SummaryCard({
         </Text>
       </View>
       <Text className="mt-3 text-xl font-bold text-foreground">
-        {formatMoney(amountInSmallestUnits)}
+        {formatMoney(amountInSmallestUnits, currency)}
       </Text>
     </View>
   );

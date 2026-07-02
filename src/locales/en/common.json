@@ -160,7 +160,8 @@
     "onlyOwnersCanManage": "Only shared workspace owners can manage workspace details.",
     "nameLabel": "Workspace name",
     "namePlaceholder": "Family Budget",
-    "sharedWorkspaceInfo": "Shared workspaces let you manage finances with others."
+    "sharedWorkspaceInfo": "Shared workspaces let you manage finances with others.",
+    "currencyLabel": "Currency"
   },
   "invitations": {
     "pendingTitle": "Pending Invitations",

@@ -8,6 +8,7 @@ export type CurrentWorkspace = {
   id: string;
   name: string;
   type: WorkspaceType;
+  currency: string;
   role: WorkspaceMemberRole;
 };
 
@@ -15,6 +16,7 @@ export type Workspace = {
   id: string;
   name: string;
   type: WorkspaceType;
+  currency: string;
   ownerId: string;
   role: WorkspaceMemberRole;
   createdAt: string;
@@ -23,6 +25,7 @@ export type Workspace = {
 
 export type CreateWorkspaceRequest = {
   name: string;
+  currency: string;
 };
 
 export type UpdateWorkspaceRequest = {

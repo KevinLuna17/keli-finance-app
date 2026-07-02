@@ -9,6 +9,7 @@ type BalanceCardProps = {
   amountInSmallestUnits: number;
   incomeInSmallestUnits: number;
   expenseInSmallestUnits: number;
+  currency?: string;
   incomeLabel?: string;
   expenseLabel?: string;
 };
@@ -16,10 +17,11 @@ type BalanceCardProps = {
 type SummaryStatProps = {
   label: string;
   amountInSmallestUnits: number;
+  currency?: string;
   icon: React.ComponentProps<typeof FontAwesome6>["name"];
 };
 
-function SummaryStat({ label, amountInSmallestUnits, icon }: SummaryStatProps) {
+function SummaryStat({ label, amountInSmallestUnits, currency, icon }: SummaryStatProps) {
   return (
     <View className="flex-1 rounded-2xl bg-white/20 px-4 py-3">
       <View className="flex-row items-center gap-2">
@@ -29,7 +31,7 @@ function SummaryStat({ label, amountInSmallestUnits, icon }: SummaryStatProps) {
         </Text>
       </View>
       <Text className="mt-2 text-lg font-bold text-brand-foreground">
-        {formatMoney(amountInSmallestUnits)}
+        {formatMoney(amountInSmallestUnits, currency)}
       </Text>
     </View>
   );
@@ -40,6 +42,7 @@ export default function BalanceCard({
   amountInSmallestUnits,
   incomeInSmallestUnits,
   expenseInSmallestUnits,
+  currency,
   incomeLabel,
   expenseLabel,
 }: BalanceCardProps) {
@@ -56,18 +59,20 @@ export default function BalanceCard({
         {label}
       </Text>
       <Text className="mt-1 text-3xl font-bold text-brand-foreground">
-        {formatMoney(amountInSmallestUnits)}
+        {formatMoney(amountInSmallestUnits, currency)}
       </Text>
 
       <View className="mt-6 flex-row gap-3">
         <SummaryStat
           label={resolvedIncomeLabel}
           amountInSmallestUnits={incomeInSmallestUnits}
+          currency={currency}
           icon="arrow-down"
         />
         <SummaryStat
           label={resolvedExpenseLabel}
           amountInSmallestUnits={expenseInSmallestUnits}
+          currency={currency}
           icon="arrow-up"
         />
       </View>

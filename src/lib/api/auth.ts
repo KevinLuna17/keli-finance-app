@@ -3,9 +3,18 @@ import { apiRequest } from "./client";
 
 type GetToken = () => Promise<string | null>;
 
-export function syncUser(getToken: GetToken): Promise<BackendUser> {
+type SyncUserPayload = {
+  region: string;
+  timezone: string;
+};
+
+export function syncUser(
+  getToken: GetToken,
+  payload: SyncUserPayload,
+): Promise<BackendUser> {
   return apiRequest<BackendUser>("/auth/sync", {
     method: "POST",
     getToken,
+    body: payload,
   });
 }

@@ -160,7 +160,8 @@
     "onlyOwnersCanManage": "Solo los propietarios de espacios de trabajo compartidos pueden administrar los detalles.",
     "nameLabel": "Nombre del espacio de trabajo",
     "namePlaceholder": "Presupuesto familiar",
-    "sharedWorkspaceInfo": "Los espacios de trabajo compartidos te permiten administrar finanzas con otros."
+    "sharedWorkspaceInfo": "Los espacios de trabajo compartidos te permiten administrar finanzas con otros.",
+    "currencyLabel": "Moneda"
   },
   "invitations": {
     "pendingTitle": "Invitaciones pendientes",

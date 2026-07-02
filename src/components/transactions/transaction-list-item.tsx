@@ -9,11 +9,13 @@ import { Text, View } from "react-native";
 type TransactionListItemProps = {
   transaction: Transaction;
   categoryLookup?: CategoryLookup;
+  currency?: string;
 };
 
 function TransactionListItemComponent({
   transaction,
   categoryLookup = {},
+  currency,
 }: TransactionListItemProps) {
   const category = getCategoryDisplayById(transaction.categoryId, categoryLookup);
   const isIncome = transaction.type === "income";
@@ -46,7 +48,7 @@ function TransactionListItemComponent({
           isIncome ? "text-success" : "text-card-foreground"
         }`}
       >
-        {formatSignedMoney(transaction.amountInCents, transaction.type)}
+        {formatSignedMoney(transaction.amountInCents, transaction.type, currency)}
       </Text>
     </View>
   );

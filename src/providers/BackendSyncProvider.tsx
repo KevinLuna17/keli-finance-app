@@ -1,5 +1,7 @@
 import { syncUser } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
+import { DEFAULT_CURRENCY } from "@/lib/currencies";
+import { detectDeviceRegion, detectDeviceTimezone } from "@/lib/region";
 import { listWorkspaces } from "@/services/workspaces/workspace.service";
 import type { CurrentWorkspace } from "@/services/workspaces/workspace.types";
 import type { BackendUser } from "@/types/api";
@@ -37,6 +39,7 @@ function toCurrentWorkspace(
     id: workspace.id,
     name: workspace.name,
     type: workspace.type,
+    currency: workspace.currency ?? DEFAULT_CURRENCY,
     role: workspace.role,
   };
 }
@@ -142,7 +145,9 @@ export function BackendSyncProvider({
       setError(null);
 
       try {
-        const user = await syncUser(() => getTokenRef.current());
+        const region = detectDeviceRegion();
+        const timezone = detectDeviceTimezone();
+        const user = await syncUser(() => getTokenRef.current(), { region, timezone });
         const nextWorkspaces = await listWorkspaces(() => getTokenRef.current());
 
         if (!cancelled) {

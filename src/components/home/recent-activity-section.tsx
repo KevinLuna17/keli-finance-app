@@ -10,6 +10,7 @@ type RecentActivitySectionProps = {
   viewAllLabel: string;
   transactions: Transaction[];
   categoryLookup?: CategoryLookup;
+  currency?: string;
   onViewAllPress?: () => void;
 };
 
@@ -18,6 +19,7 @@ export default function RecentActivitySection({
   viewAllLabel,
   transactions,
   categoryLookup = {},
+  currency,
   onViewAllPress,
 }: RecentActivitySectionProps) {
   const { t } = useTranslation();
@@ -53,6 +55,7 @@ export default function RecentActivitySection({
               key={transaction.id}
               transaction={transaction}
               categoryLookup={categoryLookup}
+              currency={currency}
             />
           ))}
         </View>

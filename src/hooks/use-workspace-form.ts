@@ -1,4 +1,5 @@
 import { ApiError } from "@/lib/api/client";
+import { DEFAULT_CURRENCY, SUPPORTED_CURRENCIES } from "@/lib/currencies";
 import {
   workspaceFormSchema,
   WorkspaceFormValues,
@@ -38,13 +39,18 @@ export function useWorkspaceForm({
 
   const form = useForm<WorkspaceFormValues>({
     resolver: zodResolver(workspaceFormSchema),
-    defaultValues: { name: "" },
+    defaultValues: { name: "", currency: DEFAULT_CURRENCY },
     mode: "onChange",
   });
 
   useEffect(() => {
     if (mode === "edit" && workspace) {
-      form.reset({ name: workspace.name });
+      form.reset({
+        name: workspace.name,
+        currency: "currency" in workspace && SUPPORTED_CURRENCIES.includes(workspace.currency as typeof SUPPORTED_CURRENCIES[number])
+          ? (workspace.currency as typeof SUPPORTED_CURRENCIES[number])
+          : DEFAULT_CURRENCY,
+      });
     }
   }, [form, mode, workspace]);
 
@@ -53,7 +59,10 @@ export function useWorkspaceForm({
 
     try {
       if (mode === "create") {
-        await createWorkspace(() => getToken(), { name: values.name });
+        await createWorkspace(() => getToken(), {
+          name: values.name,
+          currency: values.currency,
+        });
       } else if (workspace) {
         await updateWorkspace(() => getToken(), workspace.id, {
           name: values.name,
