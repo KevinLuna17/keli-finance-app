@@ -20,7 +20,9 @@ export function useCategories({
 }: UseCategoriesOptions): UseCategoriesResult {
   const { getToken } = useAuth();
   const getTokenRef = useRef(getToken);
-  getTokenRef.current = getToken;
+  useEffect(() => {
+    getTokenRef.current = getToken;
+  });
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(Boolean(workspaceId));
@@ -54,6 +56,7 @@ export function useCategories({
   }, [workspaceId]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional data fetch on mount
     refresh();
   }, [refresh]);
 

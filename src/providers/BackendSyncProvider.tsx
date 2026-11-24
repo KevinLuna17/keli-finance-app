@@ -94,7 +94,9 @@ export function BackendSyncProvider({
   );
   const resetWorkspaceStore = useWorkspaceStore((state) => state.reset);
 
-  getTokenRef.current = getToken;
+  useEffect(() => {
+    getTokenRef.current = getToken;
+  });
 
   const applyWorkspaces = useCallback(
     (nextWorkspaces: CurrentWorkspace[]) => {
@@ -131,6 +133,7 @@ export function BackendSyncProvider({
     }
 
     if (!isSignedIn) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset local state when the user signs out
       setStatus("idle");
       setError(null);
       setBackendUser(null);

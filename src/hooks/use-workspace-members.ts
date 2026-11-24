@@ -29,7 +29,9 @@ export function useWorkspaceMembers({
 }: UseWorkspaceMembersOptions): UseWorkspaceMembersResult {
   const { getToken } = useAuth();
   const getTokenRef = useRef(getToken);
-  getTokenRef.current = getToken;
+  useEffect(() => {
+    getTokenRef.current = getToken;
+  });
 
   const [members, setMembers] = useState<WorkspaceMember[]>([]);
   const [isLoading, setIsLoading] = useState(Boolean(workspaceId && enabled));
@@ -64,6 +66,7 @@ export function useWorkspaceMembers({
   }, [enabled, workspaceId]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional data fetch on mount
     refresh();
   }, [refresh]);
 

@@ -9,10 +9,7 @@ import {
   hasCategoryActivity,
   toCategoryChartData,
 } from "@/lib/statistics-helpers";
-import {
-  CategoryAnalyticsItem,
-  MonthlyAnalyticsItem,
-} from "@/services/analytics/analytics.types";
+import { CategoryAnalyticsItem } from "@/services/analytics/analytics.types";
 import React, { useMemo } from "react";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
