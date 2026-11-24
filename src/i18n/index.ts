@@ -5,6 +5,7 @@ import en from "../locales/en/common.json";
 import es from "../locales/es/common.json";
 import { detectDeviceLanguage } from "./languages";
 
+// eslint-disable-next-line import/no-named-as-default-member -- i18n is the i18next instance; .use() is its method
 i18n.use(initReactI18next).init({
   resources: {
     en: { common: en },

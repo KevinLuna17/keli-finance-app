@@ -70,6 +70,7 @@ export default function ProfileScreen() {
   const { profile, isLoading, error, refresh } = useProfile();
   const { refreshWorkspaces, currentWorkspace } = useBackendSync();
   const invitationsState = useInvitations();
+  const refreshInvitations = invitationsState.refresh;
   const { language } = usePreferencesStore();
 
   useFocusEffect(
@@ -81,8 +82,8 @@ export default function ProfileScreen() {
 
       refresh();
       void refreshWorkspaces();
-      void invitationsState.refresh();
-    }, [refresh, refreshWorkspaces, invitationsState.refresh]),
+      void refreshInvitations();
+    }, [refresh, refreshWorkspaces, refreshInvitations]),
   );
 
   if (isLoading && !profile) {
