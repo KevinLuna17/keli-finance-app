@@ -28,14 +28,14 @@
     "noAccount": "Don't have an account?",
     "signUp": "Sign up",
     "orLoginWith": "Or login with",
-    "termsSignIn": "By continuing, you agree to our Terms and Privacy Policy.",
+    "termsSignIn": "By continuing, you agree to our <terms>Terms</terms> and <privacy>Privacy Policy</privacy>.",
     "createAccount": "Create your account",
     "letsGetStarted": "Let's get you started with",
     "signingUp": "Signing up...",
     "alreadyHaveAccount": "Already have an account?",
     "signIn": "Sign in",
     "orSignUpWith": "Or sign up with",
-    "termsSignUp": "By signing up, you agree to our Terms and Privacy Policy.",
+    "termsSignUp": "By signing up, you agree to our <terms>Terms</terms> and <privacy>Privacy Policy</privacy>.",
     "verifyAccount": "Verify your account",
     "verificationCodeSentTo": "We sent a verification code to {{email}}.",
     "securityCheck": "Security check",
@@ -189,5 +189,57 @@
     "errorTitle": "Could not sync your account",
     "retry": "Try again",
     "retryLabel": "Retry sync"
+  },
+  "categories": {
+    "title": "Categories",
+    "add": "Add category",
+    "create": "Create category",
+    "newTitle": "New Category",
+    "editTitle": "Edit Category",
+    "editLabel": "Edit {{name}}",
+    "empty": "No categories of this type yet.",
+    "retry": "Try again",
+    "notFound": "Category not found",
+    "typeLabel": "Type",
+    "typeLocked": "The type cannot be changed after the category is created.",
+    "nameLabel": "Name",
+    "namePlaceholder": "e.g. Groceries",
+    "iconLabel": "Icon",
+    "delete": "Delete category",
+    "deleteConfirmTitle": "Delete category",
+    "deleteConfirmMessage": "This category will be removed. This cannot be undone.",
+    "reassignMessage": "This category has transactions. Choose a category to move them to before deleting it.",
+    "reassignLabel": "Move transactions to",
+    "moveAndDelete": "Move and delete",
+    "validation": {
+      "nameRequired": "Enter a name",
+      "nameTooLong": "Name must be at most 50 characters"
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "loadFailed": "Could not load categories",
+      "nameTaken": "A category with this name already exists.",
+      "lastOfType": "You need at least one category of each type.",
+      "reassignInvalid": "Choose another category of the same type."
+    }
+  },
+  "legal": {
+    "title": "Legal",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy"
+  },
+  "deleteAccount": {
+    "title": "Delete account",
+    "heading": "Delete your Keli account",
+    "description": "Your account and all of its data will be permanently deleted:",
+    "itemProfile": "Your profile and preferences",
+    "itemTransactions": "All transactions in your workspaces",
+    "itemCategories": "All categories in your workspaces",
+    "itemWorkspaces": "Your personal workspace and any workspace you own",
+    "irreversible": "This cannot be undone. You will be signed out, and signing up again will create a new, empty account.",
+    "confirmTitle": "Delete account permanently?",
+    "confirmMessage": "All your data will be deleted and cannot be recovered.",
+    "confirmAction": "Delete my account",
+    "error": "Could not delete your account. Please try again."
   }
 }

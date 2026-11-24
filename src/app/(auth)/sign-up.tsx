@@ -5,6 +5,7 @@ import { AuthTextField } from "@/components/auth/AuthTextField";
 import { CodeVerification } from "@/components/auth/CodeVerification";
 import { SocialLoginSection } from "@/components/auth/SocialLoginSection";
 import Bubbles from "@/components/Bubbles";
+import { LegalLinksText } from "@/components/ui/legal-links-text";
 import ScreenLayout from "@/components/ui/ScreenLayout";
 import { useSignUpFlow } from "@/hooks/useSignUpFlow";
 import { Link } from "expo-router";
@@ -130,9 +131,10 @@ export default function SignUpScreen() {
 
         <SocialLoginSection dividerLabel={t("auth.orSignUpWith")} />
 
-        <Text className="mt-3 text-center text-sm leading-5 text-muted-foreground">
-          {t("auth.termsSignUp")}
-        </Text>
+        <LegalLinksText
+          i18nKey="auth.termsSignUp"
+          className="mt-3 text-center text-sm leading-5 text-muted-foreground"
+        />
 
         <View nativeID="clerk-captcha" />
       </AuthFormCard>

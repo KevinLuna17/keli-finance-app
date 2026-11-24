@@ -9,6 +9,10 @@ export default function ProfileLayout() {
     <Stack screenOptions={getModalStackScreenOptions(colors)}>
       <Stack.Screen name="edit" options={{ title: "Edit Profile" }} />
       <Stack.Screen name="language" options={{ title: "Language" }} />
+      <Stack.Screen name="categories/index" />
+      <Stack.Screen name="categories/new" />
+      <Stack.Screen name="categories/[id]/edit" />
+      <Stack.Screen name="delete-account" />
       <Stack.Screen
         name="workspaces/create"
         options={{ title: "Create Workspace" }}

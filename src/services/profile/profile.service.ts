@@ -1,4 +1,4 @@
-import { apiRequest } from "@/lib/api/client";
+import { apiRequest, apiRequestNoContent } from "@/lib/api/client";
 import {
   GetToken,
   PROFILE_ENDPOINTS,
@@ -21,5 +21,13 @@ export function updateProfile(
     method: "PATCH",
     getToken,
     body: payload,
+  });
+}
+
+/** Permanently deletes the authenticated user's account and data. */
+export function deleteAccount(getToken: GetToken): Promise<void> {
+  return apiRequestNoContent(PROFILE_ENDPOINTS.base, {
+    method: "DELETE",
+    getToken,
   });
 }

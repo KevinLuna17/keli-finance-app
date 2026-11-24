@@ -28,14 +28,14 @@
     "noAccount": "¿No tienes una cuenta?",
     "signUp": "Regístrate",
     "orLoginWith": "O inicia sesión con",
-    "termsSignIn": "Al continuar, aceptas nuestros Términos y Política de Privacidad.",
+    "termsSignIn": "Al continuar, aceptas nuestros <terms>Términos</terms> y <privacy>Política de Privacidad</privacy>.",
     "createAccount": "Crea tu cuenta",
     "letsGetStarted": "Comencemos con",
     "signingUp": "Registrando...",
     "alreadyHaveAccount": "¿Ya tienes una cuenta?",
     "signIn": "Iniciar sesión",
     "orSignUpWith": "O regístrate con",
-    "termsSignUp": "Al registrarte, aceptas nuestros Términos y Política de Privacidad.",
+    "termsSignUp": "Al registrarte, aceptas nuestros <terms>Términos</terms> y <privacy>Política de Privacidad</privacy>.",
     "verifyAccount": "Verifica tu cuenta",
     "verificationCodeSentTo": "Enviamos un código de verificación a {{email}}.",
     "securityCheck": "Verificación de seguridad",
@@ -189,5 +189,57 @@
     "errorTitle": "No se pudo sincronizar tu cuenta",
     "retry": "Intentar de nuevo",
     "retryLabel": "Reintentar sincronización"
+  },
+  "categories": {
+    "title": "Categorías",
+    "add": "Agregar categoría",
+    "create": "Crear categoría",
+    "newTitle": "Nueva categoría",
+    "editTitle": "Editar categoría",
+    "editLabel": "Editar {{name}}",
+    "empty": "Aún no tienes categorías de este tipo.",
+    "retry": "Intentar de nuevo",
+    "notFound": "Categoría no encontrada",
+    "typeLabel": "Tipo",
+    "typeLocked": "El tipo no se puede cambiar después de crear la categoría.",
+    "nameLabel": "Nombre",
+    "namePlaceholder": "Ej. Supermercado",
+    "iconLabel": "Ícono",
+    "delete": "Eliminar categoría",
+    "deleteConfirmTitle": "Eliminar categoría",
+    "deleteConfirmMessage": "Esta categoría se eliminará. Esta acción no se puede deshacer.",
+    "reassignMessage": "Esta categoría tiene transacciones. Elige a qué categoría moverlas antes de eliminarla.",
+    "reassignLabel": "Mover transacciones a",
+    "moveAndDelete": "Mover y eliminar",
+    "validation": {
+      "nameRequired": "Escribe un nombre",
+      "nameTooLong": "El nombre debe tener máximo 50 caracteres"
+    },
+    "errors": {
+      "generic": "Algo salió mal. Inténtalo de nuevo.",
+      "loadFailed": "No se pudieron cargar las categorías",
+      "nameTaken": "Ya existe una categoría con este nombre.",
+      "lastOfType": "Necesitas al menos una categoría de cada tipo.",
+      "reassignInvalid": "Elige otra categoría del mismo tipo."
+    }
+  },
+  "legal": {
+    "title": "Legal",
+    "terms": "Términos del servicio",
+    "privacy": "Política de privacidad"
+  },
+  "deleteAccount": {
+    "title": "Eliminar cuenta",
+    "heading": "Eliminar tu cuenta de Keli",
+    "description": "Tu cuenta y todos sus datos se eliminarán de forma permanente:",
+    "itemProfile": "Tu perfil y preferencias",
+    "itemTransactions": "Todas las transacciones de tus espacios",
+    "itemCategories": "Todas las categorías de tus espacios",
+    "itemWorkspaces": "Tu espacio personal y cualquier espacio del que seas dueño",
+    "irreversible": "Esta acción no se puede deshacer. Se cerrará tu sesión y, si te registras de nuevo, se creará una cuenta nueva y vacía.",
+    "confirmTitle": "¿Eliminar tu cuenta para siempre?",
+    "confirmMessage": "Todos tus datos se eliminarán y no se podrán recuperar.",
+    "confirmAction": "Eliminar mi cuenta",
+    "error": "No se pudo eliminar tu cuenta. Inténtalo de nuevo."
   }
 }
