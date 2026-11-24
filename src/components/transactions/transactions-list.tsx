@@ -104,7 +104,7 @@ export function TransactionsList({
           <View className="items-center py-6">
             <ActivityIndicator color="hsl(144, 16%, 37%)" />
           </View>
-        ) : null
+        ) : undefined
       }
     />
   );

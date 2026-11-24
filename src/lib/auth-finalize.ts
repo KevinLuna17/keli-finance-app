@@ -1,5 +1,6 @@
-import type { Router } from "expo-router";
-import type { Href } from "expo-router";
+import type { Href, useRouter } from "expo-router";
+
+type Router = ReturnType<typeof useRouter>;
 
 type FinalizeNavigateArgs = {
   decorateUrl: (path: string) => string;
