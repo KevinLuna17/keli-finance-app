@@ -7,11 +7,23 @@ export type WorkspaceDashboard = {
   recentTransactions: Transaction[];
 };
 
+export type SavingsSummary = {
+  /** Current calendar month in the user's timezone. */
+  period: { year: number; month: number };
+  incomeInCents: number;
+  expensesInCents: number;
+  /** Income minus expenses for the period. Negative when spending exceeds income. */
+  savingsInCents: number;
+  /** Percentage with one decimal (e.g. 25.5). Null when there is no income. */
+  savingsRate: number | null;
+};
+
 export type AnalyticsSummary = {
+  /** All-time income minus all-time expenses. */
   balance: number;
   totalIncome: number;
   totalExpenses: number;
-  savings: number;
+  savings: SavingsSummary;
 };
 
 export type MonthlyAnalyticsItem = {

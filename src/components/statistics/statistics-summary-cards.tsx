@@ -1,4 +1,5 @@
 import { SummaryCard } from "@/components/analytics";
+import { formatMonthName, formatSavingsRate } from "@/lib/statistics-helpers";
 import { AnalyticsSummary } from "@/services/analytics/analytics.types";
 import React from "react";
 import { View } from "react-native";
@@ -13,7 +14,16 @@ export function StatisticsSummaryCards({
   summary,
   isLoading = false,
 }: StatisticsSummaryCardsProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { period, savingsInCents, savingsRate } = summary.savings;
+  const monthName = formatMonthName(period.year, period.month, i18n.language);
+  const savingsCaption =
+    savingsRate === null
+      ? t("statistics.savingsNoIncome", { month: monthName })
+      : t("statistics.savingsCaption", {
+          month: monthName,
+          rate: formatSavingsRate(savingsRate, i18n.language),
+        });
 
   return (
     <View className="flex-row flex-wrap gap-3">
@@ -40,7 +50,8 @@ export function StatisticsSummaryCards({
       />
       <SummaryCard
         label={t("statistics.savings")}
-        amountInSmallestUnits={summary.savings}
+        amountInSmallestUnits={savingsInCents}
+        caption={savingsCaption}
         icon="piggy-bank"
         accent="accent"
         isLoading={isLoading}

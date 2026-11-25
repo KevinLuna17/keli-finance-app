@@ -11,6 +11,8 @@ export type SummaryCardProps = {
   icon: React.ComponentProps<typeof FontAwesome6>["name"];
   accent?: SummaryCardAccent;
   isLoading?: boolean;
+  /** Optional secondary line under the amount. */
+  caption?: string;
   className?: string;
 };
 
@@ -38,6 +40,7 @@ export function SummaryCard({
   icon,
   accent = "brand",
   isLoading = false,
+  caption,
   className,
 }: SummaryCardProps) {
   const { format } = useFormatCurrency();
@@ -63,6 +66,9 @@ export function SummaryCard({
       <Text className="mt-3 text-xl font-bold text-foreground">
         {format(amountInSmallestUnits)}
       </Text>
+      {caption ? (
+        <Text className="mt-1 text-xs text-muted-foreground">{caption}</Text>
+      ) : null}
     </View>
   );
 }

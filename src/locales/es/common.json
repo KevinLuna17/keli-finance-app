@@ -127,7 +127,7 @@
     "balance": "Saldo",
     "income": "Ingresos",
     "expenses": "Gastos",
-    "savings": "Ahorros",
+    "savings": "Ahorro del mes",
     "monthlyChartTitle": "Ingresos vs gastos mensuales",
     "monthlyChartSubtitle": "Últimos 12 meses",
     "noMonthlyActivity": "Aún no hay actividad mensual. Las transacciones aparecerán aquí una vez registradas.",
@@ -141,7 +141,9 @@
     "noInsightsTitle": "Sin perspectivas aún",
     "noInsightsSubtitle": "Agrega transacciones de ingresos y gastos para desbloquear gráficas y resúmenes.",
     "totalExpenses": "Total Gastos",
-    "totalIncome": "Total Ingresos"
+    "totalIncome": "Total Ingresos",
+    "savingsCaption": "{{month}} · {{rate}} de tus ingresos",
+    "savingsNoIncome": "{{month}} · aún sin ingresos"
   },
   "profileScreen": {
     "user": "Usuario",

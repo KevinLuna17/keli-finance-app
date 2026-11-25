@@ -127,7 +127,7 @@
     "balance": "Balance",
     "income": "Income",
     "expenses": "Expenses",
-    "savings": "Savings",
+    "savings": "Savings this month",
     "monthlyChartTitle": "Monthly income vs expense",
     "monthlyChartSubtitle": "Last 12 months",
     "noMonthlyActivity": "No monthly activity yet. Transactions will appear here once recorded.",
@@ -141,7 +141,9 @@
     "noInsightsTitle": "No insights yet",
     "noInsightsSubtitle": "Add income and expense transactions to unlock charts and summaries for this workspace.",
     "totalExpenses": "Total Expenses",
-    "totalIncome": "Total Income"
+    "totalIncome": "Total Income",
+    "savingsCaption": "{{month}} · {{rate}} of income",
+    "savingsNoIncome": "{{month}} · no income yet"
   },
   "profileScreen": {
     "user": "User",
