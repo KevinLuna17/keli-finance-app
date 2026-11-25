@@ -28,10 +28,6 @@ export default function AuthHeader() {
             width: "100%",
             height: 250,
             transform: [{ rotate: "10deg" }],
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 5 },
-            shadowOpacity: 0.5,
-            shadowRadius: 3.84,
           }}
           contentFit="contain"
         />

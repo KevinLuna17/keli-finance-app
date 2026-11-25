@@ -22,7 +22,7 @@ const CONNECTING_LABEL = "Connecting...";
 
 function ProviderIcon({ provider }: { provider: SocialProvider }) {
   return (
-    <View className="h-9 w-9 items-center justify-center shadow-sm">
+    <View className="h-9 w-9 items-center justify-center">
       {provider === "google" ? (
         <Image
           source={require("../../../assets/images/google.png")}
