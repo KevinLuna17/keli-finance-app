@@ -1,0 +1,5 @@
+{
+  "ios": {
+    "NSPhotoLibraryUsageDescription": "Keli uses your photo library so you can choose a profile picture."
+  }
+}

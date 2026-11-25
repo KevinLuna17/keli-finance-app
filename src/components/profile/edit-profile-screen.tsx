@@ -1,5 +1,6 @@
 import { AuthFieldError } from "@/components/auth/AuthFieldError";
 import { EditProfileFormFields } from "@/components/profile/edit-profile-form-fields";
+import { ProfilePhotoPicker } from "@/components/profile/profile-photo-picker";
 import ScreenLayout from "@/components/ui/ScreenLayout";
 import { useEditProfileForm } from "@/hooks/use-edit-profile-form";
 import { useProfile } from "@/hooks/use-profile";
@@ -72,6 +73,8 @@ export function EditProfileScreen() {
             <AuthFieldError message={submitError} />
           </View>
         ) : null}
+
+        <ProfilePhotoPicker profile={profile} disabled={isSubmitting} />
 
         <EditProfileFormFields
           control={form.control}

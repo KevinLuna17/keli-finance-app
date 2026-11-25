@@ -13,6 +13,9 @@
       "supportsTablet": false,
       "config": {
         "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true
       }
     },
     "android": {
@@ -43,11 +46,23 @@
       ],
       "expo-web-browser",
       "@react-native-community/datetimepicker",
-      "expo-localization"
+      "expo-localization",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Keli uses your photo library so you can choose a profile picture.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "locales": {
+      "en": "./src/locales/native/en.json",
+      "es": "./src/locales/native/es.json"
     }
   }
 }

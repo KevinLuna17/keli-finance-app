@@ -9,11 +9,11 @@ export type Profile = {
 
 export type UpdateProfileRequest = {
   name: string;
-  imageUrl?: string | null;
 };
 
 export const PROFILE_ENDPOINTS = {
   base: "/profile",
+  syncImage: "/profile/image/sync",
 } as const;
 
 export type { GetToken };

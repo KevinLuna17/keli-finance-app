@@ -156,7 +156,16 @@
     "namePlaceholder": "Your name",
     "emailLabel": "Email",
     "emailReadOnly": "Email is managed by your sign-in provider and cannot be changed here.",
-    "photoLabel": "Profile photo"
+    "photoLabel": "Profile photo",
+    "changePhoto": "Change photo",
+    "removePhoto": "Remove photo",
+    "removePhotoTitle": "Remove photo",
+    "removePhotoMessage": "Your initials will be shown instead.",
+    "photoErrors": {
+      "generic": "We couldn't update your photo. Please try again.",
+      "permissionDenied": "Allow access to your photos in Settings to choose a profile picture.",
+      "tooLarge": "This image is too large. Choose a smaller one."
+    }
   },
   "workspaces": {
     "title": "Workspaces",

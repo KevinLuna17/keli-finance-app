@@ -42,7 +42,6 @@ export function useEditProfileForm({
     try {
       const updatedProfile = await updateProfile(() => getToken(), {
         name: values.name,
-        imageUrl: profile?.imageUrl ?? null,
       });
 
       onSuccess?.(updatedProfile);

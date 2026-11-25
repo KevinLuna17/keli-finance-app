@@ -156,7 +156,16 @@
     "namePlaceholder": "Tu nombre",
     "emailLabel": "Correo",
     "emailReadOnly": "El correo es administrado por tu proveedor de inicio de sesión y no se puede cambiar aquí.",
-    "photoLabel": "Foto de perfil"
+    "photoLabel": "Foto de perfil",
+    "changePhoto": "Cambiar foto",
+    "removePhoto": "Quitar foto",
+    "removePhotoTitle": "Quitar foto",
+    "removePhotoMessage": "Se mostrarán tus iniciales en su lugar.",
+    "photoErrors": {
+      "generic": "No pudimos actualizar tu foto. Inténtalo de nuevo.",
+      "permissionDenied": "Permite el acceso a tus fotos en Ajustes para elegir una foto de perfil.",
+      "tooLarge": "Esta imagen es demasiado grande. Elige una más pequeña."
+    }
   },
   "workspaces": {
     "title": "Espacios de trabajo",

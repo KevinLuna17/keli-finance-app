@@ -24,6 +24,14 @@ export function updateProfile(
   });
 }
 
+/** Asks the backend to read the current photo from Clerk and store it. */
+export function syncProfileImage(getToken: GetToken): Promise<Profile> {
+  return apiRequest<Profile>(PROFILE_ENDPOINTS.syncImage, {
+    method: "POST",
+    getToken,
+  });
+}
+
 /** Permanently deletes the authenticated user's account and data. */
 export function deleteAccount(getToken: GetToken): Promise<void> {
   return apiRequestNoContent(PROFILE_ENDPOINTS.base, {
