@@ -1,4 +1,4 @@
-import { ApiError } from "@/lib/api/client";
+import { getApiErrorMessage } from "@/lib/api/api-error-message";
 import {
   profileFormSchema,
   ProfileFormValues,
@@ -48,9 +48,7 @@ export function useEditProfileForm({
       onSuccess?.(updatedProfile);
     } catch (error) {
       setSubmitError(
-        error instanceof ApiError
-          ? error.message
-          : "Could not update profile",
+        getApiErrorMessage(error, "errors.updateProfile"),
       );
     }
   });

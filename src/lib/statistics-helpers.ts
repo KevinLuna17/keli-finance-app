@@ -3,16 +3,23 @@ import type {
   MonthlyBarChartDatum,
 } from "@/components/analytics";
 import {
+  AnalyticsSummary,
   CategoryAnalyticsItem,
   MonthlyAnalyticsItem,
   StatisticsAnalytics,
 } from "@/services/analytics/analytics.types";
 
-const EMPTY_SUMMARY = {
+const EMPTY_SUMMARY: AnalyticsSummary = {
   balance: 0,
   totalIncome: 0,
   totalExpenses: 0,
-  savings: 0,
+  savings: {
+    period: { year: new Date().getFullYear(), month: new Date().getMonth() + 1 },
+    incomeInCents: 0,
+    expensesInCents: 0,
+    savingsInCents: 0,
+    savingsRate: null,
+  },
 };
 
 export const EMPTY_STATISTICS: StatisticsAnalytics = {
@@ -49,11 +56,50 @@ export type {
   MonthlyBarChartDatum as MonthlyChartDatum,
 } from "@/components/analytics";
 
+/** Short month name in the given language, e.g. "Nov" / "nov". */
+export function formatMonthLabel(
+  year: number,
+  month: number,
+  language: string,
+): string {
+  // Mid-month at UTC noon so no timezone can shift it to another month.
+  const date = new Date(Date.UTC(year, month - 1, 15, 12));
+
+  return new Intl.DateTimeFormat(language, {
+    month: "short",
+    timeZone: "UTC",
+  }).format(date);
+}
+
+/** Full month name in the given language, capitalized, e.g. "November" / "Noviembre". */
+export function formatMonthName(
+  year: number,
+  month: number,
+  language: string,
+): string {
+  const date = new Date(Date.UTC(year, month - 1, 15, 12));
+  const name = new Intl.DateTimeFormat(language, {
+    month: "long",
+    timeZone: "UTC",
+  }).format(date);
+
+  return name.charAt(0).toLocaleUpperCase(language) + name.slice(1);
+}
+
+/** Savings rate (already a percentage) formatted for display, e.g. "25.5 %". */
+export function formatSavingsRate(rate: number, language: string): string {
+  return new Intl.NumberFormat(language, {
+    style: "percent",
+    maximumFractionDigits: 1,
+  }).format(rate / 100);
+}
+
 export function toMonthlyChartData(
   monthly: MonthlyAnalyticsItem[],
+  language: string,
 ): MonthlyBarChartDatum[] {
   return monthly.map((item) => ({
-    month: item.month,
+    month: formatMonthLabel(item.year, item.month, language),
     income: item.income / 100,
     expense: item.expense / 100,
   }));

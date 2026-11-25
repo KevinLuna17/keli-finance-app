@@ -1,4 +1,4 @@
-import { ApiError } from "@/lib/api/client";
+import { getApiErrorMessage } from "@/lib/api/api-error-message";
 import {
   inviteMemberFormSchema,
   InviteMemberFormValues,
@@ -38,9 +38,7 @@ export function useInviteMemberForm({
       await onSuccess?.();
     } catch (error) {
       setSubmitError(
-        error instanceof ApiError
-          ? error.message
-          : "Could not send invitation",
+        getApiErrorMessage(error, "errors.sendInvitation"),
       );
     }
   });

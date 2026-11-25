@@ -1,4 +1,4 @@
-import { ApiError } from "@/lib/api/client";
+import { getApiErrorMessage } from "@/lib/api/api-error-message";
 import {
   acceptInvitation,
   declineInvitation,
@@ -41,9 +41,7 @@ export function useInvitations(): UseInvitationsResult {
       setInvitations(data);
     } catch (loadError) {
       setError(
-        loadError instanceof ApiError
-          ? loadError.message
-          : "Could not load invitations",
+        getApiErrorMessage(loadError, "errors.loadInvitations"),
       );
     } finally {
       setIsLoading(false);
@@ -67,9 +65,7 @@ export function useInvitations(): UseInvitationsResult {
         );
       } catch (actionError) {
         setError(
-          actionError instanceof ApiError
-            ? actionError.message
-            : "Could not accept invitation",
+          getApiErrorMessage(actionError, "errors.acceptInvitation"),
         );
         throw actionError;
       } finally {
@@ -91,9 +87,7 @@ export function useInvitations(): UseInvitationsResult {
         );
       } catch (actionError) {
         setError(
-          actionError instanceof ApiError
-            ? actionError.message
-            : "Could not decline invitation",
+          getApiErrorMessage(actionError, "errors.declineInvitation"),
         );
         throw actionError;
       } finally {

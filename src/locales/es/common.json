@@ -60,7 +60,30 @@
     "twoFactorRequired": "Verificación en dos pasos requerida",
     "twoFactorMessage": "Tu cuenta tiene 2FA activado. Inicia sesión desde la pantalla de inicio de sesión para continuar.",
     "security": "Seguridad",
-    "backToSignIn": "Volver a iniciar sesión"
+    "backToSignIn": "Volver a iniciar sesión",
+    "connecting": "Conectando...",
+    "continueWith": "Continuar con {{provider}}",
+    "errors": {
+      "title": "Error",
+      "generic": "Algo salió mal. Inténtalo de nuevo.",
+      "accountNotFound": "No encontramos una cuenta con ese correo.",
+      "passwordIncorrect": "Contraseña incorrecta. Inténtalo de nuevo o restablécela.",
+      "passwordPwned": "Esta contraseña apareció en una filtración de datos. Elige otra.",
+      "passwordTooShort": "Tu contraseña debe tener al menos 8 caracteres.",
+      "passwordTooLong": "Tu contraseña es demasiado larga.",
+      "passwordWeak": "Tu contraseña no es lo bastante segura. Prueba con una más larga.",
+      "emailTaken": "Ya existe una cuenta con este correo.",
+      "emailInvalid": "Ingresa un correo electrónico válido.",
+      "fieldRequired": "Este campo es obligatorio.",
+      "codeIncorrect": "El código es incorrecto.",
+      "codeExpired": "El código expiró. Solicita uno nuevo.",
+      "useSocialSignIn": "Esta cuenta usa Google o Apple. Inicia sesión con esa opción.",
+      "tooManyRequests": "Demasiados intentos. Espera un momento e inténtalo de nuevo.",
+      "accountLocked": "Tu cuenta está bloqueada temporalmente. Inténtalo más tarde.",
+      "additionalVerification": "Se requiere una verificación adicional. Prueba otro método de inicio de sesión.",
+      "signInIncompleteTitle": "Inicio de sesión incompleto",
+      "signInIncomplete": "El inicio de sesión no se completó. Inténtalo de nuevo."
+    }
   },
   "dashboard": {
     "greeting": "¡Hola de nuevo!",
@@ -104,7 +127,7 @@
     "balance": "Saldo",
     "income": "Ingresos",
     "expenses": "Gastos",
-    "savings": "Ahorros",
+    "savings": "Ahorro del mes",
     "monthlyChartTitle": "Ingresos vs gastos mensuales",
     "monthlyChartSubtitle": "Últimos 12 meses",
     "noMonthlyActivity": "Aún no hay actividad mensual. Las transacciones aparecerán aquí una vez registradas.",
@@ -118,7 +141,9 @@
     "noInsightsTitle": "Sin perspectivas aún",
     "noInsightsSubtitle": "Agrega transacciones de ingresos y gastos para desbloquear gráficas y resúmenes.",
     "totalExpenses": "Total Gastos",
-    "totalIncome": "Total Ingresos"
+    "totalIncome": "Total Ingresos",
+    "savingsCaption": "{{month}} · {{rate}} de tus ingresos",
+    "savingsNoIncome": "{{month}} · aún sin ingresos"
   },
   "profileScreen": {
     "user": "Usuario",
@@ -171,7 +196,8 @@
     "errors": {
       "currencyLocked": "No puedes cambiar la moneda porque este espacio ya tiene transacciones.",
       "currencyGeneric": "No pudimos actualizar la moneda. Inténtalo de nuevo."
-    }
+    },
+    "detailsTitle": "Detalles del espacio"
   },
   "invitations": {
     "pendingTitle": "Invitaciones pendientes",
@@ -192,7 +218,10 @@
   "sync": {
     "errorTitle": "No se pudo sincronizar tu cuenta",
     "retry": "Intentar de nuevo",
-    "retryLabel": "Reintentar sincronización"
+    "retryLabel": "Reintentar sincronización",
+    "errors": {
+      "connection": "No pudimos conectar con Keli. Revisa tu conexión e inténtalo de nuevo."
+    }
   },
   "categories": {
     "title": "Categorías",
@@ -259,5 +288,42 @@
     "firstTransactionBody": "Empieza con algo simple: tu salario o tu última compra.",
     "addExpense": "Agregar un gasto",
     "addIncome": "Agregar un ingreso"
+  },
+  "back": "Atrás",
+  "errors": {
+    "generic": "Algo salió mal. Inténtalo de nuevo.",
+    "network": "Sin conexión a internet. Revisa tu conexión e inténtalo de nuevo.",
+    "sessionExpired": "Tu sesión expiró. Inicia sesión de nuevo.",
+    "loadProfile": "No pudimos cargar tu perfil.",
+    "updateProfile": "No pudimos actualizar tu perfil.",
+    "syncLanguage": "No pudimos guardar tu idioma. Solo se aplicará en este dispositivo.",
+    "loadCategories": "No pudimos cargar tus categorías.",
+    "loadInvitations": "No pudimos cargar tus invitaciones.",
+    "acceptInvitation": "No pudimos aceptar la invitación.",
+    "declineInvitation": "No pudimos rechazar la invitación.",
+    "loadTransaction": "No pudimos cargar esta transacción.",
+    "saveTransaction": "No pudimos guardar la transacción.",
+    "loadStatistics": "No pudimos cargar tus estadísticas.",
+    "loadTransactions": "No pudimos cargar tus transacciones.",
+    "loadMembers": "No pudimos cargar los miembros del espacio.",
+    "removeMember": "No pudimos eliminar al miembro.",
+    "loadWorkspaces": "No pudimos cargar tus espacios.",
+    "sendInvitation": "No pudimos enviar la invitación.",
+    "createWorkspace": "No pudimos crear el espacio.",
+    "updateWorkspace": "No pudimos actualizar el espacio.",
+    "deleteWorkspace": "No pudimos eliminar el espacio.",
+    "loadDashboard": "No pudimos cargar tu resumen."
+  },
+  "validation": {
+    "amountRequired": "El monto es obligatorio",
+    "amountInvalid": "Ingresa un monto válido mayor que 0",
+    "categoryRequired": "Selecciona una categoría",
+    "descriptionTooShort": "La descripción debe tener al menos 2 caracteres",
+    "descriptionTooLong": "La descripción debe tener como máximo 255 caracteres",
+    "dateRequired": "La fecha es obligatoria",
+    "nameTooShort": "El nombre debe tener al menos 2 caracteres",
+    "nameTooLong": "El nombre debe tener como máximo 100 caracteres",
+    "emailInvalid": "Ingresa un correo electrónico válido",
+    "currencyRequired": "Selecciona una moneda"
   }
 }

@@ -13,6 +13,7 @@ import { Link } from "expo-router";
 import * as React from "react";
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { getClerkFieldErrorMessage } from "@/lib/clerk-errors";
 
 export default function SignInScreen() {
   const { t } = useTranslation();
@@ -38,7 +39,7 @@ export default function SignInScreen() {
       <CodeVerification
         title={t("auth.verifyAccount")}
         subtitle={t("auth.verificationCodeSentTo", { email: emailAddress })}
-        codeError={errors.fields.code?.message}
+        codeError={getClerkFieldErrorMessage(errors.fields.code)}
         isLoading={fetchStatus === "fetching"}
         onVerify={handleVerify}
         onResendCode={resendMfaCode}
@@ -68,7 +69,7 @@ export default function SignInScreen() {
             variant="email"
             value={emailAddress}
             onChangeText={setEmailWithErrorClear}
-            error={errors.fields.identifier?.message}
+            error={getClerkFieldErrorMessage(errors.fields.identifier)}
           />
 
           <AuthTextField
@@ -77,7 +78,7 @@ export default function SignInScreen() {
             onChangeText={setPasswordWithErrorClear}
             showPassword={showPassword}
             onTogglePassword={() => setShowPassword((prev) => !prev)}
-            error={errors.fields.password?.message}
+            error={getClerkFieldErrorMessage(errors.fields.password)}
           />
 
           <Link href="/(auth)/forgot-password" asChild>

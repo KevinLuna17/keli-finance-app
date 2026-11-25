@@ -6,6 +6,7 @@ import { createAuthNavigateHandler } from "@/lib/auth-finalize";
 import {
   getClerkErrorMessage,
   isFieldLevelClerkError,
+  getClerkFieldErrorMessage,
 } from "@/lib/clerk-errors";
 import { useSignIn } from "@clerk/expo";
 import { Link, useRouter } from "expo-router";
@@ -144,7 +145,7 @@ export default function ForgotPassword() {
           placeholder={t("auth.enterNewPassword")}
           showPassword={showPassword}
           onTogglePassword={() => setShowPassword((prev) => !prev)}
-          error={errors.fields.password?.message}
+          error={getClerkFieldErrorMessage(errors.fields.password)}
         />
 
         {formError && !errors.fields.password?.message ? (
@@ -183,7 +184,7 @@ export default function ForgotPassword() {
       <CodeVerification
         title={t("auth.verifyAccount")}
         subtitle={t("auth.resetCodeSentTo", { email: emailAddress })}
-        codeError={errors.fields.code?.message}
+        codeError={getClerkFieldErrorMessage(errors.fields.code)}
         isLoading={isLoading}
         onVerify={handleVerifyCode}
         onResendCode={async () => {
@@ -208,7 +209,7 @@ export default function ForgotPassword() {
         autoCapitalize="none"
         value={emailAddress}
         onChangeText={setEmailAddress}
-        error={errors.fields.identifier?.message}
+        error={getClerkFieldErrorMessage(errors.fields.identifier)}
       />
 
       {formError && !errors.fields.identifier?.message ? (

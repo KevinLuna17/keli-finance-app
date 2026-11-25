@@ -1,4 +1,4 @@
-import { ApiError } from "@/lib/api/client";
+import { getApiErrorMessage } from "@/lib/api/api-error-message";
 import { listWorkspaces } from "@/services/workspaces/workspace.service";
 import type { Workspace } from "@/services/workspaces/workspace.types";
 import { useAuth } from "@clerk/expo";
@@ -31,9 +31,7 @@ export function useWorkspaces(): UseWorkspacesResult {
       setWorkspaces(data);
     } catch (loadError) {
       setError(
-        loadError instanceof ApiError
-          ? loadError.message
-          : "Could not load workspaces",
+        getApiErrorMessage(loadError, "errors.loadWorkspaces"),
       );
     } finally {
       setIsLoading(false);

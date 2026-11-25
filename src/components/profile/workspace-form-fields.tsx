@@ -42,7 +42,11 @@ export function WorkspaceFormFields({
               editable={!disabled}
               placeholder={t("workspaces.namePlaceholder")}
               autoCapitalize="words"
-              error={errors.name?.message}
+              error={
+              errors.name?.message
+                ? t(errors.name.message)
+                : undefined
+            }
               renderLeftSlot={(state) => (
                 <TextFieldIconSlot>
                   <FontAwesome6
@@ -100,7 +104,7 @@ export function WorkspaceFormFields({
         />
         {errors.currency ? (
           <Text className="mt-1 text-xs text-destructive">
-            {errors.currency.message}
+            {t(errors.currency.message ?? "")}
           </Text>
         ) : null}
       </View>

@@ -6,6 +6,7 @@ import Bubbles from "../Bubbles";
 import { GlassBackButton } from "../glass";
 import ScreenLayout from "../ui/ScreenLayout";
 import { useTranslation } from "react-i18next";
+import { getClerkErrorMessage } from "@/lib/clerk-errors";
 
 interface CodeVerificationProps {
   title: string;
@@ -50,15 +51,7 @@ export function CodeVerification({
     try {
       await onVerify(code);
     } catch (err: unknown) {
-      const clerkError = err as {
-        errors?: { message?: string }[];
-        message?: string;
-      };
-      setLocalError(
-        clerkError.errors?.[0]?.message ||
-          clerkError.message ||
-          t("auth.verificationFailed"),
-      );
+      setLocalError(getClerkErrorMessage(err));
     }
   };
 

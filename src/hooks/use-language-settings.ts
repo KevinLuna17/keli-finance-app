@@ -1,4 +1,4 @@
-import { ApiError } from "@/lib/api/client";
+import { getApiErrorMessage } from "@/lib/api/api-error-message";
 import { updatePreferences } from "@/services/preferences/preferences.service";
 import { usePreferencesStore } from "@/stores/preferences-store";
 import { type SupportedLanguage } from "@/i18n/languages";
@@ -33,9 +33,7 @@ export function useLanguageSettings(): UseLanguageSettingsResult {
         await updatePreferences(() => getToken(), { language: lang });
       } catch (err) {
         setSyncError(
-          err instanceof ApiError
-            ? err.message
-            : "Could not sync language preference",
+          getApiErrorMessage(err, "errors.syncLanguage"),
         );
       } finally {
         setIsSaving(false);

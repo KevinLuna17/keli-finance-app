@@ -1,4 +1,4 @@
-import { ApiError } from "@/lib/api/client";
+import { getApiErrorMessage } from "@/lib/api/api-error-message";
 import { DEFAULT_CURRENCY, SUPPORTED_CURRENCIES } from "@/lib/currencies";
 import {
   workspaceFormSchema,
@@ -74,11 +74,12 @@ export function useWorkspaceForm({
       await onSuccess?.();
     } catch (error) {
       setSubmitError(
-        error instanceof ApiError
-          ? error.message
-          : mode === "create"
-            ? "Could not create workspace"
-            : "Could not update workspace",
+        getApiErrorMessage(
+            error,
+            mode === "create"
+              ? "errors.createWorkspace"
+              : "errors.updateWorkspace",
+          ),
       );
     }
   });
@@ -96,9 +97,7 @@ export function useWorkspaceForm({
       await onDeleted?.();
     } catch (error) {
       setSubmitError(
-        error instanceof ApiError
-          ? error.message
-          : "Could not delete workspace",
+        getApiErrorMessage(error, "errors.deleteWorkspace"),
       );
     } finally {
       setIsDeleting(false);

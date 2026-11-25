@@ -1,4 +1,4 @@
-import { ApiError } from "@/lib/api/client";
+import { getApiErrorMessage } from "@/lib/api/api-error-message";
 import {
   listWorkspaceMembers,
   removeWorkspaceMember,
@@ -56,9 +56,7 @@ export function useWorkspaceMembers({
       setMembers(data);
     } catch (loadError) {
       setError(
-        loadError instanceof ApiError
-          ? loadError.message
-          : "Could not load workspace members",
+        getApiErrorMessage(loadError, "errors.loadMembers"),
       );
     } finally {
       setIsLoading(false);
@@ -88,9 +86,7 @@ export function useWorkspaceMembers({
         setMembers((current) => current.filter((member) => member.id !== memberId));
       } catch (actionError) {
         setError(
-          actionError instanceof ApiError
-            ? actionError.message
-            : "Could not remove member",
+          getApiErrorMessage(actionError, "errors.removeMember"),
         );
         throw actionError;
       } finally {

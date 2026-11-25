@@ -1,4 +1,4 @@
-import { ApiError } from "@/lib/api/client";
+import { getApiErrorMessage } from "@/lib/api/api-error-message";
 import { listCategories } from "@/services/categories/category.service";
 import type { Category } from "@/services/categories/category.types";
 import { useAuth } from "@clerk/expo";
@@ -46,9 +46,7 @@ export function useCategories({
       setCategories(data);
     } catch (loadError) {
       setError(
-        loadError instanceof ApiError
-          ? loadError.message
-          : "Could not load categories",
+        getApiErrorMessage(loadError, "errors.loadCategories"),
       );
     } finally {
       setIsLoading(false);

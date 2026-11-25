@@ -1,4 +1,4 @@
-import { ApiError } from "@/lib/api/client";
+import { getApiErrorMessage } from "@/lib/api/api-error-message";
 import { getProfile } from "@/services/profile/profile.service";
 import type { Profile } from "@/services/profile/profile.types";
 import { useAuth } from "@clerk/expo";
@@ -31,9 +31,7 @@ export function useProfile(): UseProfileResult {
       setProfile(data);
     } catch (loadError) {
       setError(
-        loadError instanceof ApiError
-          ? loadError.message
-          : "Could not load profile",
+        getApiErrorMessage(loadError, "errors.loadProfile"),
       );
     } finally {
       setIsLoading(false);

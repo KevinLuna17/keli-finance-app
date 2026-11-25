@@ -1,4 +1,4 @@
-import { ApiError } from "@/lib/api/client";
+import { getApiErrorMessage } from "@/lib/api/api-error-message";
 import {
   buildTransactionListRows,
   mergeTransactions,
@@ -83,9 +83,7 @@ export function useTransactionsList({ workspaceId }: UseTransactionsListOptions)
         }
 
         setError(
-          fetchError instanceof ApiError
-            ? fetchError.message
-            : "Could not load transactions",
+          getApiErrorMessage(fetchError, "errors.loadTransactions"),
         );
         setStatus("error");
       }
