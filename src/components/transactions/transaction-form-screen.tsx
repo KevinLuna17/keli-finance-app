@@ -21,11 +21,16 @@ import { useTranslation } from "react-i18next";
 type TransactionFormScreenProps = {
   mode: TransactionFormMode;
   transactionId?: string;
+  initialType?: "income" | "expense";
+  /** Defaults to closing the modal. */
+  onSuccess?: () => void | Promise<void>;
 };
 
 export function TransactionFormScreen({
   mode,
   transactionId,
+  initialType,
+  onSuccess,
 }: TransactionFormScreenProps) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -52,7 +57,8 @@ export function TransactionFormScreen({
     mode,
     transactionId,
     workspaceId: workspaceId ?? "",
-    onSuccess: () => router.back(),
+    initialType,
+    onSuccess: onSuccess ?? (() => router.back()),
   });
 
   if (!workspaceId) {

@@ -23,3 +23,10 @@ export function updatePreferences(
     body: payload,
   });
 }
+
+export function completeOnboarding(getToken: GetToken): Promise<Preferences> {
+  return apiRequest<Preferences>(PREFERENCES_ENDPOINTS.completeOnboarding, {
+    method: "POST",
+    getToken,
+  });
+}

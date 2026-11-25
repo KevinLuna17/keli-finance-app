@@ -167,7 +167,11 @@
     "workspaceCurrency": "Moneda del espacio de trabajo",
     "currencyModalTitle": "Moneda del espacio de trabajo",
     "currencyHint": "La moneda solo puede cambiarse antes de agregar transacciones.",
-    "dismissCurrencyError": "Cerrar error"
+    "dismissCurrencyError": "Cerrar error",
+    "errors": {
+      "currencyLocked": "No puedes cambiar la moneda porque este espacio ya tiene transacciones.",
+      "currencyGeneric": "No pudimos actualizar la moneda. Inténtalo de nuevo."
+    }
   },
   "invitations": {
     "pendingTitle": "Invitaciones pendientes",
@@ -241,5 +245,19 @@
     "confirmMessage": "Todos tus datos se eliminarán y no se podrán recuperar.",
     "confirmAction": "Eliminar mi cuenta",
     "error": "No se pudo eliminar tu cuenta. Inténtalo de nuevo."
+  },
+  "onboarding": {
+    "skip": "Omitir",
+    "continue": "Continuar",
+    "later": "Lo haré después",
+    "progress": "Paso {{current}} de {{total}}",
+    "welcomeTitle": "Bienvenido a Keli",
+    "welcomeBody": "Registra lo que ganas y gastas para saber exactamente cuánto te queda y cuánto ahorras.",
+    "currencyTitle": "Confirma tu moneda",
+    "currencyBody": "La elegimos según tu región. Puedes cambiarla ahora; cuando agregues transacciones quedará fija.",
+    "firstTransactionTitle": "Registra tu primer movimiento",
+    "firstTransactionBody": "Empieza con algo simple: tu salario o tu última compra.",
+    "addExpense": "Agregar un gasto",
+    "addIncome": "Agregar un ingreso"
   }
 }

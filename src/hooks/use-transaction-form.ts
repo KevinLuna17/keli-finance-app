@@ -21,13 +21,15 @@ type UseTransactionFormOptions = {
   mode: TransactionFormMode;
   transactionId?: string;
   workspaceId: string;
-  onSuccess?: () => void;
+  initialType?: TransactionFormValues["type"];
+  onSuccess?: () => void | Promise<void>;
 };
 
 export function useTransactionForm({
   mode,
   transactionId,
   workspaceId,
+  initialType,
   onSuccess,
 }: UseTransactionFormOptions) {
   const { getToken } = useAuth();
@@ -37,7 +39,10 @@ export function useTransactionForm({
 
   const form = useForm<TransactionFormValues>({
     resolver: zodResolver(transactionFormSchema),
-    defaultValues: defaultTransactionFormValues,
+    defaultValues: {
+      ...defaultTransactionFormValues,
+      type: initialType ?? defaultTransactionFormValues.type,
+    },
     mode: "onChange",
   });
 
@@ -106,7 +111,7 @@ export function useTransactionForm({
         await updateTransaction(() => getToken(), transactionId, payload);
       }
 
-      onSuccess?.();
+      await onSuccess?.();
     } catch (error) {
       setSubmitError(
         error instanceof ApiError
