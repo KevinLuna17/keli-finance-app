@@ -129,7 +129,7 @@
     "expenses": "Gastos",
     "savings": "Ahorro del mes",
     "monthlyChartTitle": "Ingresos vs gastos mensuales",
-    "monthlyChartSubtitle": "Últimos 12 meses",
+    "monthlyChartSubtitle": "Últimos {{count}} meses",
     "noMonthlyActivity": "Aún no hay actividad mensual. Las transacciones aparecerán aquí una vez registradas.",
     "expensesByCategoryTitle": "Gastos por categoría",
     "expensesByCategorySubtitle": "A dónde va tu dinero",

@@ -129,7 +129,7 @@
     "expenses": "Expenses",
     "savings": "Savings this month",
     "monthlyChartTitle": "Monthly income vs expense",
-    "monthlyChartSubtitle": "Last 12 months",
+    "monthlyChartSubtitle": "Last {{count}} months",
     "noMonthlyActivity": "No monthly activity yet. Transactions will appear here once recorded.",
     "expensesByCategoryTitle": "Expenses by category",
     "expensesByCategorySubtitle": "Where your money goes",
