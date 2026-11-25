@@ -9,8 +9,10 @@ import {
   deleteWorkspace,
   updateWorkspace,
 } from "@/services/workspaces/workspace.service";
-import type { CurrentWorkspace } from "@/services/workspaces/workspace.types";
-import type { Workspace } from "@/services/workspaces/workspace.types";
+import type {
+  CurrentWorkspace,
+  Workspace,
+} from "@/services/workspaces/workspace.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@clerk/expo";
 import { useEffect, useState } from "react";

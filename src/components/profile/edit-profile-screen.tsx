@@ -86,7 +86,7 @@ export function EditProfileScreen() {
           accessibilityRole="button"
           accessibilityState={{ disabled: isSubmitDisabled }}
           disabled={isSubmitDisabled}
-          onPress={onSubmit}
+          onPress={() => onSubmit()}
           className={`items-center rounded-2xl py-4 ${
             isSubmitDisabled ? "bg-muted" : "bg-brand"
           }`}

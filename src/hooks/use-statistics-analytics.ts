@@ -13,7 +13,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 export function useStatisticsAnalytics(workspaceId: string | undefined) {
   const { getToken } = useAuth();
   const getTokenRef = useRef(getToken);
-  getTokenRef.current = getToken;
+  useEffect(() => {
+    getTokenRef.current = getToken;
+  });
 
   const [data, setData] = useState<StatisticsAnalytics>(EMPTY_STATISTICS);
   const [isLoading, setIsLoading] = useState(Boolean(workspaceId));
@@ -57,6 +59,7 @@ export function useStatisticsAnalytics(workspaceId: string | undefined) {
   }, [workspaceId]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional data fetch on mount
     loadStatistics();
   }, [loadStatistics]);
 

@@ -14,7 +14,9 @@ export type UseWorkspacesResult = {
 export function useWorkspaces(): UseWorkspacesResult {
   const { getToken } = useAuth();
   const getTokenRef = useRef(getToken);
-  getTokenRef.current = getToken;
+  useEffect(() => {
+    getTokenRef.current = getToken;
+  });
 
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,6 +41,7 @@ export function useWorkspaces(): UseWorkspacesResult {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional data fetch on mount
     refresh();
   }, [refresh]);
 

@@ -20,7 +20,8 @@ WebBrowser.maybeCompleteAuthSession();
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
   const { isSignedIn, isLoaded } = useAuth();
-  const { isBootstrapping, status, error, retry } = useBackendSync();
+  const { isBootstrapping, status, error, retry, showOnboarding } =
+    useBackendSync();
 
   if (!isLoaded || (isSignedIn && isBootstrapping)) {
     return (
@@ -48,9 +49,17 @@ function RootLayoutNav() {
           <Stack.Screen name="(auth)" />
         </Stack.Protected>
 
+        {/* First-launch onboarding - replaces the tabs until completed or skipped */}
+        <Stack.Protected guard={!!isSignedIn && showOnboarding}>
+          <Stack.Screen name="onboarding" />
+        </Stack.Protected>
+
+        <Stack.Protected guard={!!isSignedIn && !showOnboarding}>
+          <Stack.Screen name="(home)" />
+        </Stack.Protected>
+
         {/* App screens - only accesible when signed in*/}
         <Stack.Protected guard={!!isSignedIn}>
-          <Stack.Screen name="(home)" />
           <Stack.Screen
             name="transaction"
             options={{ headerShown: false, presentation: "modal" }}

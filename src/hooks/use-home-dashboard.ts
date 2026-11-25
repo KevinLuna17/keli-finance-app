@@ -14,7 +14,9 @@ const EMPTY_DASHBOARD: WorkspaceDashboard = {
 export function useHomeDashboard(workspaceId: string | undefined) {
   const { getToken } = useAuth();
   const getTokenRef = useRef(getToken);
-  getTokenRef.current = getToken;
+  useEffect(() => {
+    getTokenRef.current = getToken;
+  });
 
   const [dashboard, setDashboard] = useState<WorkspaceDashboard>(EMPTY_DASHBOARD);
   const [isLoading, setIsLoading] = useState(Boolean(workspaceId));
@@ -49,6 +51,7 @@ export function useHomeDashboard(workspaceId: string | undefined) {
   }, [workspaceId]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional data fetch on mount
     loadDashboard();
   }, [loadDashboard]);
 

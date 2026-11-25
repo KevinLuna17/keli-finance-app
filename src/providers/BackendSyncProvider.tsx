@@ -6,9 +6,15 @@ import {
   detectDeviceRegion,
   detectDeviceTimezone,
 } from "@/lib/region";
+import {
+  completeOnboarding as completeOnboardingRequest,
+  getPreferences,
+} from "@/services/preferences/preferences.service";
 import { listWorkspaces } from "@/services/workspaces/workspace.service";
 import type { CurrentWorkspace } from "@/services/workspaces/workspace.types";
 import type { BackendUser } from "@/types/api";
+import { SUPPORTED_LANGUAGES, type SupportedLanguage } from "@/i18n/languages";
+import { usePreferencesStore } from "@/stores/preferences-store";
 import { useWorkspaceStore } from "@/stores/workspace-store";
 import { useAuth } from "@clerk/expo";
 import React, {
@@ -30,6 +36,9 @@ type BackendSyncContextValue = {
   workspaces: CurrentWorkspace[];
   currentWorkspace: CurrentWorkspace | null;
   refreshWorkspaces: () => Promise<void>;
+  /** True while the first-launch onboarding must be shown. */
+  showOnboarding: boolean;
+  completeOnboarding: () => Promise<void>;
   retry: () => void;
   isBootstrapping: boolean;
 };
@@ -82,6 +91,7 @@ export function BackendSyncProvider({
   const [error, setError] = useState<string | null>(null);
   const [backendUser, setBackendUser] = useState<BackendUser | null>(null);
   const [workspaces, setWorkspaces] = useState<CurrentWorkspace[]>([]);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const currentWorkspaceId = useWorkspaceStore(
     (state) => state.currentWorkspaceId,
@@ -91,7 +101,9 @@ export function BackendSyncProvider({
   );
   const resetWorkspaceStore = useWorkspaceStore((state) => state.reset);
 
-  getTokenRef.current = getToken;
+  useEffect(() => {
+    getTokenRef.current = getToken;
+  });
 
   const applyWorkspaces = useCallback(
     (nextWorkspaces: CurrentWorkspace[]) => {
@@ -117,6 +129,22 @@ export function BackendSyncProvider({
     applyWorkspaces(nextWorkspaces.map(toCurrentWorkspace));
   }, [applyWorkspaces]);
 
+  /**
+   * Never blocks the user: if the request fails the onboarding is still
+   * dismissed locally. The backend also hides it once transactions exist.
+   */
+  const completeOnboarding = useCallback(async () => {
+    try {
+      await completeOnboardingRequest(() => getTokenRef.current());
+    } catch (completeError) {
+      if (__DEV__) {
+        console.error("[BackendSync] complete onboarding failed:", completeError);
+      }
+    } finally {
+      setShowOnboarding(false);
+    }
+  }, []);
+
   const retry = useCallback(() => {
     syncInFlightRef.current = false;
     setRetryCount((count) => count + 1);
@@ -128,10 +156,12 @@ export function BackendSyncProvider({
     }
 
     if (!isSignedIn) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset local state when the user signs out
       setStatus("idle");
       setError(null);
       setBackendUser(null);
       setWorkspaces([]);
+      setShowOnboarding(false);
       resetWorkspaceStore();
       syncInFlightRef.current = false;
       return;
@@ -152,11 +182,21 @@ export function BackendSyncProvider({
         const language = detectDeviceLanguage();
         const region = detectDeviceRegion();
         const timezone = detectDeviceTimezone();
+
         const user = await syncUser(() => getTokenRef.current(), { language, region, timezone });
-        const nextWorkspaces = await listWorkspaces(() => getTokenRef.current());
+
+        const [preferences, nextWorkspaces] = await Promise.all([
+          getPreferences(() => getTokenRef.current()),
+          listWorkspaces(() => getTokenRef.current()),
+        ]);
+
+        if ((SUPPORTED_LANGUAGES as readonly string[]).includes(preferences.language)) {
+          usePreferencesStore.getState().setLanguage(preferences.language as SupportedLanguage);
+        }
 
         if (!cancelled) {
           setBackendUser(user);
+          setShowOnboarding(preferences.showOnboarding);
           applyWorkspaces(nextWorkspaces.map(toCurrentWorkspace));
           setStatus("synced");
         }
@@ -211,6 +251,8 @@ export function BackendSyncProvider({
       workspaces,
       currentWorkspace,
       refreshWorkspaces,
+      showOnboarding,
+      completeOnboarding,
       retry,
       isBootstrapping:
         !!isSignedIn && (status === "idle" || status === "syncing"),
@@ -222,6 +264,8 @@ export function BackendSyncProvider({
       workspaces,
       currentWorkspace,
       refreshWorkspaces,
+      showOnboarding,
+      completeOnboarding,
       retry,
       isSignedIn,
     ],

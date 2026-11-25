@@ -1,5 +1,5 @@
-import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useRef } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useRef } from "react";
 
 type AuthFlow = {
   reset: () => void;
@@ -15,8 +15,10 @@ export function useAuthFlowFocusReset(
 ) {
   const flowRef = useRef(flow);
   const clearRef = useRef(clearLocalState);
-  flowRef.current = flow;
-  clearRef.current = clearLocalState;
+  useEffect(() => {
+    flowRef.current = flow;
+    clearRef.current = clearLocalState;
+  });
 
   useFocusEffect(
     useCallback(() => {
@@ -37,8 +39,10 @@ export function useAuthFieldChange(
 ) {
   const flowRef = useRef(flow);
   const clearRef = useRef(clearLocalState);
-  flowRef.current = flow;
-  clearRef.current = clearLocalState;
+  useEffect(() => {
+    flowRef.current = flow;
+    clearRef.current = clearLocalState;
+  });
 
   return useCallback(
     (value: string) => {

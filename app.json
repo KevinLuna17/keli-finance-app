@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "keli-finance-app",
+    "name": "Keli",
     "slug": "keli-finance-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,7 +9,11 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon",
-      "bundleIdentifier": "com.kevinluna.kelifinanceapp"
+      "bundleIdentifier": "com.kevinluna.kelifinanceapp",
+      "supportsTablet": false,
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {

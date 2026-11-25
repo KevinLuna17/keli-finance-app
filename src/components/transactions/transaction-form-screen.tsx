@@ -21,11 +21,16 @@ import { useTranslation } from "react-i18next";
 type TransactionFormScreenProps = {
   mode: TransactionFormMode;
   transactionId?: string;
+  initialType?: "income" | "expense";
+  /** Defaults to closing the modal. */
+  onSuccess?: () => void | Promise<void>;
 };
 
 export function TransactionFormScreen({
   mode,
   transactionId,
+  initialType,
+  onSuccess,
 }: TransactionFormScreenProps) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -52,7 +57,8 @@ export function TransactionFormScreen({
     mode,
     transactionId,
     workspaceId: workspaceId ?? "",
-    onSuccess: () => router.back(),
+    initialType,
+    onSuccess: onSuccess ?? (() => router.back()),
   });
 
   if (!workspaceId) {
@@ -144,7 +150,7 @@ export function TransactionFormScreen({
           accessibilityRole="button"
           accessibilityState={{ disabled: isSubmitDisabled }}
           disabled={isSubmitDisabled}
-          onPress={onSubmit}
+          onPress={() => onSubmit()}
           className={`items-center rounded-2xl py-4 ${
             isSubmitDisabled ? "bg-muted" : "bg-brand"
           }`}

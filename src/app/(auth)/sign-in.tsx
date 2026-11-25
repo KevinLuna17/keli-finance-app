@@ -5,6 +5,7 @@ import { CodeVerification } from "@/components/auth/CodeVerification";
 import { SocialLoginSection } from "@/components/auth/SocialLoginSection";
 import AuthHeader from "@/components/auth/AuthHeader";
 import Bubbles from "@/components/Bubbles";
+import { LegalLinksText } from "@/components/ui/legal-links-text";
 import ScreenLayout from "@/components/ui/ScreenLayout";
 import { useSignInFlow } from "@/hooks/useSignInFlow";
 import { FontAwesome } from "@expo/vector-icons";
@@ -118,9 +119,10 @@ export default function SignInScreen() {
 
         <SocialLoginSection dividerLabel={t("auth.orLoginWith")} />
 
-        <Text className="mt-3 text-center text-sm leading-5 text-muted-foreground">
-          {t("auth.termsSignIn")}
-        </Text>
+        <LegalLinksText
+          i18nKey="auth.termsSignIn"
+          className="mt-3 text-center text-sm leading-5 text-muted-foreground"
+        />
       </AuthFormCard>
     </ScreenLayout>
   );

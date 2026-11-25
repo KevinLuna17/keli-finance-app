@@ -21,7 +21,9 @@ export type UseInvitationsResult = {
 export function useInvitations(): UseInvitationsResult {
   const { getToken } = useAuth();
   const getTokenRef = useRef(getToken);
-  getTokenRef.current = getToken;
+  useEffect(() => {
+    getTokenRef.current = getToken;
+  });
 
   const [invitations, setInvitations] = useState<WorkspaceInvitation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -49,6 +51,7 @@ export function useInvitations(): UseInvitationsResult {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional data fetch on mount
     refresh();
   }, [refresh]);
 

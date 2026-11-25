@@ -10,12 +10,13 @@ import ScreenLayout from "@/components/ui/ScreenLayout";
 import { useInvitations } from "@/hooks/use-invitations";
 import { useProfile } from "@/hooks/use-profile";
 import { useBackendSync } from "@/hooks/useBackendSync";
+import { openLegalLink } from "@/lib/open-legal-link";
 import { usePreferencesStore } from "@/stores/preferences-store";
 import { type SupportedLanguage } from "@/i18n/languages";
 import { useClerk } from "@clerk/expo";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { Href, useFocusEffect, useRouter } from "expo-router";
-import React, { useCallback, useRef } from "react";
+import React, { type ComponentProps, useCallback, useRef } from "react";
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -24,6 +25,38 @@ const LANGUAGE_LABELS: Record<SupportedLanguage, string> = {
   en: "languageEnglish",
   es: "languageSpanish",
 };
+
+type SettingsRowProps = {
+  icon: ComponentProps<typeof FontAwesome6>["name"];
+  label: string;
+  onPress: () => void;
+  trailing?: string;
+};
+
+function SettingsRow({ icon, label, onPress, trailing }: SettingsRowProps) {
+  return (
+    <ProfileGlassPressable
+      contentClassName="flex-row items-center px-4 py-4"
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
+      <View className="size-10 items-center justify-center rounded-full bg-muted/80">
+        <FontAwesome6 name={icon} size={15} color="#508A67" />
+      </View>
+
+      <Text className="ml-3 flex-1 text-base font-semibold text-card-foreground">
+        {label}
+      </Text>
+
+      {trailing ? (
+        <Text className="mr-2 text-sm text-muted-foreground">{trailing}</Text>
+      ) : null}
+
+      <FontAwesome6 name="chevron-right" size={12} color="#64748B" />
+    </ProfileGlassPressable>
+  );
+}
 
 /** Space for native tab bar above the home indicator. */
 const TAB_BAR_HEIGHT = 56;
@@ -37,6 +70,7 @@ export default function ProfileScreen() {
   const { profile, isLoading, error, refresh } = useProfile();
   const { refreshWorkspaces, currentWorkspace } = useBackendSync();
   const invitationsState = useInvitations();
+  const refreshInvitations = invitationsState.refresh;
   const { language } = usePreferencesStore();
 
   useFocusEffect(
@@ -48,8 +82,8 @@ export default function ProfileScreen() {
 
       refresh();
       void refreshWorkspaces();
-      void invitationsState.refresh();
-    }, [refresh, refreshWorkspaces, invitationsState.refresh]),
+      void refreshInvitations();
+    }, [refresh, refreshWorkspaces, refreshInvitations]),
   );
 
   if (isLoading && !profile) {
@@ -175,6 +209,12 @@ export default function ProfileScreen() {
                 />
               </ProfileGlassPressable>
             ) : null}
+
+            <SettingsRow
+              icon="tags"
+              label={t("categories.title")}
+              onPress={() => router.push("/profile/categories" as Href)}
+            />
           </View>
         </View>
 
@@ -197,6 +237,36 @@ export default function ProfileScreen() {
         >
           <Text className="text-base font-bold text-destructive">{t("signOut")}</Text>
         </ProfileGlassPressable>
+
+        <View className="mt-8">
+          <Text className="text-lg font-bold text-foreground">
+            {t("legal.title")}
+          </Text>
+
+          <View className="mt-4 gap-3">
+            <SettingsRow
+              icon="file-contract"
+              label={t("legal.terms")}
+              onPress={() => void openLegalLink("terms")}
+            />
+            <SettingsRow
+              icon="shield-halved"
+              label={t("legal.privacy")}
+              onPress={() => void openLegalLink("privacy")}
+            />
+          </View>
+        </View>
+
+        <Pressable
+          className="mt-8 items-center py-3"
+          onPress={() => router.push("/profile/delete-account" as Href)}
+          accessibilityRole="button"
+          accessibilityLabel={t("deleteAccount.title")}
+        >
+          <Text className="text-sm font-semibold text-destructive">
+            {t("deleteAccount.title")}
+          </Text>
+        </Pressable>
       </ScrollView>
     </ScreenLayout>
   );

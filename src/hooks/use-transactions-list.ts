@@ -19,7 +19,9 @@ type UseTransactionsListOptions = {
 export function useTransactionsList({ workspaceId }: UseTransactionsListOptions) {
   const { getToken } = useAuth();
   const getTokenRef = useRef(getToken);
-  getTokenRef.current = getToken;
+  useEffect(() => {
+    getTokenRef.current = getToken;
+  });
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [total, setTotal] = useState(0);
@@ -113,6 +115,7 @@ export function useTransactionsList({ workspaceId }: UseTransactionsListOptions)
   }, [fetchPage, refresh, transactions.length]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional data fetch on mount
     fetchPage(1, "initial");
   }, [fetchPage]);
 

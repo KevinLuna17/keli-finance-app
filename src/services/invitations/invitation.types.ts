@@ -1,5 +1,7 @@
-import type { GetToken } from "@/services/workspaces/workspace.types";
-import type { WorkspaceType } from "@/services/workspaces/workspace.types";
+import type {
+  GetToken,
+  WorkspaceType,
+} from "@/services/workspaces/workspace.types";
 
 export type { GetToken };
 

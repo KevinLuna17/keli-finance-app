@@ -77,7 +77,7 @@ export function CategoryPieChart({
 
         {totalLabel ? (
           <View
-            style={StyleSheet.absoluteFillObject}
+            style={StyleSheet.absoluteFill}
             className="items-center justify-center"
             pointerEvents="none"
           >

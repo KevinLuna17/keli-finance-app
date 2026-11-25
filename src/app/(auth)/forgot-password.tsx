@@ -10,7 +10,7 @@ import {
 import { useSignIn } from "@clerk/expo";
 import { Link, useRouter } from "expo-router";
 import React from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text } from "react-native";
 import Animated, { FadeInUp } from "react-native-reanimated";
 import { useTranslation } from "react-i18next";
 
