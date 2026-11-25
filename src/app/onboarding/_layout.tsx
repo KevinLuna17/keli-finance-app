@@ -13,7 +13,7 @@ export default function OnboardingLayout() {
       <Stack.Screen
         name="first-transaction"
         options={{
-          ...getModalStackScreenOptions(colors),
+          ...getModalStackScreenOptions(colors, t("back")),
           title: t("transactionForm.addTitle"),
         }}
       />

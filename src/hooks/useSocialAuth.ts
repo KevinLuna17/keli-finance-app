@@ -1,4 +1,5 @@
-import { getClerkErrorMessage } from "@/lib/clerk-errors";
+import i18n from "@/i18n";
+import { getClerkErrorMessage, isClerkCancellation } from "@/lib/clerk-errors";
 import { useSSO } from "@clerk/expo";
 import * as AuthSession from "expo-auth-session";
 import { useState } from "react";
@@ -39,22 +40,20 @@ const useSocialAuth = () => {
 
       if (!createdSessionId || !setActive) {
         Alert.alert(
-          "Sign-in incomplete",
-          "Sign-in did not complete. Please try again.",
+          i18n.t("auth.errors.signInIncompleteTitle"),
+          i18n.t("auth.errors.signInIncomplete"),
         );
         return;
       }
 
       await setActive({ session: createdSessionId });
     } catch (error) {
-      const message = getClerkErrorMessage(error);
-
-      if (message.toLowerCase().includes("cancel")) {
+      if (isClerkCancellation(error)) {
         return;
       }
 
       console.error("Social auth error:", error);
-      Alert.alert("Error", message);
+      Alert.alert(i18n.t("auth.errors.title"), getClerkErrorMessage(error));
     } finally {
       setLoadingStrategy(null);
     }

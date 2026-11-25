@@ -92,7 +92,11 @@ export function TransactionFormFields({
             editable={!disabled}
             placeholder={t("transactionForm.amountPlaceholder")}
             keyboardType="decimal-pad"
-            error={errors.amount?.message}
+            error={
+              errors.amount?.message
+                ? t(errors.amount.message)
+                : undefined
+            }
             renderLeftSlot={(state) => (
               <TextFieldIconSlot>
                 <FontAwesome6
@@ -116,7 +120,11 @@ export function TransactionFormFields({
             categories={filteredCategories}
             value={value}
             onChange={onChange}
-            error={errors.categoryId?.message}
+            error={
+              errors.categoryId?.message
+                ? t(errors.categoryId.message)
+                : undefined
+            }
             disabled={disabled}
           />
         )}
@@ -133,7 +141,11 @@ export function TransactionFormFields({
             onBlur={onBlur}
             editable={!disabled}
             placeholder={t("transactionForm.descriptionPlaceholder")}
-            error={errors.description?.message}
+            error={
+              errors.description?.message
+                ? t(errors.description.message)
+                : undefined
+            }
             renderLeftSlot={(state) => (
               <TextFieldIconSlot>
                 <FontAwesome6
@@ -155,7 +167,11 @@ export function TransactionFormFields({
             label={t("transactionForm.dateLabel")}
             value={value}
             onChange={onChange}
-            error={errors.date?.message}
+            error={
+              errors.date?.message
+                ? t(errors.date.message)
+                : undefined
+            }
             disabled={disabled}
           />
         )}

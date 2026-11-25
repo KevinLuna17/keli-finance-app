@@ -1,4 +1,4 @@
-import { ApiError } from "@/lib/api/client";
+import { getApiErrorMessage } from "@/lib/api/api-error-message";
 import { EMPTY_STATISTICS } from "@/lib/statistics-helpers";
 import {
   getExpensesByCategory,
@@ -49,9 +49,7 @@ export function useStatisticsAnalytics(workspaceId: string | undefined) {
       });
     } catch (loadError) {
       setError(
-        loadError instanceof ApiError
-          ? loadError.message
-          : "Could not load statistics",
+        getApiErrorMessage(loadError, "errors.loadStatistics"),
       );
     } finally {
       setIsLoading(false);

@@ -72,7 +72,11 @@ export function InviteMemberScreen({
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
-                error={form.formState.errors.email?.message}
+                error={
+              form.formState.errors.email?.message
+                ? t(form.formState.errors.email.message)
+                : undefined
+            }
                 renderLeftSlot={(state) => (
                   <TextFieldIconSlot>
                     <FontAwesome6

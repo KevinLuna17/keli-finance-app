@@ -8,7 +8,7 @@ export default function TransactionLayout() {
   const { t } = useTranslation();
 
   return (
-    <Stack screenOptions={getModalStackScreenOptions(colors)}>
+    <Stack screenOptions={getModalStackScreenOptions(colors, t("back"))}>
       <Stack.Screen name="new" options={{ title: t("transactionForm.addTitle") }} />
       <Stack.Screen name="[id]/edit" options={{ title: t("transactionForm.editTitle") }} />
     </Stack>

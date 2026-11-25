@@ -1,3 +1,4 @@
+import i18n from "@/i18n";
 import { createAuthNavigateHandler } from "@/lib/auth-finalize";
 import {
   getClerkErrorMessage,
@@ -68,9 +69,7 @@ export function useSignInFlow() {
     if (signIn.status === "complete") {
       await signIn.finalize({ navigate: navigateAfterAuth });
     } else if (signIn.status === "needs_second_factor") {
-      setFormError(
-        "Additional verification is required. Try another sign-in method.",
-      );
+      setFormError(i18n.t("auth.errors.additionalVerification"));
     } else if (signIn.status === "needs_client_trust") {
       const emailCodeFactor = signIn.supportedSecondFactors.find(
         (factor) => factor.strategy === "email_code",
@@ -85,7 +84,10 @@ export function useSignInFlow() {
         setSecondFactor(true);
       }
     } else {
-      setFormError(`Sign in incomplete: ${signIn.status}`);
+      if (__DEV__) {
+        console.warn("[SignIn] incomplete status:", signIn.status);
+      }
+      setFormError(i18n.t("auth.errors.signInIncomplete"));
     }
   }, [emailAddress, password, signIn, navigateAfterAuth]);
 

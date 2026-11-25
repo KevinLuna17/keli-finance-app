@@ -49,11 +49,27 @@ export type {
   MonthlyBarChartDatum as MonthlyChartDatum,
 } from "@/components/analytics";
 
+/** Short month name in the given language, e.g. "Nov" / "nov". */
+export function formatMonthLabel(
+  year: number,
+  month: number,
+  language: string,
+): string {
+  // Mid-month at UTC noon so no timezone can shift it to another month.
+  const date = new Date(Date.UTC(year, month - 1, 15, 12));
+
+  return new Intl.DateTimeFormat(language, {
+    month: "short",
+    timeZone: "UTC",
+  }).format(date);
+}
+
 export function toMonthlyChartData(
   monthly: MonthlyAnalyticsItem[],
+  language: string,
 ): MonthlyBarChartDatum[] {
   return monthly.map((item) => ({
-    month: item.month,
+    month: formatMonthLabel(item.year, item.month, language),
     income: item.income / 100,
     expense: item.expense / 100,
   }));

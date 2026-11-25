@@ -15,7 +15,9 @@ export type AnalyticsSummary = {
 };
 
 export type MonthlyAnalyticsItem = {
-  month: string;
+  year: number;
+  /** 1-12, already grouped by the user's timezone on the backend. */
+  month: number;
   income: number;
   expense: number;
 };

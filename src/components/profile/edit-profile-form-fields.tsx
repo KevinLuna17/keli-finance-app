@@ -43,7 +43,11 @@ export function EditProfileFormFields({
             editable={!disabled}
             placeholder={t("profileScreen.namePlaceholder")}
             autoCapitalize="words"
-            error={errors.name?.message}
+            error={
+              errors.name?.message
+                ? t(errors.name.message)
+                : undefined
+            }
             renderLeftSlot={(state) => (
               <TextFieldIconSlot>
                 <FontAwesome6

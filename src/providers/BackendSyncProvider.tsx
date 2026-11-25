@@ -1,5 +1,5 @@
 import { syncUser } from "@/lib/api/auth";
-import { ApiError } from "@/lib/api/client";
+import { getApiErrorMessage } from "@/lib/api/api-error-message";
 import { DEFAULT_CURRENCY } from "@/lib/currencies";
 import {
   detectDeviceLanguage,
@@ -205,10 +205,7 @@ export function BackendSyncProvider({
           return;
         }
 
-        const message =
-          syncError instanceof ApiError
-            ? syncError.message
-            : "Could not connect to the backend";
+        const message = getApiErrorMessage(syncError, "sync.errors.connection");
 
         if (__DEV__) {
           console.error("[BackendSync] sync failed:", syncError);

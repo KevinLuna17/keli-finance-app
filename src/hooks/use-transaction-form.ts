@@ -1,4 +1,4 @@
-import { ApiError } from "@/lib/api/client";
+import { getApiErrorMessage } from "@/lib/api/api-error-message";
 import { parseAmountToCents, formatCentsToAmountInput } from "@/lib/amount-utils";
 import {
   defaultTransactionFormValues,
@@ -74,9 +74,7 @@ export function useTransactionForm({
       } catch (error) {
         if (!cancelled) {
           setLoadError(
-            error instanceof ApiError
-              ? error.message
-              : "Could not load transaction",
+            getApiErrorMessage(error, "errors.loadTransaction"),
           );
         }
       } finally {
@@ -114,9 +112,7 @@ export function useTransactionForm({
       await onSuccess?.();
     } catch (error) {
       setSubmitError(
-        error instanceof ApiError
-          ? error.message
-          : "Could not save transaction",
+        getApiErrorMessage(error, "errors.saveTransaction"),
       );
     }
   });

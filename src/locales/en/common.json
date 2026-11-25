@@ -60,7 +60,30 @@
     "twoFactorRequired": "Two-factor required",
     "twoFactorMessage": "Your account has 2FA enabled. Sign in from the login screen to continue.",
     "security": "Security",
-    "backToSignIn": "Back to sign in"
+    "backToSignIn": "Back to sign in",
+    "connecting": "Connecting...",
+    "continueWith": "Continue with {{provider}}",
+    "errors": {
+      "title": "Error",
+      "generic": "Something went wrong. Please try again.",
+      "accountNotFound": "We couldn't find an account with that email.",
+      "passwordIncorrect": "Incorrect password. Try again or reset it.",
+      "passwordPwned": "This password appeared in a data breach. Please choose another one.",
+      "passwordTooShort": "Your password must be at least 8 characters.",
+      "passwordTooLong": "Your password is too long.",
+      "passwordWeak": "Your password is not strong enough. Try a longer one.",
+      "emailTaken": "An account with this email already exists.",
+      "emailInvalid": "Enter a valid email address.",
+      "fieldRequired": "This field is required.",
+      "codeIncorrect": "The code is incorrect.",
+      "codeExpired": "The code expired. Request a new one.",
+      "useSocialSignIn": "This account uses Google or Apple. Sign in with that option.",
+      "tooManyRequests": "Too many attempts. Wait a moment and try again.",
+      "accountLocked": "Your account is temporarily locked. Try again later.",
+      "additionalVerification": "Additional verification is required. Try another sign-in method.",
+      "signInIncompleteTitle": "Sign-in incomplete",
+      "signInIncomplete": "Sign-in did not complete. Please try again."
+    }
   },
   "dashboard": {
     "greeting": "Hello again!",
@@ -171,7 +194,8 @@
     "errors": {
       "currencyLocked": "Currency can't be changed because this workspace already has transactions.",
       "currencyGeneric": "We couldn't update the currency. Please try again."
-    }
+    },
+    "detailsTitle": "Workspace Details"
   },
   "invitations": {
     "pendingTitle": "Pending Invitations",
@@ -192,7 +216,10 @@
   "sync": {
     "errorTitle": "Could not sync your account",
     "retry": "Try again",
-    "retryLabel": "Retry sync"
+    "retryLabel": "Retry sync",
+    "errors": {
+      "connection": "We couldn't connect to Keli. Check your connection and try again."
+    }
   },
   "categories": {
     "title": "Categories",
@@ -259,5 +286,42 @@
     "firstTransactionBody": "Start with something simple: your salary or your last purchase.",
     "addExpense": "Add an expense",
     "addIncome": "Add an income"
+  },
+  "back": "Back",
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "No internet connection. Check your connection and try again.",
+    "sessionExpired": "Your session expired. Please sign in again.",
+    "loadProfile": "We couldn't load your profile.",
+    "updateProfile": "We couldn't update your profile.",
+    "syncLanguage": "We couldn't save your language. It will be applied on this device only.",
+    "loadCategories": "We couldn't load your categories.",
+    "loadInvitations": "We couldn't load your invitations.",
+    "acceptInvitation": "We couldn't accept the invitation.",
+    "declineInvitation": "We couldn't decline the invitation.",
+    "loadTransaction": "We couldn't load this transaction.",
+    "saveTransaction": "We couldn't save the transaction.",
+    "loadStatistics": "We couldn't load your statistics.",
+    "loadTransactions": "We couldn't load your transactions.",
+    "loadMembers": "We couldn't load the workspace members.",
+    "removeMember": "We couldn't remove the member.",
+    "loadWorkspaces": "We couldn't load your workspaces.",
+    "sendInvitation": "We couldn't send the invitation.",
+    "createWorkspace": "We couldn't create the workspace.",
+    "updateWorkspace": "We couldn't update the workspace.",
+    "deleteWorkspace": "We couldn't delete the workspace.",
+    "loadDashboard": "We couldn't load your summary."
+  },
+  "validation": {
+    "amountRequired": "Amount is required",
+    "amountInvalid": "Enter a valid amount greater than 0",
+    "categoryRequired": "Select a category",
+    "descriptionTooShort": "Description must be at least 2 characters",
+    "descriptionTooLong": "Description must be at most 255 characters",
+    "dateRequired": "Date is required",
+    "nameTooShort": "Name must be at least 2 characters",
+    "nameTooLong": "Name must be at most 100 characters",
+    "emailInvalid": "Enter a valid email address",
+    "currencyRequired": "Select a currency"
   }
 }

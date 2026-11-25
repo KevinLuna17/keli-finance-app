@@ -1,4 +1,4 @@
-import { ApiError } from "@/lib/api/client";
+import { getApiErrorMessage } from "@/lib/api/api-error-message";
 import { getDashboard } from "@/services/analytics/analytics.service";
 import { WorkspaceDashboard } from "@/services/analytics/analytics.types";
 import { useAuth } from "@clerk/expo";
@@ -41,9 +41,7 @@ export function useHomeDashboard(workspaceId: string | undefined) {
       setDashboard(data);
     } catch (loadError) {
       setError(
-        loadError instanceof ApiError
-          ? loadError.message
-          : "Could not load dashboard",
+        getApiErrorMessage(loadError, "errors.loadDashboard"),
       );
     } finally {
       setIsLoading(false);

@@ -8,15 +8,15 @@ export const transactionFormSchema = z.object({
   amount: z
     .string()
     .trim()
-    .min(1, "Amount is required")
-    .refine(isValidAmountInput, "Enter a valid amount greater than 0"),
-  categoryId: z.uuid("Select a category"),
+    .min(1, "validation.amountRequired")
+    .refine(isValidAmountInput, "validation.amountInvalid"),
+  categoryId: z.uuid("validation.categoryRequired"),
   description: z
     .string()
     .trim()
-    .min(2, "Description must be at least 2 characters")
-    .max(255, "Description must be at most 255 characters"),
-  date: z.date({ error: "Date is required" }),
+    .min(2, "validation.descriptionTooShort")
+    .max(255, "validation.descriptionTooLong"),
+  date: z.date({ error: "validation.dateRequired" }),
 });
 
 export type TransactionFormValues = z.infer<typeof transactionFormSchema>;

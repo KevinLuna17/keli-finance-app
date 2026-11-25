@@ -12,6 +12,7 @@ import { Link } from "expo-router";
 import React from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { getClerkFieldErrorMessage } from "@/lib/clerk-errors";
 
 export default function SignUpScreen() {
   const { t } = useTranslation();
@@ -55,7 +56,7 @@ export default function SignUpScreen() {
       <CodeVerification
         title={t("auth.verifyAccount")}
         subtitle={t("auth.verificationCodeSentTo", { email: emailAddress })}
-        codeError={errors.fields.code?.message}
+        codeError={getClerkFieldErrorMessage(errors.fields.code)}
         isLoading={fetchStatus === "fetching"}
         onVerify={handleVerify}
         onResendCode={resendEmailCode}
@@ -89,7 +90,7 @@ export default function SignUpScreen() {
             variant="email"
             value={emailAddress}
             onChangeText={setEmailWithErrorClear}
-            error={errors.fields.emailAddress?.message}
+            error={getClerkFieldErrorMessage(errors.fields.emailAddress)}
           />
 
           <AuthTextField
@@ -98,7 +99,7 @@ export default function SignUpScreen() {
             onChangeText={setPasswordWithErrorClear}
             showPassword={showPassword}
             onTogglePassword={() => setShowPassword((prev) => !prev)}
-            error={errors.fields.password?.message}
+            error={getClerkFieldErrorMessage(errors.fields.password)}
           />
 
           {formError &&

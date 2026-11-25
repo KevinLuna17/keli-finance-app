@@ -1,6 +1,7 @@
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export type SocialProvider = "google" | "apple";
 
@@ -17,8 +18,6 @@ const PROVIDER_LABELS: Record<SocialProvider, string> = {
   google: "Google",
   apple: "Apple",
 };
-
-const CONNECTING_LABEL = "Connecting...";
 
 function ProviderIcon({ provider }: { provider: SocialProvider }) {
   return (
@@ -54,12 +53,14 @@ export function SocialLoginButton({
   disabled = false,
   fullWidth = false,
 }: SocialLoginButtonProps) {
+  const { t } = useTranslation();
   const providerLabel = PROVIDER_LABELS[provider];
-  const labelText = isConnecting ? CONNECTING_LABEL : providerLabel;
+  const connectingLabel = t("auth.connecting");
+  const labelText = isConnecting ? connectingLabel : providerLabel;
   const isDisabled = disabled || isConnecting;
   const accessibilityLabel = isConnecting
-    ? CONNECTING_LABEL
-    : `Continue with ${providerLabel}`;
+    ? connectingLabel
+    : t("auth.continueWith", { provider: providerLabel });
 
   const pressableClassName = [
     "h-14 rounded-2xl border border-border bg-card active:opacity-90",
