@@ -31,9 +31,17 @@ type SettingsRowProps = {
   label: string;
   onPress: () => void;
   trailing?: string;
+  /** Styles the row as a destructive action (e.g. delete account). */
+  destructive?: boolean;
 };
 
-function SettingsRow({ icon, label, onPress, trailing }: SettingsRowProps) {
+function SettingsRow({
+  icon,
+  label,
+  onPress,
+  trailing,
+  destructive = false,
+}: SettingsRowProps) {
   return (
     <ProfileGlassPressable
       contentClassName="flex-row items-center px-4 py-4"
@@ -41,11 +49,23 @@ function SettingsRow({ icon, label, onPress, trailing }: SettingsRowProps) {
       accessibilityRole="button"
       accessibilityLabel={label}
     >
-      <View className="size-10 items-center justify-center rounded-full bg-muted/80">
-        <FontAwesome6 name={icon} size={15} color="#508A67" />
+      <View
+        className={`size-10 items-center justify-center rounded-full ${
+          destructive ? "bg-destructive/10" : "bg-muted/80"
+        }`}
+      >
+        <FontAwesome6
+          name={icon}
+          size={15}
+          color={destructive ? "#DC2626" : "#508A67"}
+        />
       </View>
 
-      <Text className="ml-3 flex-1 text-base font-semibold text-card-foreground">
+      <Text
+        className={`ml-3 flex-1 text-base font-semibold ${
+          destructive ? "text-destructive" : "text-card-foreground"
+        }`}
+      >
         {label}
       </Text>
 
@@ -257,16 +277,21 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        <Pressable
-          className="mt-8 items-center py-3"
-          onPress={() => router.push("/profile/delete-account" as Href)}
-          accessibilityRole="button"
-          accessibilityLabel={t("deleteAccount.title")}
-        >
-          <Text className="text-sm font-semibold text-destructive">
-            {t("deleteAccount.title")}
+        <View className="mt-8">
+          <Text className="text-lg font-bold text-foreground">
+            {t("deleteAccount.sectionTitle")}
           </Text>
-        </Pressable>
+          <Text className="mb-4 mt-1 text-sm text-muted-foreground">
+            {t("deleteAccount.sectionSubtitle")}
+          </Text>
+
+          <SettingsRow
+            icon="trash-can"
+            label={t("deleteAccount.title")}
+            onPress={() => router.push("/profile/delete-account" as Href)}
+            destructive
+          />
+        </View>
       </ScrollView>
     </ScreenLayout>
   );

@@ -286,7 +286,9 @@
     "confirmTitle": "¿Eliminar tu cuenta para siempre?",
     "confirmMessage": "Todos tus datos se eliminarán y no se podrán recuperar.",
     "confirmAction": "Eliminar mi cuenta",
-    "error": "No se pudo eliminar tu cuenta. Inténtalo de nuevo."
+    "error": "No se pudo eliminar tu cuenta. Inténtalo de nuevo.",
+    "sectionTitle": "Cuenta",
+    "sectionSubtitle": "Elimina de forma permanente tu cuenta y todos sus datos."
   },
   "onboarding": {
     "skip": "Omitir",

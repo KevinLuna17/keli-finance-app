@@ -286,7 +286,9 @@
     "confirmTitle": "Delete account permanently?",
     "confirmMessage": "All your data will be deleted and cannot be recovered.",
     "confirmAction": "Delete my account",
-    "error": "Could not delete your account. Please try again."
+    "error": "Could not delete your account. Please try again.",
+    "sectionTitle": "Account",
+    "sectionSubtitle": "Permanently delete your account and all of its data."
   },
   "onboarding": {
     "skip": "Skip",
