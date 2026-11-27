@@ -41,25 +41,37 @@ function RootLayoutNav() {
     );
   }
 
+  // Explicit redirect targets. Without them Expo Router picks the shortest
+  // unguarded route name ("profile"), whose URL "/profile" also matches the
+  // guarded (home)/profile tab and redirects forever. Group paths are used
+  // because "/" is ambiguous between (auth)/index and (home)/index.
+  const signedInHome = showOnboarding ? "/onboarding" : "/(home)";
+
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack screenOptions={{ headerShown: false }}>
         {/* Auth screens - only accesible when NOT signed in*/}
-        <Stack.Protected guard={!isSignedIn}>
+        <Stack.Protected guard={!isSignedIn} redirectTo={signedInHome}>
           <Stack.Screen name="(auth)" />
         </Stack.Protected>
 
         {/* First-launch onboarding - replaces the tabs until completed or skipped */}
-        <Stack.Protected guard={!!isSignedIn && showOnboarding}>
+        <Stack.Protected
+          guard={!!isSignedIn && showOnboarding}
+          redirectTo={isSignedIn ? "/(home)" : "/(auth)"}
+        >
           <Stack.Screen name="onboarding" />
         </Stack.Protected>
 
-        <Stack.Protected guard={!!isSignedIn && !showOnboarding}>
+        <Stack.Protected
+          guard={!!isSignedIn && !showOnboarding}
+          redirectTo={isSignedIn ? "/onboarding" : "/(auth)"}
+        >
           <Stack.Screen name="(home)" />
         </Stack.Protected>
 
         {/* App screens - only accesible when signed in*/}
-        <Stack.Protected guard={!!isSignedIn}>
+        <Stack.Protected guard={!!isSignedIn} redirectTo="/(auth)">
           <Stack.Screen
             name="transaction"
             options={{ headerShown: false, presentation: "modal" }}
