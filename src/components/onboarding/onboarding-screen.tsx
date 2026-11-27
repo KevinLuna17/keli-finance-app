@@ -1,13 +1,18 @@
 import { WorkspaceCurrencyList } from "@/components/profile/workspace-currency-list";
 import ScreenLayout from "@/components/ui/ScreenLayout";
+import { TextField } from "@/components/ui/TextField";
 import { useBackendSync } from "@/hooks/useBackendSync";
 import { hapticSelection } from "@/lib/haptics";
+import { updateProfile } from "@/services/profile/profile.service";
+import { useAuth } from "@clerk/expo";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
   ScrollView,
   Text,
@@ -27,17 +32,45 @@ type TransactionType = "income" | "expense";
 export function OnboardingScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { currentWorkspace, completeOnboarding } = useBackendSync();
+  const { getToken } = useAuth();
+  const { currentWorkspace, backendUser, completeOnboarding, refreshBackendUser } =
+    useBackendSync();
   const [step, setStep] = useState(0);
+  const [name, setName] = useState(backendUser?.name ?? "");
   const [isFinishing, setIsFinishing] = useState(false);
+
+  // Saves the name only when it changed and is long enough for the backend
+  // (2+ chars). Failures never block onboarding; the user can edit it later.
+  const persistName = useCallback(async () => {
+    const trimmed = name.trim();
+
+    if (trimmed.length < 2 || trimmed === (backendUser?.name ?? "").trim()) {
+      return;
+    }
+
+    try {
+      await updateProfile(() => getToken(), { name: trimmed });
+      await refreshBackendUser();
+    } catch (persistError) {
+      if (__DEV__) {
+        console.warn("[Onboarding] save name failed:", persistError);
+      }
+    }
+  }, [name, backendUser?.name, getToken, refreshBackendUser]);
 
   const finish = async () => {
     setIsFinishing(true);
+    await persistName();
     await completeOnboarding();
   };
 
   const goNext = () => {
     hapticSelection();
+    // The first-transaction path completes onboarding without finish(), so the
+    // name is saved when leaving the welcome step, before any later step.
+    if (step === 0) {
+      void persistName();
+    }
     setStep((current) => Math.min(current + 1, STEP_COUNT - 1));
   };
 
@@ -48,6 +81,10 @@ export function OnboardingScreen() {
 
   return (
     <ScreenLayout background="custom" edges={["top", "bottom"]}>
+      <KeyboardAvoidingView
+        className="flex-1"
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
       <View className="flex-row items-center justify-between px-6 pt-2">
         <View
           className="flex-row gap-2"
@@ -80,19 +117,39 @@ export function OnboardingScreen() {
 
       <View className="flex-1 px-6">
         {step === 0 ? (
-          <View className="flex-1 items-center justify-center">
+          <ScrollView
+            className="flex-1"
+            contentContainerClassName="flex-grow items-center justify-center pb-4"
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
             <Image
               source={require("../../../assets/images/keli-icon.png")}
-              style={{ width: 180, height: 180 }}
+              style={{ width: 150, height: 150 }}
               contentFit="contain"
             />
-            <Text className="mt-8 text-center text-3xl font-bold text-foreground">
+            <Text className="mt-6 text-center text-3xl font-bold text-foreground">
               {t("onboarding.welcomeTitle")}
             </Text>
             <Text className="mt-3 text-center text-base text-muted-foreground">
               {t("onboarding.welcomeBody")}
             </Text>
-          </View>
+
+            <View className="mt-8 w-full">
+              <Text className="mb-2 text-sm font-medium text-foreground">
+                {t("onboarding.nameLabel")}
+              </Text>
+              <TextField
+                value={name}
+                onChangeText={setName}
+                editable={!isFinishing}
+                placeholder={t("onboarding.namePlaceholder")}
+                autoCapitalize="words"
+                maxLength={100}
+                returnKeyType="done"
+              />
+            </View>
+          </ScrollView>
         ) : null}
 
         {step === 1 ? (
@@ -173,6 +230,7 @@ export function OnboardingScreen() {
           </Pressable>
         )}
       </View>
+      </KeyboardAvoidingView>
     </ScreenLayout>
   );
 }

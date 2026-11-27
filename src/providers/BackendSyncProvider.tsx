@@ -10,6 +10,7 @@ import {
   completeOnboarding as completeOnboardingRequest,
   getPreferences,
 } from "@/services/preferences/preferences.service";
+import { getProfile } from "@/services/profile/profile.service";
 import { listWorkspaces } from "@/services/workspaces/workspace.service";
 import type { CurrentWorkspace } from "@/services/workspaces/workspace.types";
 import type { BackendUser } from "@/types/api";
@@ -36,6 +37,8 @@ type BackendSyncContextValue = {
   workspaces: CurrentWorkspace[];
   currentWorkspace: CurrentWorkspace | null;
   refreshWorkspaces: () => Promise<void>;
+  /** Re-reads the authenticated user (name, photo) from the backend. */
+  refreshBackendUser: () => Promise<void>;
   /** True while the first-launch onboarding must be shown. */
   showOnboarding: boolean;
   completeOnboarding: () => Promise<void>;
@@ -128,6 +131,26 @@ export function BackendSyncProvider({
     const nextWorkspaces = await listWorkspaces(() => getTokenRef.current());
     applyWorkspaces(nextWorkspaces.map(toCurrentWorkspace));
   }, [applyWorkspaces]);
+
+  const refreshBackendUser = useCallback(async () => {
+    try {
+      const profile = await getProfile(() => getTokenRef.current());
+      setBackendUser((previous) =>
+        previous
+          ? {
+              ...previous,
+              name: profile.name,
+              email: profile.email,
+              imageUrl: profile.imageUrl,
+            }
+          : previous,
+      );
+    } catch (refreshError) {
+      if (__DEV__) {
+        console.warn("[BackendSync] refresh user failed:", refreshError);
+      }
+    }
+  }, []);
 
   /**
    * Never blocks the user: if the request fails the onboarding is still
@@ -248,6 +271,7 @@ export function BackendSyncProvider({
       workspaces,
       currentWorkspace,
       refreshWorkspaces,
+      refreshBackendUser,
       showOnboarding,
       completeOnboarding,
       retry,
@@ -261,6 +285,7 @@ export function BackendSyncProvider({
       workspaces,
       currentWorkspace,
       refreshWorkspaces,
+      refreshBackendUser,
       showOnboarding,
       completeOnboarding,
       retry,

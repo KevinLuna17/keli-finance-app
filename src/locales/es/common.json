@@ -91,7 +91,8 @@
     "totalBalance": "Saldo Total",
     "recentActivity": "Actividad Reciente",
     "seeAll": "Ver todo",
-    "noRecentTransactions": "Aún no hay transacciones recientes."
+    "noRecentTransactions": "Aún no hay transacciones recientes.",
+    "greetingNoName": "¡Bienvenido! 👋"
   },
   "transactionsList": {
     "add": "Agregar",
@@ -296,7 +297,9 @@
     "firstTransactionTitle": "Registra tu primer movimiento",
     "firstTransactionBody": "Empieza con algo simple: tu salario o tu última compra.",
     "addExpense": "Agregar un gasto",
-    "addIncome": "Agregar un ingreso"
+    "addIncome": "Agregar un ingreso",
+    "nameLabel": "Tu nombre (opcional)",
+    "namePlaceholder": "¿Cómo te llamamos?"
   },
   "back": "Atrás",
   "errors": {

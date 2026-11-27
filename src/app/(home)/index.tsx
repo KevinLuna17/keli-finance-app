@@ -6,7 +6,8 @@ import { useCategories } from "@/hooks/use-categories";
 import { useHomeDashboard } from "@/hooks/use-home-dashboard";
 import { useBackendSync } from "@/hooks/useBackendSync";
 import { buildCategoryLookup } from "@/lib/category-display";
-import { useAuth, useUser } from "@clerk/expo";
+import { getFirstName } from "@/lib/display-name";
+import { useAuth } from "@clerk/expo";
 import { Href, useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useRef } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
@@ -15,10 +16,10 @@ import { useTranslation } from "react-i18next";
 export default function HomeScreen() {
   const { t } = useTranslation();
   const { isLoaded } = useAuth();
-  const { user } = useUser();
   const router = useRouter();
   const isFirstFocus = useRef(true);
-  const { currentWorkspace } = useBackendSync();
+  const { currentWorkspace, backendUser, refreshBackendUser } =
+    useBackendSync();
   const workspaceId = currentWorkspace?.id;
   const { dashboard, isLoading, error, refresh } =
     useHomeDashboard(workspaceId);
@@ -29,8 +30,9 @@ export default function HomeScreen() {
     [categories],
   );
 
-  const displayName =
-    user?.fullName ?? user?.emailAddresses[0]?.emailAddress ?? t("dashboard.defaultName");
+  // Backend profile is the source of truth for the name; never show the raw
+  // email. Falls back to a neutral greeting when no name is set.
+  const firstName = getFirstName(backendUser?.name);
 
   useFocusEffect(
     useCallback(() => {
@@ -40,7 +42,8 @@ export default function HomeScreen() {
       }
 
       refresh();
-    }, [refresh]),
+      void refreshBackendUser();
+    }, [refresh, refreshBackendUser]),
   );
 
   if (!isLoaded) {
@@ -67,9 +70,11 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View>
-          <Text className="text-sm text-muted-foreground">{t("dashboard.greeting")}</Text>
+          <Text className="text-sm text-muted-foreground">
+            {t("dashboard.greeting")}
+          </Text>
           <Text className="mt-1 text-2xl font-bold text-foreground">
-            {displayName}
+            {firstName ?? t("dashboard.greetingNoName")}
           </Text>
         </View>
 
