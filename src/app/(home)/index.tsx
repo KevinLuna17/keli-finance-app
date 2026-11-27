@@ -6,7 +6,6 @@ import { useCategories } from "@/hooks/use-categories";
 import { useHomeDashboard } from "@/hooks/use-home-dashboard";
 import { useBackendSync } from "@/hooks/useBackendSync";
 import { buildCategoryLookup } from "@/lib/category-display";
-import { getFirstName } from "@/lib/display-name";
 import { useAuth } from "@clerk/expo";
 import { Href, useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useRef } from "react";
@@ -32,7 +31,7 @@ export default function HomeScreen() {
 
   // Backend profile is the source of truth for the name; never show the raw
   // email. Falls back to a neutral greeting when no name is set.
-  const firstName = getFirstName(backendUser?.name);
+  const displayName = backendUser?.name?.trim();
 
   useFocusEffect(
     useCallback(() => {
@@ -74,7 +73,7 @@ export default function HomeScreen() {
             {t("dashboard.greeting")}
           </Text>
           <Text className="mt-1 text-2xl font-bold text-foreground">
-            {firstName ?? t("dashboard.greetingNoName")}
+            {displayName || t("dashboard.greetingNoName")}
           </Text>
         </View>
 
