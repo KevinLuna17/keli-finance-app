@@ -11,6 +11,7 @@ import { useRouter } from "expo-router";
 import React from "react";
 import {
   ActivityIndicator,
+  Alert,
   Pressable,
   ScrollView,
   Text,
@@ -48,10 +49,12 @@ export function TransactionFormScreen({
   const {
     form,
     onSubmit,
+    removeTransaction,
     submitError,
     loadError,
     isLoadingInitial,
     isSubmitting,
+    isDeleting,
     isSubmitDisabled,
   } = useTransactionForm({
     mode,
@@ -60,6 +63,23 @@ export function TransactionFormScreen({
     initialType,
     onSuccess: onSuccess ?? (() => router.back()),
   });
+
+  const confirmDelete = () => {
+    Alert.alert(
+      t("transactionForm.deleteConfirmTitle"),
+      t("transactionForm.deleteConfirmMessage"),
+      [
+        { text: t("cancel"), style: "cancel" },
+        {
+          text: t("delete"),
+          style: "destructive",
+          onPress: () => {
+            void removeTransaction();
+          },
+        },
+      ],
+    );
+  };
 
   if (!workspaceId) {
     if (syncStatus === "synced") {
@@ -141,8 +161,26 @@ export function TransactionFormScreen({
           setValue={form.setValue}
           errors={form.formState.errors}
           categories={categories}
-          disabled={isSubmitting}
+          disabled={isSubmitting || isDeleting}
         />
+
+        {mode === "edit" ? (
+          <Pressable
+            className="mt-6 items-center rounded-2xl border border-destructive/40 py-4"
+            onPress={confirmDelete}
+            disabled={isSubmitting || isDeleting}
+            accessibilityRole="button"
+            accessibilityLabel={t("transactionForm.delete")}
+          >
+            {isDeleting ? (
+              <ActivityIndicator color="#DC2626" />
+            ) : (
+              <Text className="text-base font-semibold text-destructive">
+                {t("transactionForm.delete")}
+              </Text>
+            )}
+          </Pressable>
+        ) : null}
       </ScrollView>
 
       <View className="bg-card px-6 pb-6 pt-4">

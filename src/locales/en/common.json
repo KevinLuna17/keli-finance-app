@@ -119,7 +119,10 @@
     "descriptionLabel": "Description",
     "descriptionPlaceholder": "What was this for?",
     "dateLabel": "Date",
-    "done": "Done"
+    "done": "Done",
+    "delete": "Delete transaction",
+    "deleteConfirmTitle": "Delete transaction",
+    "deleteConfirmMessage": "This transaction will be permanently removed."
   },
   "statistics": {
     "insights": "Insights",
@@ -324,7 +327,8 @@
     "createWorkspace": "We couldn't create the workspace.",
     "updateWorkspace": "We couldn't update the workspace.",
     "deleteWorkspace": "We couldn't delete the workspace.",
-    "loadDashboard": "We couldn't load your summary."
+    "loadDashboard": "We couldn't load your summary.",
+    "deleteTransaction": "We couldn't delete the transaction."
   },
   "validation": {
     "amountRequired": "Amount is required",

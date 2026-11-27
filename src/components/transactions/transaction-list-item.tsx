@@ -4,23 +4,27 @@ import { useFormatCurrency } from "@/hooks/use-format-currency";
 import { Transaction } from "@/services/transactions/transaction.types";
 import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 type TransactionListItemProps = {
   transaction: Transaction;
   categoryLookup?: CategoryLookup;
+  /** When provided, the row becomes tappable (e.g. to edit the transaction). */
+  onPress?: (transaction: Transaction) => void;
 };
 
 function TransactionListItemComponent({
   transaction,
   categoryLookup = {},
+  onPress,
 }: TransactionListItemProps) {
   const { formatSigned } = useFormatCurrency();
   const category = getCategoryDisplayById(transaction.categoryId, categoryLookup);
   const isIncome = transaction.type === "income";
+  const amount = formatSigned(transaction.amountInCents, transaction.type);
 
-  return (
-    <View className="flex-row items-center rounded-2xl bg-card p-4 shadow-sm">
+  const content = (
+    <>
       <View
         className={`size-11 items-center justify-center rounded-xl ${category.iconBackgroundClassName}`}
       >
@@ -47,9 +51,28 @@ function TransactionListItemComponent({
           isIncome ? "text-success" : "text-card-foreground"
         }`}
       >
-        {formatSigned(transaction.amountInCents, transaction.type)}
+        {amount}
       </Text>
-    </View>
+    </>
+  );
+
+  if (!onPress) {
+    return (
+      <View className="flex-row items-center rounded-2xl bg-card p-4 shadow-sm">
+        {content}
+      </View>
+    );
+  }
+
+  return (
+    <Pressable
+      className="flex-row items-center rounded-2xl bg-card p-4 shadow-sm active:opacity-70"
+      onPress={() => onPress(transaction)}
+      accessibilityRole="button"
+      accessibilityLabel={`${transaction.description}, ${category.name}, ${amount}`}
+    >
+      {content}
+    </Pressable>
   );
 }
 

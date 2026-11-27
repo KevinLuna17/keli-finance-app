@@ -99,6 +99,9 @@ export default function HomeScreen() {
             transactions={dashboard.recentTransactions}
             categoryLookup={categoryLookup}
             onViewAllPress={() => router.push("/(home)/transactions" as Href)}
+            onTransactionPress={(transaction) =>
+              router.push(`/transaction/${transaction.id}/edit` as Href)
+            }
           />
         ) : null}
       </ScrollView>

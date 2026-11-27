@@ -7,6 +7,7 @@ import {
 } from "@/lib/validations/transaction-form.schema";
 import {
   createTransaction,
+  deleteTransaction,
   getTransaction,
   updateTransaction,
 } from "@/services/transactions/transaction.service";
@@ -23,6 +24,7 @@ type UseTransactionFormOptions = {
   workspaceId: string;
   initialType?: TransactionFormValues["type"];
   onSuccess?: () => void | Promise<void>;
+  onDeleted?: () => void | Promise<void>;
 };
 
 export function useTransactionForm({
@@ -31,10 +33,12 @@ export function useTransactionForm({
   workspaceId,
   initialType,
   onSuccess,
+  onDeleted,
 }: UseTransactionFormOptions) {
   const { getToken } = useAuth();
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isLoadingInitial, setIsLoadingInitial] = useState(mode === "edit");
 
   const form = useForm<TransactionFormValues>({
@@ -117,15 +121,36 @@ export function useTransactionForm({
     }
   });
 
+  const removeTransaction = async () => {
+    if (!transactionId) {
+      return;
+    }
+
+    setSubmitError(null);
+    setIsDeleting(true);
+
+    try {
+      await deleteTransaction(() => getToken(), transactionId);
+      await (onDeleted ?? onSuccess)?.();
+    } catch (error) {
+      setSubmitError(getApiErrorMessage(error, "errors.deleteTransaction"));
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const { isSubmitting, isValid } = form.formState;
+  const isBusy = isSubmitting || isDeleting;
 
   return {
     form,
     onSubmit,
+    removeTransaction,
     submitError,
     loadError,
     isLoadingInitial,
     isSubmitting,
-    isSubmitDisabled: isSubmitting || !isValid || isLoadingInitial,
+    isDeleting,
+    isSubmitDisabled: isBusy || !isValid || isLoadingInitial,
   };
 }

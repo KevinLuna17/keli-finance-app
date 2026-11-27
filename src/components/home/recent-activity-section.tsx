@@ -11,6 +11,7 @@ type RecentActivitySectionProps = {
   transactions: Transaction[];
   categoryLookup?: CategoryLookup;
   onViewAllPress?: () => void;
+  onTransactionPress?: (transaction: Transaction) => void;
 };
 
 export default function RecentActivitySection({
@@ -19,6 +20,7 @@ export default function RecentActivitySection({
   transactions,
   categoryLookup = {},
   onViewAllPress,
+  onTransactionPress,
 }: RecentActivitySectionProps) {
   const { t } = useTranslation();
 
@@ -53,6 +55,7 @@ export default function RecentActivitySection({
               key={transaction.id}
               transaction={transaction}
               categoryLookup={categoryLookup}
+              onPress={onTransactionPress}
             />
           ))}
         </View>

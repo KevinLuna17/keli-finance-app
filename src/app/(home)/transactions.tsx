@@ -38,6 +38,13 @@ export default function TransactionsScreen() {
     router.push("/transaction/new" as Href);
   }, [router]);
 
+  const handleTransactionPress = useCallback(
+    (transactionId: string) => {
+      router.push(`/transaction/${transactionId}/edit` as Href);
+    },
+    [router],
+  );
+
   useFocusEffect(
     useCallback(() => {
       if (isFirstFocus.current) {
@@ -76,6 +83,9 @@ export default function TransactionsScreen() {
         onLoadMore={loadMore}
         onRetry={retry}
         onAddPress={handleAddPress}
+        onTransactionPress={(transaction) =>
+          handleTransactionPress(transaction.id)
+        }
       />
     </ScreenLayout>
   );

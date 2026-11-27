@@ -119,7 +119,10 @@
     "descriptionLabel": "Descripción",
     "descriptionPlaceholder": "¿Para qué fue esto?",
     "dateLabel": "Fecha",
-    "done": "Listo"
+    "done": "Listo",
+    "delete": "Eliminar transacción",
+    "deleteConfirmTitle": "Eliminar transacción",
+    "deleteConfirmMessage": "Esta transacción se eliminará de forma permanente."
   },
   "statistics": {
     "insights": "Perspectivas",
@@ -324,7 +327,8 @@
     "createWorkspace": "No pudimos crear el espacio.",
     "updateWorkspace": "No pudimos actualizar el espacio.",
     "deleteWorkspace": "No pudimos eliminar el espacio.",
-    "loadDashboard": "No pudimos cargar tu resumen."
+    "loadDashboard": "No pudimos cargar tu resumen.",
+    "deleteTransaction": "No pudimos eliminar la transacción."
   },
   "validation": {
     "amountRequired": "El monto es obligatorio",

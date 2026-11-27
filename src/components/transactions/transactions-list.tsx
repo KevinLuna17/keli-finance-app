@@ -4,6 +4,7 @@ import { TransactionsEmptyState } from "@/components/transactions/transactions-e
 import { TransactionsErrorState } from "@/components/transactions/transactions-error-state";
 import type { CategoryLookup } from "@/lib/category-display";
 import { TransactionListRow } from "@/lib/transaction-list-utils";
+import type { Transaction } from "@/services/transactions/transaction.types";
 import React, { useCallback } from "react";
 import {
   ActivityIndicator,
@@ -26,6 +27,7 @@ type TransactionsListProps = {
   onLoadMore: () => void;
   onRetry: () => void;
   onAddPress?: () => void;
+  onTransactionPress?: (transaction: Transaction) => void;
 };
 
 export function TransactionsList({
@@ -41,6 +43,7 @@ export function TransactionsList({
   onLoadMore,
   onRetry,
   onAddPress,
+  onTransactionPress,
 }: TransactionsListProps) {
   const { t } = useTranslation();
 
@@ -53,9 +56,10 @@ export function TransactionsList({
       <TransactionListItem
         transaction={item.transaction}
         categoryLookup={categoryLookup}
+        onPress={onTransactionPress}
       />
     );
-  }, [categoryLookup]);
+  }, [categoryLookup, onTransactionPress]);
 
   const keyExtractor = useCallback((item: TransactionListRow) => item.key, []);
 
