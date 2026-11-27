@@ -68,27 +68,39 @@ export function useSignInFlow() {
 
     if (signIn.status === "complete") {
       await signIn.finalize({ navigate: navigateAfterAuth });
-    } else if (signIn.status === "needs_second_factor") {
-      setFormError(i18n.t("auth.errors.additionalVerification"));
-    } else if (signIn.status === "needs_client_trust") {
-      const emailCodeFactor = signIn.supportedSecondFactors.find(
+      return;
+    }
+
+    // Clerk asks for a second step: either 2FA, or email verification of a
+    // new device (Device Trust). When that step is an email code we send it
+    // and let the user continue in-app; otherwise there is nothing they can
+    // do from here, so we tell them to use another sign-in method.
+    if (
+      signIn.status === "needs_second_factor" ||
+      signIn.status === "needs_client_trust"
+    ) {
+      const hasEmailCode = signIn.supportedSecondFactors?.some(
         (factor) => factor.strategy === "email_code",
       );
 
-      if (emailCodeFactor) {
-        const { error: sendError } = await signIn.mfa.sendEmailCode();
-        if (sendError) {
-          setFormError(getClerkErrorMessage(sendError));
-          return;
-        }
-        setSecondFactor(true);
+      if (!hasEmailCode) {
+        setFormError(i18n.t("auth.errors.additionalVerification"));
+        return;
       }
-    } else {
-      if (__DEV__) {
-        console.warn("[SignIn] incomplete status:", signIn.status);
+
+      const { error: sendError } = await signIn.mfa.sendEmailCode();
+      if (sendError) {
+        setFormError(getClerkErrorMessage(sendError));
+        return;
       }
-      setFormError(i18n.t("auth.errors.signInIncomplete"));
+      setSecondFactor(true);
+      return;
     }
+
+    if (__DEV__) {
+      console.warn("[SignIn] incomplete status:", signIn.status);
+    }
+    setFormError(i18n.t("auth.errors.signInIncomplete"));
   }, [emailAddress, password, signIn, navigateAfterAuth]);
 
   const handleVerify = useCallback(
