@@ -1,4 +1,4 @@
-import type { Theme } from "@react-navigation/native";
+import type { Theme } from "expo-router";
 
 /** Shared stack options for modal routes. Keeps header and content on the card surface. */
 export function getModalStackScreenOptions(
@@ -10,6 +10,8 @@ export function getModalStackScreenOptions(
     headerBackTitle: backTitle,
     headerTitleAlign: "center" as const,
     headerStyle: { backgroundColor: colors.card },
+    headerTitleStyle: { color: colors.text },
+    headerTintColor: colors.text,
     contentStyle: { backgroundColor: colors.card },
   };
 }

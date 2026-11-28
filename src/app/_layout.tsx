@@ -4,11 +4,10 @@ import { useBackendSync } from "@/hooks/useBackendSync";
 import AppProviders from "@/providers";
 import { useAuth } from "@clerk/expo";
 import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
-import { Stack } from "expo-router";
+  darkNavigationTheme,
+  lightNavigationTheme,
+} from "@/lib/navigation-theme";
+import { Stack, ThemeProvider } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
 import { useColorScheme, View } from "react-native";
@@ -48,7 +47,9 @@ function RootLayoutNav() {
   const signedInHome = showOnboarding ? "/onboarding" : "/(home)";
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider
+      value={colorScheme === "dark" ? darkNavigationTheme : lightNavigationTheme}
+    >
       <Stack screenOptions={{ headerShown: false }}>
         {/* Auth screens - only accesible when NOT signed in*/}
         <Stack.Protected guard={!isSignedIn} redirectTo={signedInHome}>

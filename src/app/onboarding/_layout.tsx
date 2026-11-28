@@ -1,6 +1,5 @@
 import { getModalStackScreenOptions } from "@/lib/modal-screen-options";
-import { useTheme } from "@react-navigation/native";
-import { Stack } from "expo-router";
+import { Stack, useTheme } from "expo-router";
 import { useTranslation } from "react-i18next";
 
 export default function OnboardingLayout() {

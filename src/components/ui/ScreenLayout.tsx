@@ -1,4 +1,4 @@
-import { useTheme } from "@react-navigation/native";
+import { useTheme } from "expo-router";
 import React from "react";
 import { type ViewProps } from "react-native";
 import { Edge, SafeAreaView } from "react-native-safe-area-context";
