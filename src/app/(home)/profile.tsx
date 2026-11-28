@@ -248,16 +248,6 @@ export default function ProfileScreen() {
           onInvitationResolved={refreshWorkspaces}
         />
 
-        <ProfileGlassPressable
-          className="mt-6"
-          contentClassName="h-14 items-center justify-center"
-          onPress={() => signOut()}
-          accessibilityRole="button"
-          accessibilityLabel={t("signOut")}
-        >
-          <Text className="text-base font-bold text-destructive">{t("signOut")}</Text>
-        </ProfileGlassPressable>
-
         <View className="mt-8">
           <Text className="text-lg font-bold text-foreground">
             {t("legal.title")}
@@ -276,6 +266,16 @@ export default function ProfileScreen() {
             />
           </View>
         </View>
+
+        <ProfileGlassPressable
+          className="mt-8"
+          contentClassName="h-14 items-center justify-center"
+          onPress={() => signOut()}
+          accessibilityRole="button"
+          accessibilityLabel={t("signOut")}
+        >
+          <Text className="text-base font-bold text-destructive">{t("signOut")}</Text>
+        </ProfileGlassPressable>
 
         <View className="mt-8">
           <Text className="text-lg font-bold text-foreground">
