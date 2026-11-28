@@ -69,8 +69,10 @@
       --accent: 45 89% 61%;
 
       /* States */
-      --destructive: 0 50% 25%;
-      --destructive-foreground: 0 80% 75%;
+      /* Legible as text on dark surfaces (contrast ~4.2) while still working
+         as a fill with white text on destructive buttons (~3.8). */
+      --destructive: 0 70% 60%;
+      --destructive-foreground: 0 0% 100%;
 
       --success: 146 70% 52%;
 
