@@ -104,7 +104,7 @@ export function WorkspacesSection({
           accessibilityRole="button"
           accessibilityLabel={t("workspaces.createWorkspaceLabel")}
         >
-          <Text className="text-base font-semibold text-brand">
+          <Text className="text-base font-semibold text-brand dark:text-primary">
             + {t("workspaces.createWorkspace")}
           </Text>
         </ProfileGlassPressable>

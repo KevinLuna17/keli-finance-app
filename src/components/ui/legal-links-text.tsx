@@ -17,14 +17,14 @@ export function LegalLinksText({ i18nKey, className }: LegalLinksTextProps) {
         components={{
           terms: (
             <Text
-              className="font-semibold text-brand underline"
+              className="font-semibold text-brand dark:text-primary underline"
               accessibilityRole="link"
               onPress={() => void openLegalLink("terms")}
             />
           ),
           privacy: (
             <Text
-              className="font-semibold text-brand underline"
+              className="font-semibold text-brand dark:text-primary underline"
               accessibilityRole="link"
               onPress={() => void openLegalLink("privacy")}
             />

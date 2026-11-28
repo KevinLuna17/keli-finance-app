@@ -83,7 +83,7 @@ export default function SignInScreen() {
 
           <Link href="/(auth)/forgot-password" asChild>
             <TouchableOpacity className="self-end">
-              <Text className="mb-2 text-brand font-semibold">
+              <Text className="mb-2 text-brand dark:text-primary font-semibold">
                 {t("auth.forgotPassword")}
               </Text>
             </TouchableOpacity>
@@ -114,7 +114,7 @@ export default function SignInScreen() {
         <Text className="mt-6 text-center text-base leading-6 text-muted-foreground">
           {t("auth.noAccount")}{" "}
           <Link href="/(auth)/sign-up" asChild>
-            <Text className="font-semibold text-brand">{t("auth.signUp")}</Text>
+            <Text className="font-semibold text-brand dark:text-primary">{t("auth.signUp")}</Text>
           </Link>
         </Text>
 

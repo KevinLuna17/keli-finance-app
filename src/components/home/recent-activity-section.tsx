@@ -35,7 +35,7 @@ export default function RecentActivitySection({
             onPress={onViewAllPress}
             hitSlop={8}
           >
-            <Text className="text-sm font-semibold text-brand">
+            <Text className="text-sm font-semibold text-brand dark:text-primary">
               {viewAllLabel}
             </Text>
           </Pressable>

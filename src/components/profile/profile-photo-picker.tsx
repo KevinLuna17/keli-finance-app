@@ -65,7 +65,7 @@ export function ProfilePhotoPicker({ profile, disabled = false }: ProfilePhotoPi
           accessibilityRole="button"
           hitSlop={8}
         >
-          <Text className="text-sm font-semibold text-brand">
+          <Text className="text-sm font-semibold text-brand dark:text-primary">
             {t("profileScreen.changePhoto")}
           </Text>
         </Pressable>

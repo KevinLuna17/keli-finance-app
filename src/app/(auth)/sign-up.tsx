@@ -79,7 +79,7 @@ export default function SignUpScreen() {
 
         <Text className="mt-2 text-center text-sm leading-6 text-muted-foreground">
           {t("auth.letsGetStarted")}{" "}
-          <Text className="font-mono text-sm font-semibold leading-6 text-brand">
+          <Text className="font-mono text-sm font-semibold leading-6 text-brand dark:text-primary">
             KELI
           </Text>
           .
@@ -126,7 +126,7 @@ export default function SignUpScreen() {
         <Text className="mt-6 text-center text-base leading-6 text-muted-foreground">
           {t("auth.alreadyHaveAccount")}{" "}
           <Link href="/(auth)/sign-in" asChild>
-            <Text className="font-semibold text-brand">{t("auth.signIn")}</Text>
+            <Text className="font-semibold text-brand dark:text-primary">{t("auth.signIn")}</Text>
           </Link>
         </Text>
 
