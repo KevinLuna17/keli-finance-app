@@ -1,3 +1,4 @@
+import { useTheme } from "@react-navigation/native";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { Pressable, Text, View } from "react-native";
@@ -20,6 +21,11 @@ const PROVIDER_LABELS: Record<SocialProvider, string> = {
 };
 
 function ProviderIcon({ provider }: { provider: SocialProvider }) {
+  // The Apple mark is monochrome: it must follow the surface (black on light,
+  // white on dark), per Apple's Sign in with Apple guidelines. Google keeps
+  // its full-color logo.
+  const { colors } = useTheme();
+
   return (
     <View className="h-9 w-9 items-center justify-center">
       {provider === "google" ? (
@@ -29,7 +35,7 @@ function ProviderIcon({ provider }: { provider: SocialProvider }) {
           accessibilityIgnoresInvertColors
         />
       ) : (
-        <FontAwesome6 name="apple" size={22} color="#111" />
+        <FontAwesome6 name="apple" size={22} color={colors.text} />
       )}
     </View>
   );
